@@ -1,0 +1,311 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Acquire and Plot Angular Velocity and Orientation Data from Your Apple&#174; iOS Device</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-09-11"><meta name="DC.source" content="iossensor_plottingmultiplesensors.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><style>
+.open_example { 
+    padding:0px 0px 1px 0px;
+    margin:20px;
+    font-size:0.9em;
+    border:1px solid #aeaeae;
+    display:block;
+    float:right;
+    border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #FFFFFF 0%, #E6E6E6 100%); /* FF3.6+ */	
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#E6E6E6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #FFFFFF 0%,#E6E6E6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* IE10+ */
+    background: linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#E6E6E6',GradientType=0 ); /* IE6-9 */
+}
+
+.open_example:hover {
+    background: #f3f3f3; /* Old browsers */
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #d7d7d7 100%); /* FF3.6+ */    
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f3f3f3), color-stop(100%,#d7d7d7)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f3f3f3 0%,#d7d7d7 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* IE10+ */
+    background: linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#d7d7d7',GradientType=0 ); /* IE6-9 */
+} 
+
+.open_example a { 
+    padding:6px 10px; 
+    line-height:130%;
+    text-decoration:none;
+    float:left;
+}
+      </style><div class="open_example"><a href="matlab:edit iossensor_plottingmultiplesensors">Open this Example</a></div><div class="content"><h1>Acquire and Plot Angular Velocity and Orientation Data from Your Apple&#174; iOS Device</h1><!--introduction--><p>This example shows how to plot data from multiple sensors on an Apple iOS device together in one timeline. Measurements of angular velocity and orientation will be collected from the device and plotted over absolute time. This will allow correlations between data from two sensors to be visualized based on the actual time of measurement.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up the connection to your mobile device</a></li><li><a href="#5">Create a link to your mobile device</a></li><li><a href="#7">Prepare for data acquisition from multiple sensors</a></li><li><a href="#8">Start acquiring data</a></li><li><a href="#12">Stop acquiring data</a></li><li><a href="#13">Retrieve logged data</a></li><li><a href="#14">Plot raw sensor data</a></li><li><a href="#16">Convert to absolute timestamps</a></li><li><a href="#17">Plot multiple sensors over absolute time</a></li><li><a href="#18">Clean up</a></li></ul></div><h2>Setting up the connection to your mobile device<a name="1"></a></h2><p>In order to receive data from an Apple iOS device in MATLAB&#174;, you will need the MATLAB Mobile&#8482; app (version 2.0). You can download this app from App Store&#8480;.</p><p>Use MATLAB Connector to allow connection between your desktop MATLAB session and MATLAB Mobile on your Apple iOS device. Your device must be able to connect to your desktop, either by being on the same network, using a VPN, or through a similar configuration.</p><p>Execute the <tt>connector</tt> command with a password of your choice.</p><pre class="codeinput">connector <span class="string">on</span> <span class="string">yourpassword</span>;
+</pre><pre class="codeoutput">DNS name: COMPUTERNAME.YOURDOMAIN.com
+IP address: 192.168.1.1
+Use this link to test the MATLAB Connector:
+http://COMPUTERNAME.YOURDOMAIN.com:31415
+
+If the test is successful, but MATLAB Mobile cannot connect, 
+your computer might have multiple IP addresses.  To determine
+the correct one, see Determining the DNS Name or IP Address of a Computer.
+</pre><p>Your computer's DNS name and IP address are displayed on the MATLAB Command Window, along with a test link. Click on the test link to ensure that your desktop is ready to connect. The last digits after the colon on the test link correspond to the port that has been opened.</p><p>Now you can connect MATLAB Mobile to your desktop.</p><p>If you are launching MATLAB Mobile for the first time, select Connect to Your Computer. If you previously connected to the cloud or a different desktop, go to the Settings screen and select Add a Computer from the Connect to Your Computers section. On the Add a Computer screen, enter the DNS name or IP address that was displayed in the previous step. Then, enter the Connector password that you previously specified, as well as the port that was opened. Finally, press the Connect button. MATLAB Mobile should now be connected to your desktop MATLAB session.</p><h2>Create a link to your mobile device<a name="5"></a></h2><p>Use the <tt>mobiledev</tt> command to create an object that represents your mobile device.</p><pre class="codeinput">m = mobiledev
+</pre><pre class="codeoutput">
+m = 
+
+mobiledev with properties:
+
+                   Connected: 1
+                     Logging: 0
+            InitialTimestamp: ''
+
+   AccelerationSensorEnabled: 0
+AngularVelocitySensorEnabled: 0
+       MagneticSensorEnabled: 0
+    OrientationSensorEnabled: 0
+       PositionSensorEnabled: 0
+</pre><p>The displayed output should show <tt>Connected: 1</tt>, indicating that the <tt>mobiledev</tt> object has successfully established a connection to the app.</p><h2>Prepare for data acquisition from multiple sensors<a name="7"></a></h2><p>Use the appropriate <tt>mobiledev</tt> properties to enable sensors on the device.</p><pre class="codeinput">m.AngularVelocitySensorEnabled = 1;
+m.OrientationSensorEnabled = 1;
+</pre><h2>Start acquiring data<a name="8"></a></h2><p>After enabling the sensors, the Sensors screen of MATLAB Mobile will show the current data measured by the sensors. The <tt>Logging</tt> property allows you to begin sending sensor data to <tt>mobiledev</tt>.</p><pre class="codeinput">m.Logging = 1;
+</pre><p>The device is now transmitting sensor data. A pause is included to allow for some measurements to be made before moving to the next steps, but is not required for logging to occur.</p><pre class="codeinput">pause(15);
+</pre><p>At the start of logging, the device is lying flat on a table with the screen facing up. The positive Y-axis of the angular velocity sensor is defined to extend out from the top of the device. Positive roll of the orientation sensor is defined as a clockwise rotation about the Y-axis when facing the positive direction of the axis.</p><p>During logging, the device is turned face-up and face-down a few times about its Y-axis. This generates Y-axis changes in angular velocity and roll changes in orientation.</p><h2>Stop acquiring data<a name="12"></a></h2><p>The <tt>Logging</tt> property is used again to have the device stop sending sensor data to <tt>mobiledev</tt>.</p><pre class="codeinput">m.Logging = 0;
+</pre><h2>Retrieve logged data<a name="13"></a></h2><p>Each sensor's data can be accessed from the <tt>mobiledev</tt> object. Two different timestamp variables are created because the angular velocity and orientation data may not be recorded by the device at the same time.</p><pre class="codeinput">[av, tav] = angvellog(m);
+[o, to] = orientlog(m);
+</pre><h2>Plot raw sensor data<a name="14"></a></h2><p>The data of interest from the sensors are isolated into separate variables and plotted.</p><pre class="codeinput">yAngVel = av(:,2);
+roll = o(:, 3);
+plot(tav, yAngVel, to, roll);
+legend(<span class="string">'Y Angular Velocity'</span>, <span class="string">'Roll'</span>);
+xlabel(<span class="string">'Relative time (s)'</span>);
+</pre><img vspace="5" hspace="5" src="iossensor_plottingmultiplesensors_01.png" alt=""> <p>The data is plotted in seconds relative to <tt>mobiledev</tt>'s <tt>InitialTimestamp</tt> property. This property provides the absolute time of the first data point recorded by a sensor and sent to MATLAB. It acts as the reference point for the timestamps of all sensor data accessed using functions such as <tt>angvellog</tt> and <tt>orientlog</tt>, which are given in seconds relative to InitialTimestamp.</p><h2>Convert to absolute timestamps<a name="16"></a></h2><p>To convert all sensor timestamps into absolute timestamps, the InitialTimestamp value is converted into a <tt>datetime</tt> object. The individual sensor timestamps, which are in units of seconds, are converted into <tt>seconds</tt>. This simplifies the date arithmetic of turning relative timestamps into absolute timestamps.</p><pre class="codeinput">tInit = datetime(m.InitialTimestamp, <span class="string">'InputFormat'</span>, <span class="string">'dd-MM-yyyy HH:mm:ss.SSS'</span>);
+tAngVel = tInit + seconds(tav);
+tOrient = tInit + seconds(to);
+</pre><h2>Plot multiple sensors over absolute time<a name="17"></a></h2><p>Both sensors now have absolute timestamps represented using <tt>datetime</tt>. This makes it easy to visualize the actual time that significant events occurred in sensor readings.</p><p>The orientation sensor uses units of degrees, while the angular velocity sensor uses units of radians per second. Before plotting again, <tt>yAngVel</tt> is converted to degrees per second.</p><pre class="codeinput">yAngVelDeg = yAngVel * 180/pi;
+
+plot(tAngVel, yAngVelDeg, tOrient, roll);
+legend(<span class="string">'Y Angular Velocity'</span>, <span class="string">'Roll'</span>);
+xlabel(<span class="string">'Absolute time (s)'</span>);
+</pre><img vspace="5" hspace="5" src="iossensor_plottingmultiplesensors_02.png" alt=""> <h2>Clean up<a name="18"></a></h2><p>Turn off the enabled sensors and clear <tt>mobiledev</tt>.</p><pre class="codeinput">m.AngularVelocitySensorEnabled = 0;
+m.OrientationSensorEnabled = 0;
+
+clear <span class="string">m</span>;
+</pre><p class="footer">Copyright 2015 The MathWorks, Inc.<br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="https://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% Acquire and Plot Angular Velocity and Orientation Data from Your Apple(R) iOS Device
+%
+% This example shows how to plot data from multiple sensors on an Apple iOS 
+% device together in one timeline. Measurements of angular velocity and 
+% orientation will be collected from the device and plotted over absolute 
+% time. This will allow correlations between data from two sensors to be
+% visualized based on the actual time of measurement. 
+%
+% Copyright 2015 The MathWorks, Inc.
+
+%% Setting up the connection to your mobile device
+% In order to receive data from an Apple iOS device in MATLAB, you will 
+% need the MATLAB Mobile(TM) app (version 2.0). You can download this app 
+% from Google Play(TM).
+
+%% 
+% Use MATLAB Connector to allow connection between your desktop MATLAB 
+% session and MATLAB Mobile on your Apple iOS device. Your device must be 
+% able to connect to your desktop, either by being on the same network, 
+% using a VPN, or through a similar configuration.
+%
+% Execute the |connector| command with a password of your choice.
+
+connector on yourpassword;
+
+%%
+% Your computer's DNS name and IP address are displayed on
+% the MATLAB Command Window, along with a test link. Click on the test link
+% to ensure that your desktop is ready to connect. The last digits after
+% the colon on the test link correspond to the port that has been opened.
+
+%% 
+% Now you can connect MATLAB Mobile to your desktop.
+%
+% If you are launching MATLAB Mobile for the first time, select Connect to 
+% Your Computer. If you previously connected to the cloud or a different 
+% desktop, go to the Settings screen and select Add a Computer from the 
+% Connect to Your Computers section.
+% On the Add a Computer screen, enter the DNS name or IP address that was
+% displayed in the previous step. Then, enter the Connector password that 
+% you previously specified, as well as the port that was opened.
+% Finally, press the Connect button.
+% MATLAB Mobile should now be connected to your desktop MATLAB session.
+
+%% Create a link to your mobile device
+% Use the |mobiledev| command to create an object that represents your
+% mobile device.
+
+m = mobiledev
+
+%%
+% The displayed output should show |Connected: 1|, indicating that the 
+% |mobiledev| object has successfully established a connection to the app.
+%% Prepare for data acquisition from multiple sensors
+% Use the appropriate |mobiledev| properties to enable sensors on the
+% device.
+
+m.AngularVelocitySensorEnabled = 1;
+m.OrientationSensorEnabled = 1;
+
+%% Start acquiring data
+% After enabling the sensors, the Sensors screen of MATLAB Mobile will show
+% the current data measured by the sensors. The |Logging| property allows 
+% you to begin sending sensor data to |mobiledev|.
+
+m.Logging = 1;
+
+%%
+% The device is now transmitting sensor data. A pause is included to allow
+% for some measurements to be made before moving to the next steps, but is
+% not required for logging to occur.
+
+pause(15);
+
+%%
+% At the start of logging, the device is lying flat on a table with the
+% screen facing up. The positive Y-axis of the angular velocity sensor is
+% defined to extend out from the top of the device. Positive roll of the 
+% orientation sensor is defined as a clockwise rotation about the Y-axis
+% when facing the positive direction of the axis. 
+
+%%
+% During logging, the device is turned face-up and face-down a few times
+% about its Y-axis. This generates Y-axis changes in angular velocity and 
+% roll changes in orientation. 
+
+%% Stop acquiring data
+% The |Logging| property is used again to have the device stop sending
+% sensor data to |mobiledev|.
+
+m.Logging = 0;
+
+%% Retrieve logged data
+% Each sensor's data can be accessed from the |mobiledev| object.
+% Two different timestamp variables are created because the angular 
+% velocity and orientation data may not be recorded by the device at the 
+% same time.
+
+[av, tav] = angvellog(m);
+[o, to] = orientlog(m);
+
+%% Plot raw sensor data
+% The data of interest from the sensors are isolated into separate
+% variables and plotted.
+
+yAngVel = av(:,2);
+roll = o(:, 3);
+plot(tav, yAngVel, to, roll);
+legend('Y Angular Velocity', 'Roll');
+xlabel('Relative time (s)');
+
+%%
+% The data is plotted in seconds relative to |mobiledev|'s 
+% |InitialTimestamp| property. This property provides the absolute time of 
+% the first data point recorded by a sensor and sent to MATLAB. It acts as 
+% the reference point for the timestamps of all sensor data accessed using
+% functions such as |angvellog| and |orientlog|, which are given in seconds
+% relative to InitialTimestamp.
+
+%% Convert to absolute timestamps
+% To convert all sensor timestamps into absolute timestamps, the
+% InitialTimestamp value is converted into a |datetime| object. The
+% individual sensor timestamps, which are in units of seconds, are
+% converted into |seconds|. This simplifies the date arithmetic of turning
+% relative timestamps into absolute timestamps.
+
+tInit = datetime(m.InitialTimestamp, 'InputFormat', 'dd-MM-yyyy HH:mm:ss.SSS');
+tAngVel = tInit + seconds(tav);
+tOrient = tInit + seconds(to);
+
+%% Plot multiple sensors over absolute time
+% Both sensors now have absolute timestamps represented using |datetime|.
+% This makes it easy to visualize the actual time that significant events
+% occurred in sensor readings.
+%
+% The orientation sensor uses units of degrees, while the angular velocity
+% sensor uses units of radians per second. Before plotting again, |yAngVel|
+% is converted to degrees per second. 
+
+yAngVelDeg = yAngVel * 180/pi;
+
+plot(tAngVel, yAngVelDeg, tOrient, roll);
+legend('Y Angular Velocity', 'Roll');
+xlabel('Absolute time (s)');
+
+
+%% Clean up
+% Turn off the enabled sensors and clear |mobiledev|.
+
+m.AngularVelocitySensorEnabled = 0;
+m.OrientationSensorEnabled = 0;
+
+clear m;
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productAdditionalComps>
+  <dependsOn>
+    <component>
+      <name>hardwaresupportpkgs/iossensor_fe_maci64</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>maci64</platform>
+      </platformList>
+      <version>1530646978</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/matlab/sharedmobilesensor_maci64</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>maci64</platform>
+      </platformList>
+      <version>1530646549</version>
+    </component>
+  </dependsOn>
+  <isControllingProduct>false</isControllingProduct>
+  <licenseAgreementType>ASLA</licenseAgreementType>
+  <platform>maci64</platform>
+  <productBaseCode>ML_APPLE_IOS_SENSORS</productBaseCode>
+  <productName>MATLAB Support Package for Apple iOS Sensors</productName>
+  <productNumber>2131</productNumber>
+  <productVersion>18.1.2</productVersion>
+  <releaseDescription>R2018a</releaseDescription>
+  <releaseFamily>R2018a</releaseFamily>
+</productAdditionalComps>
+

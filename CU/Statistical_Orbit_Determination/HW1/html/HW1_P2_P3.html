@@ -1,0 +1,529 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW1_P2_P3</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-02-01"><meta name="DC.source" content="HW1_P2_P3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">2b</a></li><li><a href="#3">Getting J2 &amp; u accelerations</a></li><li><a href="#4">Getting J2 &amp; u accelerations</a></li><li><a href="#5">Givens</a></li><li><a href="#6">Orbital Elements</a></li><li><a href="#7">State deviation vector</a></li><li><a href="#8">Other</a></li><li><a href="#9">Finding Initial Position and Setting State</a></li><li><a href="#10">Converting OE to ECI state</a></li><li><a href="#11">Setting initial state vectors (6x1)</a></li><li><a href="#12">Propagating the State with Numerical Integration</a></li><li><a href="#13">Setting time frame</a></li><li><a href="#14">Setting integrator accuracy</a></li><li><a href="#15">Propagating the State</a></li><li><a href="#16">Propagating the State (X + dx)</a></li><li><a href="#17">Propagating the State (STM)</a></li><li><a href="#18">Numerical Integrators</a></li><li><a href="#19">Unpack the state vector (ECI)</a></li><li><a href="#20">Output the derivative of the state</a></li></ul></div><pre class="codeinput">clear
+clc
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="2">2b</h2><p>------------------------------------------------------------------------</p><pre class="codeinput">syms <span class="string">x</span> <span class="string">y</span> <span class="string">z</span> <span class="string">u</span> <span class="string">ae</span> <span class="string">J2</span> <span class="string">J3</span>
+
+U = -(3*u*ae*ae*J2*z*z)/(2*((x^2+y^2+z^2)^(5/2)))<span class="keyword">...</span>
+    + (u*ae*ae*J2)/(2*((x^2+y^2+z^2)^(3/2)))<span class="keyword">...</span>
+    - (5*u*ae*ae*ae*J3*z*z*z)/(2*((x^2+y^2+z^2)^(7/2)))<span class="keyword">...</span>
+    + (3*u*ae*ae*ae*J3*z)/(2*((x^2+y^2+z^2)^(5/2)));
+
+dudx = diff(U,x);
+
+dudy = diff(U,y);
+
+dudz = diff(U,z);
+
+acc = [dudx; dudy; dudz];
+
+dadx = simplify(diff(acc,x));
+dady = simplify(diff(acc,y));
+dadz = simplify(diff(acc,z));
+dadu = simplify(diff(acc,u));
+dadJ2 = simplify(diff(acc,J2));
+dadJ3 = simplify(diff(acc,J3));
+
+fprintf(<span class="string">'dadx \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dadx(1),dadx(2),dadx(3))
+fprintf(<span class="string">'dady \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dady(1),dady(2),dady(3))
+fprintf(<span class="string">'dadz \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dadz(1),dadz(2),dadz(3))
+fprintf(<span class="string">'dadu \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dadu(1),dadu(2),dadu(3))
+fprintf(<span class="string">'dadJ2 \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dadJ2(1),dadJ2(2),dadJ2(3))
+fprintf(<span class="string">'dadJ3 \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n'</span>,dadJ3(1),dadJ3(2),dadJ3(3))
+
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+close <span class="string">all</span>
+addpath(<span class="string">'../bin'</span>)
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="3">Getting J2 &amp; u accelerations</h2><p>------------------------------------------------------------------------</p><pre class="codeinput">tl = zeros(3,3);
+tm = eye(3,3);
+tr = zeros(3,3);
+ml = [dadx(1), dady(1), dadz(1)
+    dadx(2), dady(2), dadz(2)
+    dadx(3), dady(3), dadz(3)];
+mm = zeros(3,3);
+mr = [simplify(diff(dudx,u)), simplify(diff(dudx,J2)), simplify(diff(dudx,ae))
+    simplify(diff(dudy,u)), simplify(diff(dudy,J2)), simplify(diff(dudy,ae))
+    simplify(diff(dudz,u)), simplify(diff(dudz,J2)), simplify(diff(dudz,ae))];
+bl = zeros(3,3);
+bm = zeros(3,3);
+br = zeros(3,3);
+
+stm = [tl tm tr; ml mm mr; bl bm br];
+stm2 = [tl tm; ml mm]
+
+
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="4">Getting J2 &amp; u accelerations</h2><p>------------------------------------------------------------------------</p><pre class="codeinput">a1 = dudx + (15*J3*ae^3*u*x*z)/(2*(x^2 + y^2 + z^2)^(7/2)) - (35*J3*ae^3*u*x*z^3)/(2*(x^2 + y^2 + z^2)^(9/2));
+a2 = dudy + (15*J3*ae^3*u*y*z)/(2*(x^2 + y^2 + z^2)^(7/2)) - (35*J3*ae^3*u*y*z^3)/(2*(x^2 + y^2 + z^2)^(9/2));
+a3 = dudz - (3*J3*ae^3*u)/(2*(x^2 + y^2 + z^2)^(5/2)) + (15*J3*ae^3*u*z^2)/(x^2 + y^2 + z^2)^(7/2) - (35*J3*ae^3*u*z^4)/(2*(x^2 + y^2 + z^2)^(9/2));
+a_3 = [a1; a2; a3]
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="5">Givens</h2><p>------------------------------------------------------------------------</p><h2 id="6">Orbital Elements</h2><pre class="codeinput">a = 7000; <span class="comment">% km</span>
+e = 0.001;
+i = 30*pi/180; <span class="comment">% rad</span>
+RAAN = 80*pi/180; <span class="comment">% rad</span>
+w = 40*pi/180; <span class="comment">% rad</span>
+ta = 0; <span class="comment">% rad</span>
+</pre><h2 id="7">State deviation vector</h2><pre class="codeinput">dx = [1; 0; 0; 0; .01; 0];<span class="comment">% km, km/s</span>
+</pre><h2 id="8">Other</h2><pre class="codeinput">uE = 398600.4415; <span class="comment">% km^3/s^2</span>
+J2 = 0.0010826269;
+g = 9.81;
+Re = 6378.1;
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="9">Finding Initial Position and Setting State</h2><p>------------------------------------------------------------------------</p><h2 id="10">Converting OE to ECI state</h2><pre class="codeinput">[r0, v0] = OE2ECI(a, e, i, RAAN, w, ta, uE); <span class="comment">% km, km/s</span>
+</pre><h2 id="11">Setting initial state vectors (6x1)</h2><pre class="codeinput">X0 = [r0; v0]
+
+X02 = X0 + dx;
+
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="12">Propagating the State with Numerical Integration</h2><p>------------------------------------------------------------------------</p><h2 id="13">Setting time frame</h2><pre class="codeinput">ti = 0; <span class="comment">% sec</span>
+tf = 24*3600; <span class="comment">% sec</span>
+dt = 1; <span class="comment">% sec</span>
+time = ti:dt:tf; <span class="comment">% sec</span>
+</pre><h2 id="14">Setting integrator accuracy</h2><pre class="codeinput">tol = 1E-9;
+options = odeset(<span class="string">'RelTol'</span>,tol,<span class="string">'AbsTol'</span>,tol);
+</pre><h2 id="15">Propagating the State</h2><pre class="codeinput">[Times,States] = ode45(@StatOD_Hw1_Int,time,X0,options,uE,Re,J2);
+
+
+plot3(States(:,1),States(:,2),States(:,3))
+PlotBoi3(<span class="string">'X, km'</span>, <span class="string">'Y, km'</span>, <span class="string">'Z, km'</span>, 14)
+view(-60,15)
+</pre><h2 id="16">Propagating the State (X + dx)</h2><pre class="codeinput">[Times,States_pdx] = ode45(@StatOD_Hw1_Int,time,X02,options,uE,Re,J2);
+
+figure
+subplot(3,2,1)
+plot(Times./3600,States(:,1)-States_pdx(:,1))
+PlotBoi2(<span class="string">''</span>,<span class="string">'X Error, km'</span>,14)
+subplot(3,2,3)
+plot(Times./3600,States(:,2)-States_pdx(:,2))
+PlotBoi2(<span class="string">''</span>,<span class="string">'Y Error, km'</span>,14)
+subplot(3,2,5)
+plot(Times./3600,States(:,3)-States_pdx(:,3))
+PlotBoi2(<span class="string">'Time, hr'</span>,<span class="string">'Z Error, km'</span>,14)
+subplot(3,2,2)
+plot(Times./3600,States(:,4)-States_pdx(:,4))
+PlotBoi2(<span class="string">''</span>,<span class="string">'X-Dot Error, km'</span>,14)
+subplot(3,2,4)
+plot(Times./3600,States(:,5)-States_pdx(:,5))
+PlotBoi2(<span class="string">''</span>,<span class="string">'Y-Dot Error, km'</span>,14)
+subplot(3,2,6)
+plot(Times./3600,States(:,6)-States_pdx(:,6))
+PlotBoi2(<span class="string">'Time, hr'</span>,<span class="string">'Z-Dot Error, km'</span>,14)
+</pre><h2 id="17">Propagating the State (STM)</h2><pre class="codeinput">[Times,States_dx] = ode45(@StatOD_Hw1_STMInt,time,dx,options,uE,Re,J2);
+
+figure
+subplot(3,2,1)
+plot(Times./3600,States_dx(:,1))
+PlotBoi2(<span class="string">''</span>,<span class="string">'X Error, km'</span>,14)
+subplot(3,2,3)
+plot(Times./3600,States_dx(:,2))
+PlotBoi2(<span class="string">''</span>,<span class="string">'Y Error, km'</span>,14)
+subplot(3,2,5)
+plot(Times./3600,States_dx(:,3))
+PlotBoi2(<span class="string">'Time, hr'</span>,<span class="string">'Z Error, km'</span>,14)
+subplot(3,2,2)
+plot(Times./3600,States_dx(:,4))
+PlotBoi2(<span class="string">''</span>,<span class="string">'X-Dot Error, km'</span>,14)
+subplot(3,2,4)
+plot(Times./3600,States_dx(:,5))
+PlotBoi2(<span class="string">''</span>,<span class="string">'Y-Dot Error, km'</span>,14)
+subplot(3,2,6)
+plot(Times./3600,States_dx(:,6))
+PlotBoi2(<span class="string">'Time, hr'</span>,<span class="string">'Z-Dot Error, km'</span>,14)
+<span class="comment">% ------------------------------------------------------------------------</span>
+</pre><h2 id="18">Numerical Integrators</h2><p>------------------------------------------------------------------------</p><pre class="codeinput"><span class="keyword">function</span> [ dY ] = StatOD_Hw1_Int(t,Y,u,ae,J2)
+dY = zeros(6,1);
+</pre><h2 id="19">Unpack the state vector (ECI)</h2><pre class="codeinput">x = Y(1);
+y = Y(2);
+z = Y(3);
+dy = Y(4:6); <span class="comment">% Satellite Velocity, km/s</span>
+</pre><h2 id="20">Output the derivative of the state</h2><pre class="codeinput">dY(1:3) = dy; <span class="comment">% km/s</span>
+dY(4) = (15*J2*ae^2*u*x*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*x)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*x/(norm(Y(1:3))^3); <span class="comment">% km/s^2</span>
+dY(5) = (15*J2*ae^2*u*y*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*y)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*y/(norm(Y(1:3))^3); <span class="comment">% km/s^2</span>
+dY(6) = (15*J2*ae^2*u*z^3)/(2*(x^2 + y^2 + z^2)^(7/2)) - (9*J2*ae^2*u*z)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*z/(norm(Y(1:3))^3); <span class="comment">% km/s^2</span>
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [ dY ] = StatOD_Hw1_STMInt(t,Y,u,ae,J2)
+dY = zeros(6,1);
+x = Y(1);
+y = Y(2);
+z = Y(3);
+J3 = 0;
+
+<span class="comment">% stm = [                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 1, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0</span>
+<span class="comment">%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 1, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0</span>
+<span class="comment">%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 1,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0</span>
+<span class="comment">%  -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0,                -(ae^2*x*(3*J2*x^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 + 15*J3*ae*x^2*z + 3*J2*y^4 - 9*J2*y^2*z^2 + 15*J3*ae*y^2*z - 12*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2)),     -(3*ae^2*u*x*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)),                                                       -(3*ae*u*x*(2*J2*x^4 + 4*J2*x^2*y^2 - 6*J2*x^2*z^2 + 15*J3*ae*x^2*z + 2*J2*y^4 - 6*J2*y^2*z^2 + 15*J3*ae*y^2*z - 8*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2))</span>
+<span class="comment">%                                                                                                                                                              (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)), -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0,                -(ae^2*y*(3*J2*x^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 + 15*J3*ae*x^2*z + 3*J2*y^4 - 9*J2*y^2*z^2 + 15*J3*ae*y^2*z - 12*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2)),     -(3*ae^2*u*y*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)),                                                       -(3*ae*u*y*(2*J2*x^4 + 4*J2*x^2*y^2 - 6*J2*x^2*z^2 + 15*J3*ae*x^2*z + 2*J2*y^4 - 6*J2*y^2*z^2 + 15*J3*ae*y^2*z - 8*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2))</span>
+<span class="comment">%                                                                                                                    -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                   -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0, (35*J3*ae^3*z^4 + 3*J3*ae^3*(x^2 + y^2 + z^2)^2 - 9*J2*ae^2*z*(x^2 + y^2 + z^2)^2 + 15*J2*ae^2*z^3*(x^2 + y^2 + z^2) - 30*J3*ae^3*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(9/2)), -(3*ae^2*u*z*(3*x^2 + 3*y^2 - 2*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)), -(3*ae*u*(6*J2*x^4*z - 3*J3*ae*x^4 + 12*J2*x^2*y^2*z - 6*J3*ae*x^2*y^2 + 2*J2*x^2*z^3 + 24*J3*ae*x^2*z^2 + 6*J2*y^4*z - 3*J3*ae*y^4 + 2*J2*y^2*z^3 + 24*J3*ae*y^2*z^2 - 4*J2*z^5 - 8*J3*ae*z^4))/(2*(x^2 + y^2 + z^2)^(9/2))</span>
+<span class="comment">%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0</span>
+<span class="comment">%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0</span>
+<span class="comment">%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0];</span>
+stm = [                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 1, 0, 0
+                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 1, 0
+                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 1
+ -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0
+                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)), -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0
+                                                                                                                   -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                   -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0];
+dY = stm * Y;
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">dadx 
+x-hat: -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+y-hat: (15*ae^2*u*x*y*(J2*x^4 + J2*y^4 - 6*J2*z^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 - 5*J2*y^2*z^2 - 14*J3*ae*z^3 + 7*J3*ae*x^2*z + 7*J3*ae*y^2*z))/(2*(x^2 + y^2 + z^2)^(11/2))
+z-hat: -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+
+dady 
+x-hat: (15*ae^2*u*x*y*(J2*x^4 + J2*y^4 - 6*J2*z^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 - 5*J2*y^2*z^2 - 14*J3*ae*z^3 + 7*J3*ae*x^2*z + 7*J3*ae*y^2*z))/(2*(x^2 + y^2 + z^2)^(11/2))
+y-hat: -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+z-hat: -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+
+dadz 
+x-hat: -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+y-hat: -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+z-hat: -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2))
+
+dadu 
+x-hat: -(ae^2*x*(3*J2*x^4 + 3*J2*y^4 - 12*J2*z^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 - 9*J2*y^2*z^2 - 20*J3*ae*z^3 + 15*J3*ae*x^2*z + 15*J3*ae*y^2*z))/(2*(x^2 + y^2 + z^2)^(9/2))
+y-hat: -(ae^2*y*(3*J2*x^4 + 3*J2*y^4 - 12*J2*z^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 - 9*J2*y^2*z^2 - 20*J3*ae*z^3 + 15*J3*ae*x^2*z + 15*J3*ae*y^2*z))/(2*(x^2 + y^2 + z^2)^(9/2))
+z-hat: (35*J3*ae^3*z^4 + 3*J3*ae^3*(x^2 + y^2 + z^2)^2 - 9*J2*ae^2*z*(x^2 + y^2 + z^2)^2 + 15*J2*ae^2*z^3*(x^2 + y^2 + z^2) - 30*J3*ae^3*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(9/2))
+
+dadJ2 
+x-hat: -(3*ae^2*u*x*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2))
+y-hat: -(3*ae^2*u*y*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2))
+z-hat: -(3*ae^2*u*z*(3*x^2 + 3*y^2 - 2*z^2))/(2*(x^2 + y^2 + z^2)^(7/2))
+
+dadJ3 
+x-hat: -(5*ae^3*u*x*z*(3*x^2 + 3*y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(9/2))
+y-hat: -(5*ae^3*u*y*z*(3*x^2 + 3*y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(9/2))
+z-hat: (ae^3*u*(6*x^2*y^2 - 24*x^2*z^2 - 24*y^2*z^2 + 3*x^4 + 3*y^4 + 8*z^4))/(2*(x^2 + y^2 + z^2)^(9/2))
+
+ 
+stm2 =
+ 
+[                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 1, 0, 0]
+[                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 1, 0]
+[                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 1]
+[ -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0]
+[                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)), -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0]
+[                                                                                                                   -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                   -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0]
+ 
+ 
+a_3 =
+ 
+ (15*J2*ae^2*u*x*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*x)/(2*(x^2 + y^2 + z^2)^(5/2))
+ (15*J2*ae^2*u*y*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*y)/(2*(x^2 + y^2 + z^2)^(5/2))
+   (15*J2*ae^2*u*z^3)/(2*(x^2 + y^2 + z^2)^(7/2)) - (9*J2*ae^2*u*z)/(2*(x^2 + y^2 + z^2)^(5/2))
+ 
+
+X0 =
+
+   1.0e+03 *
+
+  -2.903431386573331
+   5.951541650706099
+   2.247506877268984
+  -0.005778159649183
+  -0.003911418840069
+   0.002893197846789
+
+</pre><img vspace="5" hspace="5" src="HW1_P2_P3_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="HW1_P2_P3_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="HW1_P2_P3_03.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear
+clc
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% 2b
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+syms x y z u ae J2 J3
+
+U = -(3*u*ae*ae*J2*z*z)/(2*((x^2+y^2+z^2)^(5/2)))...
+    + (u*ae*ae*J2)/(2*((x^2+y^2+z^2)^(3/2)))...
+    - (5*u*ae*ae*ae*J3*z*z*z)/(2*((x^2+y^2+z^2)^(7/2)))...
+    + (3*u*ae*ae*ae*J3*z)/(2*((x^2+y^2+z^2)^(5/2)));
+
+dudx = diff(U,x);
+
+dudy = diff(U,y);
+
+dudz = diff(U,z);
+
+acc = [dudx; dudy; dudz];
+
+dadx = simplify(diff(acc,x));
+dady = simplify(diff(acc,y));
+dadz = simplify(diff(acc,z));
+dadu = simplify(diff(acc,u));
+dadJ2 = simplify(diff(acc,J2));
+dadJ3 = simplify(diff(acc,J3));
+
+fprintf('dadx \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dadx(1),dadx(2),dadx(3))
+fprintf('dady \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dady(1),dady(2),dady(3))
+fprintf('dadz \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dadz(1),dadz(2),dadz(3))
+fprintf('dadu \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dadu(1),dadu(2),dadu(3))
+fprintf('dadJ2 \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dadJ2(1),dadJ2(2),dadJ2(3))
+fprintf('dadJ3 \nx-hat: %s\ny-hat: %s\nz-hat: %s\n\n',dadJ3(1),dadJ3(2),dadJ3(3))
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+close all
+addpath('../bin')
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Getting J2 & u accelerations
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+tl = zeros(3,3);
+tm = eye(3,3);
+tr = zeros(3,3);
+ml = [dadx(1), dady(1), dadz(1)
+    dadx(2), dady(2), dadz(2)
+    dadx(3), dady(3), dadz(3)];
+mm = zeros(3,3);
+mr = [simplify(diff(dudx,u)), simplify(diff(dudx,J2)), simplify(diff(dudx,ae))
+    simplify(diff(dudy,u)), simplify(diff(dudy,J2)), simplify(diff(dudy,ae))
+    simplify(diff(dudz,u)), simplify(diff(dudz,J2)), simplify(diff(dudz,ae))];
+bl = zeros(3,3);
+bm = zeros(3,3);
+br = zeros(3,3);
+
+stm = [tl tm tr; ml mm mr; bl bm br];
+stm2 = [tl tm; ml mm]
+
+
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Getting J2 & u accelerations
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+a1 = dudx + (15*J3*ae^3*u*x*z)/(2*(x^2 + y^2 + z^2)^(7/2)) - (35*J3*ae^3*u*x*z^3)/(2*(x^2 + y^2 + z^2)^(9/2));
+a2 = dudy + (15*J3*ae^3*u*y*z)/(2*(x^2 + y^2 + z^2)^(7/2)) - (35*J3*ae^3*u*y*z^3)/(2*(x^2 + y^2 + z^2)^(9/2));
+a3 = dudz - (3*J3*ae^3*u)/(2*(x^2 + y^2 + z^2)^(5/2)) + (15*J3*ae^3*u*z^2)/(x^2 + y^2 + z^2)^(7/2) - (35*J3*ae^3*u*z^4)/(2*(x^2 + y^2 + z^2)^(9/2));
+a_3 = [a1; a2; a3]
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Givens
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Orbital Elements
+a = 7000; % km
+e = 0.001; 
+i = 30*pi/180; % rad
+RAAN = 80*pi/180; % rad
+w = 40*pi/180; % rad
+ta = 0; % rad
+
+%%% State deviation vector
+dx = [1; 0; 0; 0; .01; 0];% km, km/s
+
+%%% Other
+uE = 398600.4415; % km^3/s^2
+J2 = 0.0010826269;
+g = 9.81;
+Re = 6378.1;
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Finding Initial Position and Setting State
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Converting OE to ECI state
+[r0, v0] = OE2ECI(a, e, i, RAAN, w, ta, uE); % km, km/s
+
+%%% Setting initial state vectors (6x1)
+X0 = [r0; v0]
+
+X02 = X0 + dx;
+
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Propagating the State with Numerical Integration
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Setting time frame
+ti = 0; % sec
+tf = 24*3600; % sec
+dt = 1; % sec
+time = ti:dt:tf; % sec
+
+%%% Setting integrator accuracy
+tol = 1E-9;
+options = odeset('RelTol',tol,'AbsTol',tol);
+
+
+
+%%% Propagating the State
+[Times,States] = ode45(@StatOD_Hw1_Int,time,X0,options,uE,Re,J2);
+
+
+plot3(States(:,1),States(:,2),States(:,3))
+PlotBoi3('X, km', 'Y, km', 'Z, km', 14)
+view(-60,15)
+
+%%% Propagating the State (X + dx)
+[Times,States_pdx] = ode45(@StatOD_Hw1_Int,time,X02,options,uE,Re,J2);
+
+figure
+subplot(3,2,1)
+plot(Times./3600,States(:,1)-States_pdx(:,1))
+PlotBoi2('','X Error, km',14)
+subplot(3,2,3)
+plot(Times./3600,States(:,2)-States_pdx(:,2))
+PlotBoi2('','Y Error, km',14)
+subplot(3,2,5)
+plot(Times./3600,States(:,3)-States_pdx(:,3))
+PlotBoi2('Time, hr','Z Error, km',14)
+subplot(3,2,2)
+plot(Times./3600,States(:,4)-States_pdx(:,4))
+PlotBoi2('','X-Dot Error, km',14)
+subplot(3,2,4)
+plot(Times./3600,States(:,5)-States_pdx(:,5))
+PlotBoi2('','Y-Dot Error, km',14)
+subplot(3,2,6)
+plot(Times./3600,States(:,6)-States_pdx(:,6))
+PlotBoi2('Time, hr','Z-Dot Error, km',14)
+
+%%% Propagating the State (STM)
+[Times,States_dx] = ode45(@StatOD_Hw1_STMInt,time,dx,options,uE,Re,J2);
+
+figure
+subplot(3,2,1)
+plot(Times./3600,States_dx(:,1))
+PlotBoi2('','X Error, km',14)
+subplot(3,2,3)
+plot(Times./3600,States_dx(:,2))
+PlotBoi2('','Y Error, km',14)
+subplot(3,2,5)
+plot(Times./3600,States_dx(:,3))
+PlotBoi2('Time, hr','Z Error, km',14)
+subplot(3,2,2)
+plot(Times./3600,States_dx(:,4))
+PlotBoi2('','X-Dot Error, km',14)
+subplot(3,2,4)
+plot(Times./3600,States_dx(:,5))
+PlotBoi2('','Y-Dot Error, km',14)
+subplot(3,2,6)
+plot(Times./3600,States_dx(:,6))
+PlotBoi2('Time, hr','Z-Dot Error, km',14)
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%%% Numerical Integrators
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+function [ dY ] = StatOD_Hw1_Int(t,Y,u,ae,J2)
+dY = zeros(6,1);
+
+%%% Unpack the state vector (ECI)
+x = Y(1);
+y = Y(2);
+z = Y(3);
+dy = Y(4:6); % Satellite Velocity, km/s
+
+%%% Output the derivative of the state
+dY(1:3) = dy; % km/s
+dY(4) = (15*J2*ae^2*u*x*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*x)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*x/(norm(Y(1:3))^3); % km/s^2
+dY(5) = (15*J2*ae^2*u*y*z^2)/(2*(x^2 + y^2 + z^2)^(7/2)) - (3*J2*ae^2*u*y)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*y/(norm(Y(1:3))^3); % km/s^2
+dY(6) = (15*J2*ae^2*u*z^3)/(2*(x^2 + y^2 + z^2)^(7/2)) - (9*J2*ae^2*u*z)/(2*(x^2 + y^2 + z^2)^(5/2)) - u*z/(norm(Y(1:3))^3); % km/s^2
+end
+
+
+function [ dY ] = StatOD_Hw1_STMInt(t,Y,u,ae,J2)
+dY = zeros(6,1);
+x = Y(1);
+y = Y(2);
+z = Y(3);
+J3 = 0;
+
+% stm = [                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 1, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0
+%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 1, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0
+%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 1,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0
+%  -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0,                -(ae^2*x*(3*J2*x^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 + 15*J3*ae*x^2*z + 3*J2*y^4 - 9*J2*y^2*z^2 + 15*J3*ae*y^2*z - 12*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2)),     -(3*ae^2*u*x*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)),                                                       -(3*ae*u*x*(2*J2*x^4 + 4*J2*x^2*y^2 - 6*J2*x^2*z^2 + 15*J3*ae*x^2*z + 2*J2*y^4 - 6*J2*y^2*z^2 + 15*J3*ae*y^2*z - 8*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2))
+%                                                                                                                                                              (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)), -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0,                -(ae^2*y*(3*J2*x^4 + 6*J2*x^2*y^2 - 9*J2*x^2*z^2 + 15*J3*ae*x^2*z + 3*J2*y^4 - 9*J2*y^2*z^2 + 15*J3*ae*y^2*z - 12*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2)),     -(3*ae^2*u*y*(x^2 + y^2 - 4*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)),                                                       -(3*ae*u*y*(2*J2*x^4 + 4*J2*x^2*y^2 - 6*J2*x^2*z^2 + 15*J3*ae*x^2*z + 2*J2*y^4 - 6*J2*y^2*z^2 + 15*J3*ae*y^2*z - 8*J2*z^4 - 20*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(9/2))
+%                                                                                                                    -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                   -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0, (35*J3*ae^3*z^4 + 3*J3*ae^3*(x^2 + y^2 + z^2)^2 - 9*J2*ae^2*z*(x^2 + y^2 + z^2)^2 + 15*J2*ae^2*z^3*(x^2 + y^2 + z^2) - 30*J3*ae^3*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(9/2)), -(3*ae^2*u*z*(3*x^2 + 3*y^2 - 2*z^2))/(2*(x^2 + y^2 + z^2)^(7/2)), -(3*ae*u*(6*J2*x^4*z - 3*J3*ae*x^4 + 12*J2*x^2*y^2*z - 6*J3*ae*x^2*y^2 + 2*J2*x^2*z^3 + 24*J3*ae*x^2*z^2 + 6*J2*y^4*z - 3*J3*ae*y^4 + 2*J2*y^2*z^3 + 24*J3*ae*y^2*z^2 - 4*J2*z^5 - 8*J3*ae*z^4))/(2*(x^2 + y^2 + z^2)^(9/2))
+%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0
+%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0
+%                                                                                                                                                                                                                                                                                                                                  0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 0,                                                                                                                                                                                    0,                                                                 0,                                                                                                                                                                                                                            0];
+stm = [                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 1, 0, 0
+                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 1, 0
+                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                                                                                                                 0,                                                                                                                                                                                                                                           0, 0, 0, 1
+ -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*x^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*x^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*x^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*x^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0
+                                                                                                                                                             (15*ae^2*u*x*y*(J2*x^4 + 2*J2*x^2*y^2 - 5*J2*x^2*z^2 + 7*J3*ae*x^2*z + J2*y^4 - 5*J2*y^2*z^2 + 7*J3*ae*y^2*z - 6*J2*z^4 - 14*J3*ae*z^3))/(2*(x^2 + y^2 + z^2)^(11/2)), -(3*J2*ae^2*u*(x^2 + y^2 + z^2)^3 - 15*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 315*J3*ae^3*u*y^2*z^3 + 15*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 35*J3*ae^3*u*z^3*(x^2 + y^2 + z^2) - 15*J2*ae^2*u*y^2*(x^2 + y^2 + z^2)^2 - 105*J3*ae^3*u*y^2*z*(x^2 + y^2 + z^2) + 105*J2*ae^2*u*y^2*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                             -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0
+                                                                                                                   -(315*J3*ae^3*u*x*z^4 + 15*J3*ae^3*u*x*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*x*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*x*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*x*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)),                                                                                                                   -(315*J3*ae^3*u*y*z^4 + 15*J3*ae^3*u*y*(x^2 + y^2 + z^2)^2 - 45*J2*ae^2*u*y*z*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*y*z^3*(x^2 + y^2 + z^2) - 210*J3*ae^3*u*y*z^2*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), -(9*J2*ae^2*u*(x^2 + y^2 + z^2)^3 + 315*J3*ae^3*u*z^5 - 90*J2*ae^2*u*z^2*(x^2 + y^2 + z^2)^2 + 105*J2*ae^2*u*z^4*(x^2 + y^2 + z^2) + 75*J3*ae^3*u*z*(x^2 + y^2 + z^2)^2 - 350*J3*ae^3*u*z^3*(x^2 + y^2 + z^2))/(2*(x^2 + y^2 + z^2)^(11/2)), 0, 0, 0];
+dY = stm * Y;
+
+end
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

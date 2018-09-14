@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2013 - 2016 The MathWorks, Inc. -->
+<rsccat version="1.0" locale="en_US" product="MATLAB">
+  <message>
+      <entry key="ConnectorNotStarted">Connector is not started.</entry>
+      <entry key="IncorrectSampleRateValue">Sample rate has to be positive number less than or equal to {0} in Hz or 'high', 'medium' or 'low'.</entry>
+      <entry key="SensorIsNotAvailable">This sensor is not available on your device.</entry>
+      <entry key="NoSensorsEnabled">Cannot start data transfer - no sensors are enabled.\nPlease enable at least one sensor.</entry>
+      <entry key="RemoteControlNoMatlabMobile">MATLAB Mobile is not connected to this MATLAB session.</entry>
+      <entry key="RemoteControlNotAllowedOnDevice">Remote control of the sensors is turned off on the device.\nPlease go to the MATLAB Mobile Settings and turn it on.</entry>
+      <entry key="SaveNotSupported">mobiledev objects cannot be saved.</entry>
+      <entry key="LoadNotSupported">mobiledev objects cannot be loaded.</entry>
+      <entry key="WrongLogicalInputValue">The assigned value should be a logical.</entry>
+      <entry key="NoConcatenation">mobiledev objects cannot be concatenated.</entry>
+      <entry key="MaxLogSizeLimitReached">mobiledev reached its maximum log size.</entry>
+      <entry key="MultipleInstancesNotAllowed">mobiledev object already exists.  Clear the existing instance before creating a new one.</entry>
+      <entry key="RemoteControlLogLocallyOnDevice">Remote control of the sensors is not allowed when "Log" option is selected on the device.\nSwitch device to "Stream To MATLAB" option in MATLAB Mobile.</entry>
+  </message>
+</rsccat>

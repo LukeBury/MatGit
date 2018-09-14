@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2015 The MathWorks, Inc. -->
+<demos>
+    <name>MATLAB Support Package for Apple iOS Sensors</name>
+    <type>matlab</type>
+    <icon>HelpIcon.DEMOS</icon>
+    <description isCdata="no">
+        <p>Acquire data from built-in sensors on Apple iOS devices.</p>
+    </description>
+    <website>
+        <a href="http://www.mathworks.com/hardware-support/iphone-sensor.html">Product page at mathworks.com&#032;</a>
+        <a href="http://www.mathworks.com/hardware-support/iphone-sensor.html">
+            <img src="html/demo_arrow.png" border="none" alt="arrow" align="middle"></img>
+        </a>
+    </website>
+    <demosection>
+        <label>Tutorials</label>
+        <demoitem>
+            <label>Acquire and Plot Angular Velocity and Orientation Data from Your Apple iOS Device</label>
+            <type>M-file</type>
+            <source>iossensor_plottingmultiplesensors</source>
+        </demoitem>
+        <demoitem>
+            <label>Counting Steps by Capturing Acceleration Data from Your Apple iOS Device</label>
+            <type>M-file</type>
+            <source>iossensor_countingsteps</source>
+        </demoitem>
+        <demoitem>
+            <label>Acquire GPS Data from Your Apple iOS Device and Plot Your Location and Speed on a Map</label>
+            <type>M-file</type>
+            <source>iossensor_mappinglocationandspeed</source>
+        </demoitem>
+    </demosection>
+</demos>
+
+
+

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productData>
+  <altDependencies>
+    <product>
+      <isControllingProduct>true</isControllingProduct>
+      <productBaseCode>ML</productBaseCode>
+      <productName>MATLAB</productName>
+      <productNumber>1</productNumber>
+      <productVersion>9.4</productVersion>
+      <releaseDescription>R2018a</releaseDescription>
+      <releaseFamily>R2018a</releaseFamily>
+    </product>
+  </altDependencies>
+  <dependsOn>
+    <component>
+      <name>hardwaresupportpkgs/licenses/asla_license_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1493829372</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/matlab/iossensor_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530646269</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/matlab/iossensor_examples_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530646272</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/iossensor_doc_en_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530652111</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/matlab/sharedmobilesensor_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530646541</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/matlab/mobilesensor_resources_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530640686</version>
+    </component>
+    <component>
+      <name>hardwaresupportpkgs/examples/iossensor_common</name>
+      <instrset>0</instrset>
+      <locale />
+      <platformList>
+        <platform>glnxa64</platform>
+        <platform>maci64</platform>
+        <platform>win64</platform>
+      </platformList>
+      <version>1530646275</version>
+    </component>
+  </dependsOn>
+  <installerUsage>
+    <usage>professional</usage>
+  </installerUsage>
+  <isControllingProduct>false</isControllingProduct>
+  <licenseAgreementType>ASLA</licenseAgreementType>
+  <platformList>
+    <platform>glnxa64</platform>
+    <platform>maci64</platform>
+    <platform>win64</platform>
+  </platformList>
+  <productBaseCode>ML_APPLE_IOS_SENSORS</productBaseCode>
+  <productName>MATLAB Support Package for Apple iOS Sensors</productName>
+  <productNumber>2131</productNumber>
+  <productVersion>18.1.2</productVersion>
+  <releaseDescription>R2018a</releaseDescription>
+  <releaseFamily>R2018a</releaseFamily>
+  <requiredProducts />
+</productData>
+

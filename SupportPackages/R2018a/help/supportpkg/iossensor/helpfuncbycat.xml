@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toc version="2.0">
+<tocitem target="functionlistbycat.html">Functions
+<tocitem target="apple-ios-sensors-data-acquisition.html">Apple iOS Sensors Data Acquisition
+<tocitem target="ug/mobiledev.html">
+<name>mobiledev</name>
+<purpose>Create mobiledev object to acquire
+data from iOS sensors</purpose>
+</tocitem>
+<tocitem target="ug/disp.html">
+<name>disp</name>
+<purpose>Display properties of mobiledev object</purpose>
+</tocitem>
+<tocitem target="ug/accellog.html">
+<name>accellog</name>
+<purpose>Return logged acceleration data from iOS sensor</purpose>
+</tocitem>
+<tocitem target="ug/angvellog.html">
+<name>angvellog</name>
+<purpose>Return logged angular velocity data from iOS sensor</purpose>
+</tocitem>
+<tocitem target="ug/magfieldlog.html">
+<name>magfieldlog</name>
+<purpose>Return logged magnetic field data from iOS sensor</purpose>
+</tocitem>
+<tocitem target="ug/orientlog.html">
+<name>orientlog</name>
+<purpose>Return logged orientation data from iOS sensor</purpose>
+</tocitem>
+<tocitem target="ug/poslog.html">
+<name>poslog</name>
+<purpose>Return logged position data from iOS sensor</purpose>
+</tocitem>
+<tocitem target="ug/discardlogs.html">
+<name>discardlogs</name>
+<purpose>Discard all logged data from iOS sensors</purpose>
+</tocitem>
+</tocitem>
+</tocitem>
+</toc>

@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage">
+<head>
+<meta xmlns="http://www.w3.org/1999/xhtml" charset="utf-8"></meta>
+<meta xmlns="http://www.w3.org/1999/xhtml" name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+<meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<title>Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map</title>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+
+
+  <meta xmlns="http://www.w3.org/1999/xhtml" http-equiv="Content-Script-Type" content="text/javascript"></meta>
+<meta xmlns="http://www.w3.org/1999/xhtml" name="toctype" itemprop="pagetype" content="fe"></meta>
+<meta xmlns="http://www.w3.org/1999/xhtml" name="infotype" itemprop="infotype" content="ex"></meta>
+
+<meta xmlns="http://www.w3.org/1999/xhtml" name="description" itemprop="description" content="This example shows how to collect position data from an Apple iOS device and display it on a map."></meta>
+<meta xmlns="http://www.w3.org/1999/xhtml" content="../../../examples/iossensor_product/win64/iossensor_mappinglocationandspeed_04.png" itemprop="thumbnailUrl"></meta>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../includes/product/scripts/jquery/jquery-latest.js"></script>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6.css?201807031708" rel="stylesheet" type="text/css"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_lg.css?201807031708" rel="stylesheet" media="screen and (min-width: 1200px)"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_md.css?201807031708" rel="stylesheet" media="screen and (min-width: 992px) and (max-width: 1199px)"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_sm+xs.css?201807031708" rel="stylesheet" media="screen and (max-width: 991px)"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_sm.css?201807031708" rel="stylesheet" media="screen and (min-width: 768px) and (max-width: 991px)"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_xs.css?201807031708" rel="stylesheet" media="screen and (max-width: 767px)"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/site6_offcanvas.css?201807031708" rel="stylesheet" type="text/css"></link>
+
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/l10n.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/docscripts.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/f1help.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/docscripts.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/mw.imageanimation.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/jquery.highlight.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/underscore-min.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/examples.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/use_platform_screenshots.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/suggest.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/overload.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/shared/scripts/helpservices.js"></script>
+
+
+
+
+
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/jquery/jquery.mobile.custom.min.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/bootstrap.min.js" type="text/javascript"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="../includes/product/scripts/global.js"></script>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/doc_center.css" rel="stylesheet" type="text/css"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/doc_center_installed.css" rel="stylesheet" type="text/css"></link>
+<link xmlns="http://www.w3.org/1999/xhtml" href="../includes/product/css/doc_center_print.css" rel="stylesheet" type="text/css" media="print"></link>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" src="../includes/shared/equationrenderer/release/MathRenderer.js"></script>
+</head>
+<body id="responsive_offcanvas">
+<div xmlns="http://www.w3.org/1999/xhtml" id="doc_header_spacer" class="header"></div>
+<div class="sticky_header_container includes_subnav">
+<div class="section_header level_3">
+<div xmlns="http://www.w3.org/1999/xhtml" class="container-fluid">
+<div class="row" id="mobile_search_row">
+<div class="col-xs-12 col-sm-6 col-sm-push-6 col-md-5 col-md-push-7" id="mobile_search">
+<div class="search_nested_content_container">
+<form id="docsearch_form" name="docsearch_form" method="get" data-release="R2018a" data-language="en" action="../../../templates/searchresults.html">
+<div class="input-group tokenized_search_field">
+<label class="sr-only">Search Help</label>
+<input type="text" class="form-control conjoined_search" autocomplete="off" name="qdoc" placeholder="Search Help" id="docsearch"></input>
+<div class="input-group-btn">
+<button type="submit" name="submitsearch" id="submitsearch" class="btn icon-search btn_search_adjacent btn_search icon_16" tabindex="-1"></button>
+</div>
+</div>
+</form>
+</div>
+<button class="btn icon-remove btn_search pull-right icon_32 visible-xs" data-toggle="collapse" href="#mobile_search" aria-expanded="false" aria-controls="mobile_search"></button></div>
+<div class="col-sm-6 col-sm-pull-6 col-md-7 col-md-pull-5" id="section_header_title">
+<div class="section_header_content">
+<div class="section_header_title">
+<h1><a href="../../../examples.html">Examples</a></h1>
+</div>
+</div>
+</div>
+<div class="visible-xs" id="search_actuator">
+<button class="btn icon-search btn_search pull-right icon_16" data-toggle="collapse" href="#mobile_search" aria-expanded="false" aria-controls="mobile_search"></button>
+</div>
+</div><!--END.CLASS row-->
+</div><!--END.CLASS container-fluid-->
+</div><!--END.CLASS section_header level_3-->
+<div xmlns="http://www.w3.org/1999/xhtml" class="horizontal_nav">
+<div class="horizontal_nav_container">
+<div class="offcanvas_actuator" data-toggle="offcanvas" data-target="#sidebar" id="nav_toggle">
+<button type="button" class="btn"><span class="sr-only">Toggle navigation</span><span class="icon-menu icon_24"></span></button>
+<span class="offcanvas_actuator_label"></span><span class="offcanvas_actuator_close"></span>
+</div>
+<div class="offcanvas_horizontal_nav">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12 hidden-xs hidden-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><!--END.CLASS sticky_header_container-->
+<div class="row-offcanvas row-offcanvas-left">
+<div xmlns="http://www.w3.org/1999/xhtml" class="sidebar-offcanvas" id="sidebar" role="navigation">
+<nav class="offcanvas_nav" role="navigation">
+<ul class="nav_breadcrumb"><li itemscope="" itemtype="http://www.data-vocabulary.org/Breadcrumb" itemprop="breadcrumb"><a href="../../../examples.html" itemprop="url"><span itemprop="title">Examples Home</span></a></li></ul>
+<ul class="nav_disambiguation"><li class="product"><a href="../index.html">MATLAB Support Package for Apple iOS Sensors</a>
+<div class="dropdown">
+<span class="icon-arrow-down icon_16" id="dropdownMenu1" data-toggle="dropdown"></span>
+<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+<li role="presentation"><a role="menuitem" tabindex="-1" href="../index.html?s_cid=doc_flyout">Documentation</a></li>
+<li role="presentation"><a role="menuitem" tabindex="-1" href="../functionlist.html?s_cid=doc_flyout">Functions</a></li>
+<li role="presentation"><a role="menuitem" tabindex="-1" href="../release-notes.html?s_cid=doc_flyout">Release Notes</a></li>
+</ul>
+</div>
+</li>
+<li itemscope="" itemtype="http://www.data-vocabulary.org/Breadcrumb" itemprop="breadcrumb"><a href="../examples.html#d0e30" itemprop="url"><span itemprop="title">Tutorials</span></a></li></ul><ul class="nav_scrollspy nav">
+<li class="nav_scrollspy_function"><a href="#responsive_offcanvas">Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map</a></li>
+<li class="nav_scrollspy_title" id="SSPY810-section">On this page</li>
+<!--ADD_REFENTRY_TITLE_HERE 11--><li><a href="#d119e467" class="intrnllnk">Setting up the connection to your mobile device</a></li><li><a href="#d119e492" class="intrnllnk">Create a link to your mobile device</a></li><li><a href="#d119e513" class="intrnllnk">Prepare for data acquisition from the position sensor</a></li><li><a href="#d119e525" class="intrnllnk">Start acquiring data</a></li><li><a href="#d119e539" class="intrnllnk">Gather position data</a></li><li><a href="#d119e550" class="intrnllnk">Stop logging data</a></li><li><a href="#d119e561" class="intrnllnk">Retrieve logged position data</a></li><li><a href="#d119e579" class="intrnllnk">Bin speeds into color values</a></li><li><a href="#d119e590" class="intrnllnk">Split latitude and longitude data by speed</a></li><li><a href="#d119e603" class="intrnllnk">Create a web map and route overlay</a></li><li><a href="#d119e644" class="intrnllnk">Clean up</a></li></ul>
+</nav>
+<script src="../includes/product/scripts/offcanvas.js"></script></div><!--END.CLASS sidebar-offcanvas-->
+<div class="content_container" id="content_container" itemprop="content">
+<div class="container-fluid">
+<div class="row">
+<div class="col-xs-12">
+
+<section xmlns="http://www.w3.org/1999/xhtml" id="doc_center_content" lang="en"><div id="pgtype-example">
+<section itemprop="content"><div class="example_icon"></div><h2 class="title r2018a example" itemprop="title content" id="example-iossensor_mappinglocationandspeed">Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map</h2><div class="pull-right examples_short_list" style="width:250px; margin-left: 10px; margin-bottom: 10px;"><div data-pane="metadata" style="margin-bottom: 0px;" class="panel metadata_container"><div class="panel-body metadata_content" style="padding-top:0px; padding-bottom:0px;"><div class="row"><div class="col-xs-12"><a class="btn btn_secondary btn-block" href="matlab:edit iossensor_mappinglocationandspeed">Open Script</a></div></div></div></div></div><div itemscope="" itemtype="http://www.mathworks.com/help/schema/MathWorksDocPage/Example" itemprop="example" class="em_example"><meta itemprop="exampleid" content="iossensor_product-iossensor_mappinglocationandspeed"></meta><meta itemprop="exampletitle" content="Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map"></meta></div><span id="iossensor_mappinglocationandspeed" class="anchor_target"></span>
+
+<p class="shortdesc">This example shows how to collect position data from an Apple iOS device and display it on a map. Latitude and longitude coordinates are used to mark the device's route. Speed information is used to add color to the route. The final result is a visual representation of location and speed for the device's journey.</p>
+
+<p>This example requires Mapping Toolbox&#8482;.</p>
+
+<div class="procedure"><h3 class="title" id="d119e467">Setting up the connection to your mobile device<span id="iossensor_mappinglocationandspeed-1" class="anchor_target"></span></h3><p>In order to receive data from an Apple iOS device in MATLAB&#174;, you will need the MATLAB Mobile&#8482; app (version 2.0). You can download this app from App Store℠.</p><p>Use MATLAB Connector to allow connection between your desktop MATLAB session and MATLAB Mobile on your Apple iOS device. Your device must be able to connect to your desktop, either by being on the same network, using a VPN, or through a similar configuration.</p><p>In this example, a VPN was used on the device to maintain a connection to the network while driving.</p><p>Execute the <code class="literal">connector</code> command with a password of your choice.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>connector <span style="color:#A020F0">on</span> <span style="color:#A020F0">yourpassword</span>;
+</pre></div></div></div><div class="code_responsive"><div class="programlisting"><div class="codeoutput"><pre>DNS name: COMPUTERNAME.YOURDOMAIN.com
+IP address: 192.168.1.1
+Use this link to test the MATLAB Connector:
+http://COMPUTERNAME.YOURDOMAIN.com:31415
+
+If the test is successful, but MATLAB Mobile cannot connect, 
+your computer might have multiple IP addresses.  To determine
+the correct one, see Determining the DNS Name or IP Address of a Computer.
+</pre></div></div></div><p>Your computer's DNS name and IP address are displayed on the MATLAB Command Window, along with a test link. Click on the test link to ensure that your desktop is ready to connect. The last digits after the colon on the test link correspond to the port that has been opened.</p><p>Now you can connect MATLAB Mobile to your desktop.</p><p>If you are launching MATLAB Mobile for the first time, select Connect to Your Computer. If you previously connected to the cloud or a different desktop, go to the Settings screen and select Add a Computer from the Connect to Your Computers section. On the Add a Computer screen, enter the DNS name or IP address that was displayed in the previous step. Then, enter the Connector password that you previously specified, as well as the port that was opened. Finally, press the Connect button. MATLAB Mobile should now be connected to your desktop MATLAB session.</p><h3 class="title" id="d119e492">Create a link to your mobile device<span id="iossensor_mappinglocationandspeed-5" class="anchor_target"></span></h3><p>Use the <code class="literal">mobiledev</code> command to create an object that represents your mobile device.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>m = mobiledev
+</pre></div></div></div><div class="code_responsive"><div class="programlisting"><div class="codeoutput"><pre>
+m = 
+
+mobiledev with properties:
+
+                   Connected: 1
+                     Logging: 0
+            InitialTimestamp: ''
+
+   AccelerationSensorEnabled: 0
+AngularVelocitySensorEnabled: 0
+       MagneticSensorEnabled: 0
+    OrientationSensorEnabled: 0
+       PositionSensorEnabled: 0
+</pre></div></div></div><p>The displayed output should show <code class="literal">Connected: 1</code>, indicating that the <code class="literal">mobiledev</code> object has successfully established a connection to the app.</p><h3 class="title" id="d119e513">Prepare for data acquisition from the position sensor<span id="iossensor_mappinglocationandspeed-7" class="anchor_target"></span></h3><p>In order to collect GPS data, first ensure that your device's GPS is turned on. If enabled on an Apple iOS device's location settings, mobile networks and Wi-Fi can also be used to determine position.</p><p>Enable the position sensor on your mobile device.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>m.PositionSensorEnabled = 1;
+</pre></div></div></div><p>It may take some time for data to appear on the Sensors screen of MATLAB Mobile, as the device will need to search for a GPS signal. GPS signals are generally unavailable indoors.</p><h3 class="title" id="d119e525">Start acquiring data<span id="iossensor_mappinglocationandspeed-9" class="anchor_target"></span></h3><p>After enabling the sensors, the Sensors screen of MATLAB Mobile will show the current data measured by the sensors. The <code class="literal">Logging</code> property allows you to begin sending sensor data to <code class="literal">mobiledev</code>.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>m.Logging = 1;
+</pre></div></div></div><h3 class="title" id="d119e539">Gather position data<span id="iossensor_mappinglocationandspeed-10" class="anchor_target"></span></h3><p>All position sensor data recorded on the device is now being logged by <code class="literal">mobiledev</code>.</p><p>In this example, the device was taken on a short drive around MathWorks&#174;.</p><h3 class="title" id="d119e550">Stop logging data<span id="iossensor_mappinglocationandspeed-11" class="anchor_target"></span></h3><p>Use <code class="literal">mobiledev</code>'s logging property again to stop logging data.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>m.Logging = 0;
+</pre></div></div></div><h3 class="title" id="d119e561">Retrieve logged position data<span id="iossensor_mappinglocationandspeed-12" class="anchor_target"></span></h3><p>To create the map, latitude, longitude, and speed data will be needed. The <code class="literal">poslog</code> function can be used to retrieve this information from <code class="literal">mobiledev</code>.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>[lat, lon, t, spd] = poslog(m);
+</pre></div></div></div><p>For this example, data has already been logged and saved.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>load <span style="color:#A020F0">drivingAroundMathWorks</span> <span style="color:#A020F0">lat</span> <span style="color:#A020F0">lon</span> <span style="color:#A020F0">spd</span>;
+</pre></div></div></div><h3 class="title" id="d119e579">Bin speeds into color values<span id="iossensor_mappinglocationandspeed-14" class="anchor_target"></span></h3><p>The speed values are binned in order to use a discrete number of colors to represent the observed speeds.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>nBins = 10;
+binSpacing = (max(spd) - min(spd))/nBins;
+binRanges = min(spd):binSpacing:max(spd)-binSpacing;
+
+% Add an inf to binRanges to enclose the values above the last bin.
+binRanges(end+1) = inf;
+
+% <code class="literal">histc</code> determines which bin each speed value falls into.
+[~, spdBins] = histc(spd, binRanges);
+</pre></div></div></div><h3 class="title" id="d119e590">Split latitude and longitude data by speed<span id="iossensor_mappinglocationandspeed-15" class="anchor_target"></span></h3><p>A discontinuous line segment is created for every speed bin. Each of these segments will be assigned a single color. This creates far fewer total line segments than treating every adjacent pair of latitude and longitude values as their own line segments.</p><p>The individual segments are stored as geographic features using <code class="literal">geoshape</code> from Mapping Toolbox.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>lat = lat';
+lon = lon';
+spdBins = spdBins';
+
+<span style="color:#228B22">% Create a geographical shape vector, which stores the line segments as</span>
+<span style="color:#228B22">% features.</span>
+s = geoshape();
+
+<span style="color:#0000FF">for</span> k = 1:nBins
+
+    <span style="color:#228B22">% Keep only the lat/lon values which match the current bin. Leave the</span>
+    <span style="color:#228B22">% rest as NaN, which are interpreted as breaks in the line segments.</span>
+    latValid = nan(1, length(lat));
+    latValid(spdBins==k) = lat(spdBins==k);
+
+    lonValid = nan(1, length(lon));
+    lonValid(spdBins==k) = lon(spdBins==k);
+
+    <span style="color:#228B22">% To make the path continuous despite being segmented into different</span>
+    <span style="color:#228B22">% colors, the lat/lon values that occur after transitioning from the</span>
+    <span style="color:#228B22">% current speed bin to another speed bin will need to be kept.</span>
+    transitions = [diff(spdBins) 0];
+    insertionInd = find(spdBins==k &amp; transitions~=0) + 1;
+
+    <span style="color:#228B22">% Preallocate space for and insert the extra lat/lon values.</span>
+    latSeg = zeros(1, length(latValid) + length(insertionInd));
+    latSeg(insertionInd + (0:length(insertionInd)-1)) = lat(insertionInd);
+    latSeg(~latSeg) = latValid;
+
+    lonSeg = zeros(1, length(lonValid) + length(insertionInd));
+    lonSeg(insertionInd + (0:length(insertionInd)-1)) = lon(insertionInd);
+    lonSeg(~lonSeg) = lonValid;
+
+    <span style="color:#228B22">% Add the lat/lon segments to the geographic shape vector.</span>
+    s(k) = geoshape(latSeg, lonSeg);
+
+<span style="color:#0000FF">end</span>
+</pre></div></div></div><h3 class="title" id="d119e603">Create a web map and route overlay<span id="iossensor_mappinglocationandspeed-16" class="anchor_target"></span></h3><p>The pieces can now be combined into a webmap display. The latitude and longitude data have been processed to make up individual line segments to overlay on the map. Each line segment has a color corresponding to the speed recorded at the respective position.</p><p>Mapping Toolbox provides a number of functions for working with web maps.</p><p>Use <code class="literal">webmap</code> to open a web map in a browser.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>wm = webmap(<span style="color:#A020F0">'Open Street Map'</span>);
+</pre></div></div></div><p>For reference, MathWorks is marked on the map.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>mwLat = 42.299827;
+mwLon = -71.350273;
+name = <span style="color:#A020F0">'MathWorks'</span>;
+iconDir = fullfile(matlabroot,<span style="color:#A020F0">'toolbox'</span>,<span style="color:#A020F0">'matlab'</span>,<span style="color:#A020F0">'icons'</span>);
+iconFilename = fullfile(iconDir, <span style="color:#A020F0">'matlabicon.gif'</span>);
+wmmarker(mwLat, mwLon, <span style="color:#A020F0">'FeatureName'</span>, name, <span style="color:#A020F0">'Icon'</span>, iconFilename);
+</pre></div></div></div><p>A list of colors corresponding to the speed bins is generated using the <code class="literal">autumn</code> colormap. This creates an [nBins x 3] matrix with RGB values for each bin.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>colors = autumn(nBins);
+</pre></div></div></div><p>A line is drawn on the webmap using the geographic shape vector. Each element of the shape vector corresponds to a discontinuous line segment for a binned speed value. These elements match the elements of the color list that was just created.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>wmline(s, <span style="color:#A020F0">'Color'</span>, colors, <span style="color:#A020F0">'Width'</span>, 5);
+</pre></div></div></div><p>Zoom the map in on the route.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>wmzoom(16);
+</pre></div></div></div><div class="informalfigure"><div id="d119e639" class="mediaobject"><p><img src="../../../examples/iossensor_product/win64/iossensor_mappinglocationandspeed_04.png" alt=""></img></p></div></div><p>The final display provides a visual representation of location and speed throughout the route. The device was clearly traveling more slowly while in the parking lot and during turns than it was on straightaways.</p><h3 class="title" id="d119e644">Clean up<span id="iossensor_mappinglocationandspeed-22" class="anchor_target"></span></h3><p>Turn off the position sensor and clear <code class="literal">mobiledev</code>.</p><div class="code_responsive"><div class="programlisting"><div class="codeinput"><pre>m.PositionSensorEnabled = 0;
+
+clear <span style="color:#A020F0">m</span>;
+</pre></div></div></div></div></section>
+    </div><div class="clearfix"></div>
+<div class="feedbackblock">Was this topic helpful?
+<input type="button" value="Yes" onClick="openFeedbackWindow('https://www.mathworks.com/programs/bounce_hub_help.html?s_cid=Help_Topic_Survey&amp;surveyParams='+document.location.href+'-YES-R2018a');"></input>
+<input type="button" value="No" onClick="openFeedbackWindow('https://www.mathworks.com/programs/bounce_hub_help.html?s_cid=Help_Topic_Survey&amp;surveyParams='+document.location.href+'-NO-R2018a');"></input>
+</div>
+</section>
+
+<!--Last updated: Tue Jul  3 17:08:13 EDT 2018-->
+</div>
+</div>
+</div><!--close_0960-->
+</div><!--close_0970-->
+<div xmlns="http://www.w3.org/1999/xhtml" class="body_trail_container">
+<div class="container-fluid">
+<div class="row">
+<div class="col-xs-12">
+<div class="row"><div class="col-xs-12 col-sm-3"><h5><a href="../index.html?s_cid=doc_ftr">MATLAB Support Package for Apple iOS Sensors Documentation</a></h5>
+<ul class="list-unstyled hidden-xs"><li><a href="../index.html?s_cid=doc_ftr">Documentation</a></li>
+<li><a href="../functionlist.html?s_cid=doc_ftr">Functions</a></li>
+<li><a href="../release-notes.html?s_cid=doc_ftr">Release Notes</a></li>
+</ul>
+</div>
+<div class="col-xs-12 col-sm-3"><h5><a href="https://www.mathworks.com/support/?s_cid=doc_ftr">Support</a></h5>
+<ul class="list-unstyled hidden-xs"><li><a href="https://www.mathworks.com/matlabcentral/answers/index?s_cid=doc_ftr">MATLAB Answers</a></li><li><a href="https://www.mathworks.com/support/install-matlab.html?s_cid=doc_ftr">Installation Help</a></li><li><a href="https://www.mathworks.com/support/bugreports/?s_cid=doc_ftr">Bug Reports</a></li><li><a href="https://www.mathworks.com/products/availability/?s_cid=doc_ftr">Product Requirements</a></li><li><a href="https://www.mathworks.com/downloads/?s_cid=doc_ftr">Software Downloads</a></li></ul>
+</div>
+</div>
+</div>
+</div>
+</div><!--END.CLASS container-fluid-->
+</div><!--END.CLASS body_trail_container-->
+<footer xmlns="http://www.w3.org/1999/xhtml" id="footer" class="bs-footer">
+<div class="container-fluid">
+<div class="footer">
+<div class="row">
+<div class="col-xs-12">
+<p class="copyright">© 1994-2018 The MathWorks, Inc.</p>
+<ul class="footernav"><li class="footernav_help"><a href="MATLAB:web(matlab.internal.licenseAgreement)">Terms of Use</a></li><li class="footernav_patents"><a href="MATLAB:web([matlabroot '/patents.txt'])">Patents</a></li><li class="footernav_trademarks"><a href="MATLAB:web([matlabroot '/trademarks.txt'])">Trademarks</a></li><li class="footernav_piracy"><a href="MATLAB:web([docroot '/acknowledgments.html'])">Acknowledgments</a></li></ul></div>
+</div>
+</div>
+</div>
+</footer>
+</div><!--close row-offcanvas-->
+</body>
+</html>

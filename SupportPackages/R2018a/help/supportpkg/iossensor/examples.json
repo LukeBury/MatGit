@@ -1,0 +1,50 @@
+
+        [
+        
+    {
+    "title": "Acquire and Plot Angular Velocity and Orientation Data from Your Apple® iOS Device",
+    "description": "This example shows how to plot data from multiple sensors on an Apple iOS device together in one timeline. Measurements of angular velocity and orientation will be collected from the device and plotted over absolute time. This will allow correlations between data from two sensors to be visualized based on the actual time of measurement.",
+    "thumbnail_url": "../../examples/iossensor_product/win64/iossensor_plottingmultiplesensors_02.png",
+    "url": "examples/acquire-and-plot-angular-velocity-and-orientation-data-from-your-apple-ios-device.html",
+    "type": "Script",
+    "open_command": "matlab:edit iossensor_plottingmultiplesensors",
+    "examplecat_id": "d0e30", 
+    "examplecat_title": "Tutorials",
+    "examplecat_order": "1",
+    "example_id": "iossensor_product.iossensor_plottingmultiplesensors",
+    "example_name": "iossensor_plottingmultiplesensors",
+    "example_order": "1"                 
+    }
+    ,
+    {
+    "title": "Counting Steps by Capturing Acceleration Data from Your Apple® iOS Device",
+    "description": "This example shows how to collect acceleration data from an Apple iOS device and use it to count the number of steps taken.",
+    "thumbnail_url": "../../examples/iossensor_product/win64/iossensor_countingsteps_04.png",
+    "url": "examples/counting-steps-by-capturing-acceleration-data-from-your-apple-ios-device.html",
+    "type": "Script",
+    "open_command": "matlab:edit iossensor_countingsteps",
+    "examplecat_id": "d0e30", 
+    "examplecat_title": "Tutorials",
+    "examplecat_order": "1",
+    "example_id": "iossensor_product.iossensor_countingsteps",
+    "example_name": "iossensor_countingsteps",
+    "example_order": "2"                 
+    }
+    ,
+    {
+    "title": "Acquire GPS Data from Your Apple® iOS Device and Plot Your Location and Speed on a Map",
+    "description": "This example shows how to collect position data from an Apple iOS device and display it on a map. Latitude and longitude coordinates are used to mark the device's route. Speed information is used to add color to the route. The final result is a visual representation of location and speed for the device's journey.",
+    "thumbnail_url": "../../examples/iossensor_product/win64/iossensor_mappinglocationandspeed_04.png",
+    "url": "examples/acquire-gps-data-from-your-apple-ios-device-and-plot-your-location-and-speed-on-a-map.html",
+    "type": "Script",
+    "open_command": "matlab:edit iossensor_mappinglocationandspeed",
+    "examplecat_id": "d0e30", 
+    "examplecat_title": "Tutorials",
+    "examplecat_order": "1",
+    "example_id": "iossensor_product.iossensor_mappinglocationandspeed",
+    "example_name": "iossensor_mappinglocationandspeed",
+    "example_order": "3"                 
+    }
+    
+        ]
+      

@@ -1,0 +1,415 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-09-11"><meta name="DC.source" content="iossensor_mappinglocationandspeed.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><style>
+.open_example { 
+    padding:0px 0px 1px 0px;
+    margin:20px;
+    font-size:0.9em;
+    border:1px solid #aeaeae;
+    display:block;
+    float:right;
+    border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #FFFFFF 0%, #E6E6E6 100%); /* FF3.6+ */	
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#E6E6E6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #FFFFFF 0%,#E6E6E6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* IE10+ */
+    background: linear-gradient(top,  #ffffff 0%,#e6e6e6 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#E6E6E6',GradientType=0 ); /* IE6-9 */
+}
+
+.open_example:hover {
+    background: #f3f3f3; /* Old browsers */
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #d7d7d7 100%); /* FF3.6+ */    
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f3f3f3), color-stop(100%,#d7d7d7)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f3f3f3 0%,#d7d7d7 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* IE10+ */
+    background: linear-gradient(top,  #f3f3f3 0%,#d7d7d7 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#d7d7d7',GradientType=0 ); /* IE6-9 */
+} 
+
+.open_example a { 
+    padding:6px 10px; 
+    line-height:130%;
+    text-decoration:none;
+    float:left;
+}
+      </style><div class="open_example"><a href="matlab:edit iossensor_mappinglocationandspeed">Open this Example</a></div><div class="content"><h1>Acquire GPS Data from Your Apple&#174; iOS Device and Plot Your Location and Speed on a Map</h1><!--introduction--><p>This example shows how to collect position data from an Apple iOS device and display it on a map. Latitude and longitude coordinates are used to mark the device's route. Speed information is used to add color to the route. The final result is a visual representation of location and speed for the device's journey.</p><p>This example requires Mapping Toolbox&#8482;.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up the connection to your mobile device</a></li><li><a href="#5">Create a link to your mobile device</a></li><li><a href="#7">Prepare for data acquisition from the position sensor</a></li><li><a href="#9">Start acquiring data</a></li><li><a href="#10">Gather position data</a></li><li><a href="#11">Stop logging data</a></li><li><a href="#12">Retrieve logged position data</a></li><li><a href="#14">Bin speeds into color values</a></li><li><a href="#15">Split latitude and longitude data by speed</a></li><li><a href="#16">Create a web map and route overlay</a></li><li><a href="#22">Clean up</a></li></ul></div><h2>Setting up the connection to your mobile device<a name="1"></a></h2><p>In order to receive data from an Apple iOS device in MATLAB&#174;, you will need the MATLAB Mobile&#8482; app (version 2.0). You can download this app from App Store&#8480;.</p><p>Use MATLAB Connector to allow connection between your desktop MATLAB session and MATLAB Mobile on your Apple iOS device. Your device must be able to connect to your desktop, either by being on the same network, using a VPN, or through a similar configuration.</p><p>In this example, a VPN was used on the device to maintain a connection to the network while driving.</p><p>Execute the <tt>connector</tt> command with a password of your choice.</p><pre class="codeinput">connector <span class="string">on</span> <span class="string">yourpassword</span>;
+</pre><pre class="codeoutput">DNS name: COMPUTERNAME.YOURDOMAIN.com
+IP address: 192.168.1.1
+Use this link to test the MATLAB Connector:
+http://COMPUTERNAME.YOURDOMAIN.com:31415
+
+If the test is successful, but MATLAB Mobile cannot connect, 
+your computer might have multiple IP addresses.  To determine
+the correct one, see Determining the DNS Name or IP Address of a Computer.
+</pre><p>Your computer's DNS name and IP address are displayed on the MATLAB Command Window, along with a test link. Click on the test link to ensure that your desktop is ready to connect. The last digits after the colon on the test link correspond to the port that has been opened.</p><p>Now you can connect MATLAB Mobile to your desktop.</p><p>If you are launching MATLAB Mobile for the first time, select Connect to Your Computer. If you previously connected to the cloud or a different desktop, go to the Settings screen and select Add a Computer from the Connect to Your Computers section. On the Add a Computer screen, enter the DNS name or IP address that was displayed in the previous step. Then, enter the Connector password that you previously specified, as well as the port that was opened. Finally, press the Connect button. MATLAB Mobile should now be connected to your desktop MATLAB session.</p><h2>Create a link to your mobile device<a name="5"></a></h2><p>Use the <tt>mobiledev</tt> command to create an object that represents your mobile device.</p><pre class="codeinput">m = mobiledev
+</pre><pre class="codeoutput">
+m = 
+
+mobiledev with properties:
+
+                   Connected: 1
+                     Logging: 0
+            InitialTimestamp: ''
+
+   AccelerationSensorEnabled: 0
+AngularVelocitySensorEnabled: 0
+       MagneticSensorEnabled: 0
+    OrientationSensorEnabled: 0
+       PositionSensorEnabled: 0
+</pre><p>The displayed output should show <tt>Connected: 1</tt>, indicating that the <tt>mobiledev</tt> object has successfully established a connection to the app.</p><h2>Prepare for data acquisition from the position sensor<a name="7"></a></h2><p>In order to collect GPS data, first ensure that your device's GPS is turned on. If enabled on an Apple iOS device's location settings, mobile networks and Wi-Fi can also be used to determine position.</p><p>Enable the position sensor on your mobile device.</p><pre class="codeinput">m.PositionSensorEnabled = 1;
+</pre><p>It may take some time for data to appear on the Sensors screen of MATLAB Mobile, as the device will need to search for a GPS signal. GPS signals are generally unavailable indoors.</p><h2>Start acquiring data<a name="9"></a></h2><p>After enabling the sensors, the Sensors screen of MATLAB Mobile will show the current data measured by the sensors. The <tt>Logging</tt> property allows you to begin sending sensor data to <tt>mobiledev</tt>.</p><pre class="codeinput">m.Logging = 1;
+</pre><h2>Gather position data<a name="10"></a></h2><p>All position sensor data recorded on the device is now being logged by <tt>mobiledev</tt>.</p><p>In this example, the device was taken on a short drive around MathWorks&#174;.</p><h2>Stop logging data<a name="11"></a></h2><p>Use <tt>mobiledev</tt>'s logging property again to stop logging data.</p><pre class="codeinput">m.Logging = 0;
+</pre><h2>Retrieve logged position data<a name="12"></a></h2><p>To create the map, latitude, longitude, and speed data will be needed. The <tt>poslog</tt> function can be used to retrieve this information from <tt>mobiledev</tt>.</p><pre class="codeinput">[lat, lon, t, spd] = poslog(m);
+</pre><p>For this example, data has already been logged and saved.</p><pre class="codeinput">load <span class="string">drivingAroundMathWorks</span> <span class="string">lat</span> <span class="string">lon</span> <span class="string">spd</span>;
+</pre><h2>Bin speeds into color values<a name="14"></a></h2><p>The speed values are binned in order to use a discrete number of colors to represent the observed speeds.</p><pre class="codeinput">nBins = 10;
+binSpacing = (max(spd) - min(spd))/nBins;
+binRanges = min(spd):binSpacing:max(spd)-binSpacing;
+
+<span class="comment">% Add an inf to binRanges to enclose the values above the last bin.</span>
+binRanges(end+1) = inf;
+
+<span class="comment">% <tt>histc</tt> determines which bin each speed value falls into.</span>
+[~, spdBins] = histc(spd, binRanges);
+</pre><h2>Split latitude and longitude data by speed<a name="15"></a></h2><p>A discontinuous line segment is created for every speed bin. Each of these segments will be assigned a single color. This creates far fewer total line segments than treating every adjacent pair of latitude and longitude values as their own line segments.</p><p>The individual segments are stored as geographic features using <tt>geoshape</tt> from Mapping Toolbox.</p><pre class="codeinput">lat = lat';
+lon = lon';
+spdBins = spdBins';
+
+<span class="comment">% Create a geographical shape vector, which stores the line segments as</span>
+<span class="comment">% features.</span>
+s = geoshape();
+
+<span class="keyword">for</span> k = 1:nBins
+
+    <span class="comment">% Keep only the lat/lon values which match the current bin. Leave the</span>
+    <span class="comment">% rest as NaN, which are interpreted as breaks in the line segments.</span>
+    latValid = nan(1, length(lat));
+    latValid(spdBins==k) = lat(spdBins==k);
+
+    lonValid = nan(1, length(lon));
+    lonValid(spdBins==k) = lon(spdBins==k);
+
+    <span class="comment">% To make the path continuous despite being segmented into different</span>
+    <span class="comment">% colors, the lat/lon values that occur after transitioning from the</span>
+    <span class="comment">% current speed bin to another speed bin will need to be kept.</span>
+    transitions = [diff(spdBins) 0];
+    insertionInd = find(spdBins==k &amp; transitions~=0) + 1;
+
+    <span class="comment">% Preallocate space for and insert the extra lat/lon values.</span>
+    latSeg = zeros(1, length(latValid) + length(insertionInd));
+    latSeg(insertionInd + (0:length(insertionInd)-1)) = lat(insertionInd);
+    latSeg(~latSeg) = latValid;
+
+    lonSeg = zeros(1, length(lonValid) + length(insertionInd));
+    lonSeg(insertionInd + (0:length(insertionInd)-1)) = lon(insertionInd);
+    lonSeg(~lonSeg) = lonValid;
+
+    <span class="comment">% Add the lat/lon segments to the geographic shape vector.</span>
+    s(k) = geoshape(latSeg, lonSeg);
+
+<span class="keyword">end</span>
+</pre><h2>Create a web map and route overlay<a name="16"></a></h2><p>The pieces can now be combined into a webmap display. The latitude and longitude data have been processed to make up individual line segments to overlay on the map. Each line segment has a color corresponding to the speed recorded at the respective position.</p><p>Mapping Toolbox provides a number of functions for working with web maps.</p><p>Use <tt>webmap</tt> to open a web map in a browser.</p><pre class="codeinput">wm = webmap(<span class="string">'Open Street Map'</span>);
+</pre><p>For reference, MathWorks is marked on the map.</p><pre class="codeinput">mwLat = 42.299827;
+mwLon = -71.350273;
+name = <span class="string">'MathWorks'</span>;
+iconDir = fullfile(matlabroot,<span class="string">'toolbox'</span>,<span class="string">'matlab'</span>,<span class="string">'icons'</span>);
+iconFilename = fullfile(iconDir, <span class="string">'matlabicon.gif'</span>);
+wmmarker(mwLat, mwLon, <span class="string">'FeatureName'</span>, name, <span class="string">'Icon'</span>, iconFilename);
+</pre><p>A list of colors corresponding to the speed bins is generated using the <tt>autumn</tt> colormap. This creates an [nBins x 3] matrix with RGB values for each bin.</p><pre class="codeinput">colors = autumn(nBins);
+</pre><p>A line is drawn on the webmap using the geographic shape vector. Each element of the shape vector corresponds to a discontinuous line segment for a binned speed value. These elements match the elements of the color list that was just created.</p><pre class="codeinput">wmline(s, <span class="string">'Color'</span>, colors, <span class="string">'Width'</span>, 5);
+</pre><p>Zoom the map in on the route.</p><pre class="codeinput">wmzoom(16);
+</pre><img vspace="5" hspace="5" src="iossensor_mappinglocationandspeed_04.png" alt=""> <p>The final display provides a visual representation of location and speed throughout the route. The device was clearly traveling more slowly while in the parking lot and during turns than it was on straightaways.</p><h2>Clean up<a name="22"></a></h2><p>Turn off the position sensor and clear <tt>mobiledev</tt>.</p><pre class="codeinput">m.PositionSensorEnabled = 0;
+
+clear <span class="string">m</span>;
+</pre><p class="footer">Copyright 2015 The MathWorks, Inc.<br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br><br>
+		  MATLAB and Simulink are registered trademarks of The MathWorks, Inc.  Please see <a href="https://www.mathworks.com/trademarks">www.mathworks.com/trademarks</a> for a list of other trademarks owned by The MathWorks, Inc.  Other product or brand names are trademarks or registered trademarks of their respective owners.
+      </p></div><!--
+##### SOURCE BEGIN #####
+%% Acquire GPS Data from Your Apple(R) iOS Device and Plot Your Location and Speed on a Map
+%
+% This example shows how to collect position data from an Apple iOS device 
+% and display it on a map. Latitude and longitude coordinates are used to 
+% mark the device's route. Speed information is used to add color to the 
+% route. The final result is a visual representation of location and speed 
+% for the device's journey. 
+% 
+% This example requires Mapping Toolbox(TM).
+%
+% Copyright 2015 The MathWorks, Inc.
+
+%% Setting up the connection to your mobile device
+% In order to receive data from an Apple iOS device in MATLAB, you will 
+% need the MATLAB Mobile(TM) app (version 2.0). You can download this app 
+% from Google Play(TM).
+
+%% 
+% Use MATLAB Connector to allow connection between your desktop MATLAB 
+% session and MATLAB Mobile on your Apple iOS device. Your device must be 
+% able to connect to your desktop, either by being on the same network, 
+% using a VPN, or through a similar configuration. 
+%
+% In this example, a VPN was used on the device to maintain a connection to
+% the network while driving.
+%
+% Execute the |connector| command with a password of your choice.
+
+connector on yourpassword;
+
+%%
+% Your computer's DNS name and IP address are displayed on
+% the MATLAB Command Window, along with a test link. Click on the test link
+% to ensure that your desktop is ready to connect. The last digits after
+% the colon on the test link correspond to the port that has been opened.
+
+%% 
+% Now you can connect MATLAB Mobile to your desktop.
+%
+% If you are launching MATLAB Mobile for the first time, select Connect to 
+% Your Computer. If you previously connected to the cloud or a different 
+% desktop, go to the Settings screen and select Add a Computer from the 
+% Connect to Your Computers section.
+% On the Add a Computer screen, enter the DNS name or IP address that was
+% displayed in the previous step. Then, enter the Connector password that 
+% you previously specified, as well as the port that was opened.
+% Finally, press the Connect button.
+% MATLAB Mobile should now be connected to your desktop MATLAB session.
+
+%% Create a link to your mobile device
+% Use the |mobiledev| command to create an object that represents your
+% mobile device.
+
+m = mobiledev
+
+%%
+% The displayed output should show |Connected: 1|, indicating that the 
+% |mobiledev| object has successfully established a connection to the app.
+
+%% Prepare for data acquisition from the position sensor
+% In order to collect GPS data, first ensure that your device's GPS is 
+% turned on. If enabled on an Apple iOS device's location settings, mobile 
+% networks and Wi-Fi can also be used to determine position.
+%
+% Enable the position sensor on your mobile device.
+
+m.PositionSensorEnabled = 1;
+
+%%
+% It may take some time for data to appear on the Sensors screen of MATLAB 
+% Mobile, as the device will need to search for a GPS signal. GPS signals 
+% are generally unavailable indoors.
+
+%% Start acquiring data
+% After enabling the sensors, the Sensors screen of MATLAB Mobile will show
+% the current data measured by the sensors. The |Logging| property allows 
+% you to begin sending sensor data to |mobiledev|.
+
+m.Logging = 1;
+
+%% Gather position data 
+% All position sensor data recorded on the device is now being logged by 
+% |mobiledev|. 
+% 
+% In this example, the device was taken on a short drive around MathWorks.
+
+%% Stop logging data
+% Use |mobiledev|'s logging property again to stop logging data. 
+
+m.Logging = 0;
+
+%% Retrieve logged position data
+% To create the map, latitude, longitude, and speed data will be needed. 
+% The |poslog| function can be used to retrieve this information from 
+% |mobiledev|.
+
+[lat, lon, t, spd] = poslog(m);
+
+%%
+% For this example, data has already been logged and saved.
+
+load drivingAroundMathWorks lat lon spd;
+
+%% Bin speeds into color values
+% The speed values are binned in order to use a discrete number of colors 
+% to represent the observed speeds.
+
+nBins = 10;
+binSpacing = (max(spd) - min(spd))/nBins; 
+binRanges = min(spd):binSpacing:max(spd)-binSpacing; 
+
+% Add an inf to binRanges to enclose the values above the last bin.
+binRanges(end+1) = inf;
+
+% |histc| determines which bin each speed value falls into.
+[~, spdBins] = histc(spd, binRanges);
+
+%% Split latitude and longitude data by speed
+% A discontinuous line segment is created for every speed bin. Each of 
+% these segments will be assigned a single color. This creates far fewer 
+% total line segments than treating every adjacent pair of latitude and 
+% longitude values as their own line segments. 
+%
+% The individual segments are stored as geographic features using
+% |geoshape| from Mapping Toolbox.
+
+lat = lat';
+lon = lon';
+spdBins = spdBins';
+
+% Create a geographical shape vector, which stores the line segments as
+% features.
+s = geoshape();
+
+for k = 1:nBins
+    
+    % Keep only the lat/lon values which match the current bin. Leave the 
+    % rest as NaN, which are interpreted as breaks in the line segments.
+    latValid = nan(1, length(lat));
+    latValid(spdBins==k) = lat(spdBins==k);
+    
+    lonValid = nan(1, length(lon));
+    lonValid(spdBins==k) = lon(spdBins==k);    
+
+    % To make the path continuous despite being segmented into different
+    % colors, the lat/lon values that occur after transitioning from the
+    % current speed bin to another speed bin will need to be kept.
+    transitions = [diff(spdBins) 0];
+    insertionInd = find(spdBins==k & transitions~=0) + 1;
+
+    % Preallocate space for and insert the extra lat/lon values.
+    latSeg = zeros(1, length(latValid) + length(insertionInd));
+    latSeg(insertionInd + (0:length(insertionInd)-1)) = lat(insertionInd);
+    latSeg(~latSeg) = latValid;
+    
+    lonSeg = zeros(1, length(lonValid) + length(insertionInd));
+    lonSeg(insertionInd + (0:length(insertionInd)-1)) = lon(insertionInd);
+    lonSeg(~lonSeg) = lonValid;
+
+    % Add the lat/lon segments to the geographic shape vector.
+    s(k) = geoshape(latSeg, lonSeg);
+    
+end
+
+%% Create a web map and route overlay
+% The pieces can now be combined into a webmap display. The latitude and 
+% longitude data have been processed to make up individual line segments to
+% overlay on the map. Each line segment has a color corresponding to the 
+% speed recorded at the respective position. 
+%
+% Mapping Toolbox provides a number of functions for working with web maps.
+%
+% Use |webmap| to open a web map in a browser.
+
+wm = webmap('Open Street Map');
+
+%%
+% For reference, MathWorks is marked on the map.
+
+mwLat = 42.299827;
+mwLon = -71.350273;
+name = 'MathWorks';
+iconDir = fullfile(matlabroot,'toolbox','matlab','icons');
+iconFilename = fullfile(iconDir, 'matlabicon.gif');
+wmmarker(mwLat, mwLon, 'FeatureName', name, 'Icon', iconFilename);
+
+%%
+% A list of colors corresponding to the speed bins is generated using
+% the |autumn| colormap. This creates an [nBins x 3] matrix with RGB values
+% for each bin.
+
+colors = autumn(nBins);
+
+%%
+% A line is drawn on the webmap using the geographic shape vector. Each
+% element of the shape vector corresponds to a discontinuous line segment
+% for a binned speed value. These elements match the elements of the color
+% list that was just created.
+
+wmline(s, 'Color', colors, 'Width', 5);
+
+%%
+% Zoom the map in on the route.
+
+wmzoom(16);
+
+%% 
+% The final display provides a visual representation of location and speed
+% throughout the route. The device was clearly traveling more slowly while
+% in the parking lot and during turns than it was on straightaways. 
+
+%% Clean up
+% Turn off the position sensor and clear |mobiledev|.
+
+m.PositionSensorEnabled = 0;
+
+clear m;
+##### SOURCE END #####
+--></body></html>

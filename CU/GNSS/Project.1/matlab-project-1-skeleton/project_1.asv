@@ -1,0 +1,78 @@
+
+% ASEN 5090 Assignment 1
+ 
+% 1. Complete the function `generate_mls` that generates maximum-length binary sequences.
+% 2. Use the function `generate_mls` from part 1 to complete the function `generate_l1ca_code`, which generates and returns the binary the GPS L1 C/A code sequence given the GPS PRN number.
+% 3. Complete the function `generate_code_samples` that generates a time-series of code samples given the sampling rate, sampling duration, code sequence, code chipping rate, and initial code phase.
+% 4. Choose 2 PRNs, sample their code sequences, and convert the samples to +-1 (i.e. a modulated signal of constant magnitude).  Plot the auto-correlation for each and the cross-correlation of the two signals.
+
+%X
+%X  We've used the sequence `%X` to indicate comments that may not be
+%X  important once you've read them.  They should be removed in any code that is
+%X  turned in.
+%X
+%X  We'll also use the sequence `%!` to indicate where to insert your code when
+%X  completing function skeletons.  At the end of the day, the most important
+%X  outcome is that the functions do what they say they do / are supposed to do.
+%X  If you find a better way to write the code that ignores the structure
+%X  provided in the skeleton, by all means write the code the way you see fit.
+
+%  Verify that the C/A code sequences match their octal representation for the
+%  first 10 bits.
+passed = [];
+failed = [];
+for prn = 1:32
+  res = verify_l1ca_code_first_10_chips(prn);
+  if res
+    passed = [passed, prn];
+  else
+    failed = [failed, prn];
+  end
+end
+if length(passed) == 32
+    disp('All PRNs passed');
+elseif ~isempty(failures)
+    fprintf('PRNs %s did NOT pass', mat2str(failed));
+end
+
+
+%%
+
+prn_1 = 20;
+prn_2 = 21;
+
+%X  The following are reasonable parameters to choose for creating sampled
+%X  versions of the C/A code. Try changing them to see how they affect
+%X  things.
+fs = 5e6;     % 5 MHz sampling rate
+L = 3e-3;     % 5 milliseconds sampling duration
+fc = 1.023e6; % GPS L1 C/A code chipping rate (Hz)
+
+
+code_1 = generate_l1ca_code(prn_1);
+samples_1 = generate_code_samples(fs, L, code_1, fc);
+%! YOUR CODE HERE
+%! convert `samples_1` from binary 0/1 values to +1/-1 values
+
+
+code_2 = generate_l1ca_code(prn_2);
+samples_2 = generate_code_samples(fs, L, code_2, fc);
+%! YOUR CODE HERE
+%! convert `samples_2` from binary 0/1 values to +1/-1 values
+
+
+auto_1 = circular_correlation(samples_1, samples_1);
+auto_2 = circular_correlation(samples_2, samples_2);
+cross = circular_correlation(samples_1, samples_2);
+
+figure;
+subplot(131);
+plot(auto_1);
+subplot(132);
+plot(auto_2);
+subplot(133);
+%! YOUR CODE HERE
+%! Make a figure showing 3 subplots -- 1 each showing the autocorrelation of
+%! the relevant PRN and on showing their cross-correlation.
+%! Add a text label to indicate the contents of each plot, as shown for `ax1`.
+

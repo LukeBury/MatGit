@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright 2015  - 2016 The MathWorks, Inc. -->
+<RTTPackageRepository>
+    <SupportPackage 
+        name="iOS Sensor"
+        displayname="Apple iOS"
+        fullname="MATLAB Support Package for Apple iOS Sensors" 
+        version="16.2.0"
+        infotext="Acquire sensor data from built-in sensors on iOS devices."
+        basecode="ML_APPLE_IOS_SENSORS"
+        platform="PCWIN64,GLNXA64,MACI64" 
+        baseproduct="MATLAB" 
+        visible="1" 
+        enable="1" 
+        url="http://www.mathworks.com" 
+        downloadurl="" 
+        licenseurl="" 
+        demoxml="iossensorexamples/demos.xml" >
+    </SupportPackage>
+</RTTPackageRepository>

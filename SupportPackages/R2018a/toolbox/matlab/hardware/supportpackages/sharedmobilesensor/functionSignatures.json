@@ -1,0 +1,9 @@
+{
+    "readMobileSensorData":
+{
+    "inputs":
+    [
+        {"name":"fileNames", "kind":"required","type":"choices=mobilesensor.internal.Utility.sensorFilesList"}
+    ] 
+}
+}
