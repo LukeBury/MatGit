@@ -1,7 +1,7 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MATLAB/mbin'))
+addpath(genpath('/Users/lukebury/Documents/MatGit/mbin'))
 tic
 % ========================================================================
 %%% Run/Plot Switches
@@ -80,7 +80,6 @@ plot([min(x) max(x)],[0 0],'k')
 legend([inSo inEq], 'Given Solution','From Equations')
 PlotBoi2('r','Cost',14,'LaTex')
 ylim([-10 10])
-
 
 
 

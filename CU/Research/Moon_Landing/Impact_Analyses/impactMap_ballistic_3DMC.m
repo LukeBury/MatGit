@@ -1,7 +1,7 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MATLAB/mbin'))
+addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin'))
 ticWhole = tic;
 % ========================================================================
 %%% Run Switches
@@ -16,6 +16,9 @@ plot_sectionColors    = 1;
 
 %%% Save plots?d
 saveFigures            = 0;
+
+%%% Fortuna?
+on_Fortuna             = 1;
 
 % ========================================================================
 %%% Setup
@@ -482,210 +485,221 @@ if tCount ~= n_traj
     warning('Houston we''ve got a problem')
 end
 
-% -------------------------------------------------
-% 
-% -------------------------------------------------
 
-figure(1); hold all
-quiver3(r0Data{1}.X0s(:,1),r0Data{1}.X0s(:,2),r0Data{1}.X0s(:,3),...
-    r0Data{1}.X0s(:,4),r0Data{1}.X0s(:,5),r0Data{1}.X0s(:,6))
-PlotBoi3('X','Y','Z',15)
-axis equal
+if on_Fortuna == 0
+    % -------------------------------------------------
+    % Plotting
+    % -------------------------------------------------
+
+    figure(1); hold all
+    quiver3(r0Data{1}.X0s(:,1),r0Data{1}.X0s(:,2),r0Data{1}.X0s(:,3),...
+        r0Data{1}.X0s(:,4),r0Data{1}.X0s(:,5),r0Data{1}.X0s(:,6))
+    PlotBoi3('X','Y','Z',15)
+    axis equal
 
 
-figure; hold all
-plot(latLons(:,2),latLons(:,1),'r.','linewidth',1.5,'markersize',13)
-xlim([-180 180])
-ylim([-90 90])
-PlotBoi2('Longitude','Latitude',15)
+    figure; hold all
+    plot(latLons(:,2),latLons(:,1),'r.','linewidth',1.5,'markersize',13)
+    xlim([-180 180])
+    ylim([-90 90])
+    PlotBoi2('Longitude','Latitude',15)
 
-% if store_trajectories == 1
-%     figure(3); hold all
-%     plot3(trajs(:,1),trajs(:,2),trajs(:,3))
-%     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-%     plot3(L123(Lpoint,1),L123(Lpoint,2),L123(Lpoint,3),'m^','markersize',10)
-%     PlotBoi3('X','Y','Z',15)
-%     axis equal
-%     xlim([L123(1,1)-secondary.R_n, L123(2,1)+secondary.R_n])
-%     ylim([-secondary.R_n secondary.R_n].*5)
-%     zlim([-secondary.R_n secondary.R_n].*5)
-% end
+    % if store_trajectories == 1
+    %     figure(3); hold all
+    %     plot3(trajs(:,1),trajs(:,2),trajs(:,3))
+    %     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+    %     plot3(L123(Lpoint,1),L123(Lpoint,2),L123(Lpoint,3),'m^','markersize',10)
+    %     PlotBoi3('X','Y','Z',15)
+    %     axis equal
+    %     xlim([L123(1,1)-secondary.R_n, L123(2,1)+secondary.R_n])
+    %     ylim([-secondary.R_n secondary.R_n].*5)
+    %     zlim([-secondary.R_n secondary.R_n].*5)
+    % end
 
-if plot_initialConditions == 1
-    %%% Creating ZV contours
-    % Contour bounds
-    xCont_min = L123(1,1)-2*secondary.R_n;
-    xCont_max = L123(2,1)+2*secondary.R_n;
-    yCont_min = -9*secondary.R_n;
-    yCont_max = 9*secondary.R_n;
+    if plot_initialConditions == 1
+        %%% Creating ZV contours
+        % Contour bounds
+        xCont_min = L123(1,1)-2*secondary.R_n;
+        xCont_max = L123(2,1)+2*secondary.R_n;
+        yCont_min = -9*secondary.R_n;
+        yCont_max = 9*secondary.R_n;
 
-    % Creating x-y grid
-    xs = linspace(xCont_min,xCont_max,600);
-    ys = linspace(yCont_min,yCont_max,200);
-    [X_xy, Y_xy] = meshgrid(xs,ys);
-%     [Y_yz, Z_yz] = meshgrid(ys,zs);
-    clear xs ys zs
+        % Creating x-y grid
+        xs = linspace(xCont_min,xCont_max,600);
+        ys = linspace(yCont_min,yCont_max,200);
+        [X_xy, Y_xy] = meshgrid(xs,ys);
+    %     [Y_yz, Z_yz] = meshgrid(ys,zs);
+        clear xs ys zs
 
-    % Calculating JCs across x-y grid
-    JCs_xy = zeros(size(X_xy));
-    for xk = 1:size(X_xy,1)
-        for yk = 1:size(X_xy,2)
-            %%% Zero-Velocity Curve
-            zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0] ,[0, 0, 0]);
-            JCs_xy(xk,yk) = zv;
+        % Calculating JCs across x-y grid
+        JCs_xy = zeros(size(X_xy));
+        for xk = 1:size(X_xy,1)
+            for yk = 1:size(X_xy,2)
+                %%% Zero-Velocity Curve
+                zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0] ,[0, 0, 0]);
+                JCs_xy(xk,yk) = zv;
+            end
+        end
+
+        figure; hold all
+        plot3(r0s(:,1),r0s(:,2),r0s(:,3),'.')
+        plot3(ones(size(yzContourPoints,2),1).*L123(Lpoint,1), yzContourPoints(1,:),yzContourPoints(2,:),'k','linewidth',3)
+        plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+        quiver3(X0s(:,1),X0s(:,2),X0s(:,3),X0s(:,4),X0s(:,5),X0s(:,6))
+        [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
+            'color',colors.std.black,'linewidth',3);
+        PlotBoi3('x$_n$','y$_n$','z$_n$',14,'LaTex')
+        view(-35,24)
+        camva(9)
+        axis equal
+    end
+
+    if plot_fullSystemContour == 1
+        %%% Creating ZV contours
+        % Contour bounds
+        xCont_min = L123(3,1)*1.2;
+        xCont_max = L123(2,1)*1.2;
+        yCont_min = -1.1;
+        yCont_max = 1.1;
+
+        % Creating x-y grid
+        xs = linspace(xCont_min,xCont_max,750);
+        ys = linspace(yCont_min,yCont_max,750);
+        [X_xy, Y_xy] = meshgrid(xs,ys);
+        clear xs ys
+
+        % Calculating JCs across x-y grid
+        JCs_xy = zeros(size(X_xy));
+        for xk = 1:size(X_xy,1)
+            for yk = 1:size(X_xy,2)
+                %%% Zero-Velocity Curve
+                zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0] ,[0, 0, 0]);
+                JCs_xy(xk,yk) = zv;
+            end
+        end
+
+        figure; hold all
+        plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+        plotBodyTexture3(primary.R./rNorm, [-secondary.MR, 0, 0], primary.img)
+        [xyContourPoints,href] = contourf(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
+            'color',colors.std.black,'linewidth',1.5);
+        colormap(colors.sch.r6(6,:))
+        PlotBoi3('X','Y','Z',14)
+        view(0,90)
+        camva(9)
+        axis equal
+    end
+
+    if plot_sectionColors == 1
+        figure; hold all
+
+        for kk = binCount_NeckSections+1:-1:2
+            plotBody2(bins_neckSections(kk),[0,0,0], binColors_NeckSections(kk-1,:), binColors_NeckSections(kk-1,:), 1)
+        end
+
+        fillout(yzContourPoints(1,:),yzContourPoints(2,:));
+        plot(yzContourPoints(1,:), yzContourPoints(2,:),'k','linewidth',3)
+    % 
+    %     eps = 1e-17;
+    %     pypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[0, 100, 100, 0],[eps, eps, 100, 100]));
+    %     pynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[eps, 100, 100, eps],[0, 0, -100, -100]));
+    %     nynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 0 0 -100],[-eps -eps -100 -100]));
+    %     nypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 -eps -eps -100],[100 100 0 0]));
+    % 
+    %     pypz = [pypz, [0, 0, y_neck_upper; 0, z_neck_upper, 0]];
+    %     pynz = [pynz, [0, 0, y_neck_upper; 0, -z_neck_upper, 0]];
+    %     nynz = [nynz, [-y_neck_upper, 0, 0; 0, -z_neck_upper, 0]];
+    %     nypz = [nypz, [-y_neck_upper, 0, 0; 0, z_neck_upper, 0]];
+    % 
+    %     area(pypz(1,:),pypz(2,:),'FaceColor',binColors_NeckSections(1,:))
+    %     area(pynz(1,:),pynz(2,:),'FaceColor',binColors_NeckSections(2,:))
+    %     area(nynz(1,:),nynz(2,:),'FaceColor',binColors_NeckSections(3,:))
+    %     area(nypz(1,:),nypz(2,:),'FaceColor',binColors_NeckSections(4,:))
+
+        axis equal
+        PlotBoi3('Y','Z','X',14)
+    end
+
+    figure; hold all
+    for kk = 1:4
+        if isempty(binData_neckSections(kk).latLons) == 0
+            plot(binData_neckSections(kk).latLons(:,2),binData_neckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_NeckSections(kk,:))
         end
     end
-    
+    title('Neck Sections')
+    PlotBoi2('Longitude, deg','Latitude, deg',14)
+    xlim([-180 180])
+    ylim([-90 90])
+
+    %%% Colorbar for whole figure
+    % a = gcf;
+    % cbar = colorbar('Position',a.Position);
+    cbar1 = colorbar;
+    caxis([0 size(binColors_NeckSections,1)]);
+    cbar1.FontName     = 'Arial';
+    cbar1.FontSize     = 10;
+    cbar1.Ticks        = sort(0:binCount_NeckSections-1);
+    cbar1.TickLabels = num2cell(bins_neckSections(1:end-1).*rNorm);
+    cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
+    cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+    cbar1.Label.Position = [.2, 4.2, 0];
+    colormap(binColors_NeckSections)
+
+
+
     figure; hold all
-    plot3(r0s(:,1),r0s(:,2),r0s(:,3),'.')
-    plot3(ones(size(yzContourPoints,2),1).*L123(Lpoint,1), yzContourPoints(1,:),yzContourPoints(2,:),'k','linewidth',3)
-    plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-    quiver3(X0s(:,1),X0s(:,2),X0s(:,3),X0s(:,4),X0s(:,5),X0s(:,6))
-    [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-        'color',colors.std.black,'linewidth',3);
-    PlotBoi3('x$_n$','y$_n$','z$_n$',14,'LaTex')
-    view(-35,24)
-    camva(9)
-    axis equal
-end
-
-if plot_fullSystemContour == 1
-    %%% Creating ZV contours
-    % Contour bounds
-    xCont_min = L123(3,1)*1.2;
-    xCont_max = L123(2,1)*1.2;
-    yCont_min = -1.1;
-    yCont_max = 1.1;
-
-    % Creating x-y grid
-    xs = linspace(xCont_min,xCont_max,750);
-    ys = linspace(yCont_min,yCont_max,750);
-    [X_xy, Y_xy] = meshgrid(xs,ys);
-    clear xs ys
-
-    % Calculating JCs across x-y grid
-    JCs_xy = zeros(size(X_xy));
-    for xk = 1:size(X_xy,1)
-        for yk = 1:size(X_xy,2)
-            %%% Zero-Velocity Curve
-            zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0] ,[0, 0, 0]);
-            JCs_xy(xk,yk) = zv;
-        end
+    for kk = binCount_ImpactAngles:-1:1
+    if isempty(binData_impactAngles(kk).latLons) == 0
+    plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+    '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
     end
-    
-    figure; hold all
-    plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-    plotBodyTexture3(primary.R./rNorm, [-secondary.MR, 0, 0], primary.img)
-    [xyContourPoints,href] = contourf(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-        'color',colors.std.black,'linewidth',1.5);
-    colormap(colors.sch.r6(6,:))
-    PlotBoi3('X','Y','Z',14)
-    view(0,90)
-    camva(9)
-    axis equal
-end
-
-if plot_sectionColors == 1
-    figure; hold all
-    
-    for kk = binCount_NeckSections+1:-1:2
-        plotBody2(bins_neckSections(kk),[0,0,0], binColors_NeckSections(kk-1,:), binColors_NeckSections(kk-1,:), 1)
     end
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    xlim([-180 180])
+    ylim([-90 90])
+    %%% Colorbar for whole figure
+    cbar2 = colorbar;
+    caxis([0, 90]);
+    cbar2.FontName     = 'Arial';
+    cbar2.FontSize     = 10;
+    cbar2.Ticks        = [bins_impactAngles(1:end-1), 90];
+    cbar2.TickLabels = num2cell([bins_impactAngles(1:end-1), 90]);
+    cbar2.Label.String = {'Impact Angle °'};
+    cbar2.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+    cbar2.Label.Position = [.2, 95, 0];
+    binColors_ImpactAngles_spaced = [...
+        repmat(binColors_ImpactAngles(1,:),1,1);...
+        repmat(binColors_ImpactAngles(2,:),3,1);...
+        repmat(binColors_ImpactAngles(3,:),4,1);...
+        repmat(binColors_ImpactAngles(4,:),4,1);...
+        repmat(binColors_ImpactAngles(5,:),6,1)];
+    colormap(binColors_ImpactAngles_spaced)
+
+
+    %     % -------------------------------------------------
+    %     % Save figure
+    %     % -------------------------------------------------
+    %     if saveFigures == 1
+    %         figure(1)
+    %         figPath = '/Users/lukebury/Documents/MATLAB/CU/Research/Moon_Landing/Figures/';
+    %         figName = sprintf('3DMC_%s%sL%1d_%1.1fpi_dvLp%2.2f.png', figPath,...
+    %             secondaryName(1:3), Lpoint, t_f/pi, dvLp_mps);
+    %         % ex: 3DMC_EurL1_1.0pi_dvLp56.50.0.png
+    %         saveas(gcf,figName)
+    %         close all
+    %     end
     
-    fillout(yzContourPoints(1,:),yzContourPoints(2,:));
-    plot(yzContourPoints(1,:), yzContourPoints(2,:),'k','linewidth',3)
-% 
-%     eps = 1e-17;
-%     pypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[0, 100, 100, 0],[eps, eps, 100, 100]));
-%     pynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[eps, 100, 100, eps],[0, 0, -100, -100]));
-%     nynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 0 0 -100],[-eps -eps -100 -100]));
-%     nypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 -eps -eps -100],[100 100 0 0]));
-% 
-%     pypz = [pypz, [0, 0, y_neck_upper; 0, z_neck_upper, 0]];
-%     pynz = [pynz, [0, 0, y_neck_upper; 0, -z_neck_upper, 0]];
-%     nynz = [nynz, [-y_neck_upper, 0, 0; 0, -z_neck_upper, 0]];
-%     nypz = [nypz, [-y_neck_upper, 0, 0; 0, z_neck_upper, 0]];
-% 
-%     area(pypz(1,:),pypz(2,:),'FaceColor',binColors_NeckSections(1,:))
-%     area(pynz(1,:),pynz(2,:),'FaceColor',binColors_NeckSections(2,:))
-%     area(nynz(1,:),nynz(2,:),'FaceColor',binColors_NeckSections(3,:))
-%     area(nypz(1,:),nypz(2,:),'FaceColor',binColors_NeckSections(4,:))
-
-    axis equal
-    PlotBoi3('Y','Z','X',14)
+    toc(ticWhole)
+    
+elseif on_Fortuna == 1
+    clear time0_n 
+    finalToc = toc(ticWhole);
+    save('/home/lubu8198/MatlabOutputs/impactMap_ballistic_3DMC')
 end
 
-figure; hold all
-for kk = 1:4
-    if isempty(binData_neckSections(kk).latLons) == 0
-        plot(binData_neckSections(kk).latLons(:,2),binData_neckSections(kk).latLons(:,1),...
-            '.','markersize',15,'color',binColors_NeckSections(kk,:))
-    end
-end
-title('Neck Sections')
-PlotBoi2('Longitude, deg','Latitude, deg',14)
-xlim([-180 180])
-ylim([-90 90])
-
-%%% Colorbar for whole figure
-% a = gcf;
-% cbar = colorbar('Position',a.Position);
-cbar1 = colorbar;
-caxis([0 size(binColors_NeckSections,1)]);
-cbar1.FontName     = 'Arial';
-cbar1.FontSize     = 10;
-cbar1.Ticks        = sort(0:binCount_NeckSections-1);
-cbar1.TickLabels = num2cell(bins_neckSections(1:end-1).*rNorm);
-cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
-cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
-cbar1.Label.Position = [.2, 4.2, 0];
-colormap(binColors_NeckSections)
 
 
-
-figure; hold all
-for kk = binCount_ImpactAngles:-1:1
-if isempty(binData_impactAngles(kk).latLons) == 0
-plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-'.','markersize',15,'color',binColors_ImpactAngles(kk,:))
-end
-end
-PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
-xlim([-180 180])
-ylim([-90 90])
-%%% Colorbar for whole figure
-cbar2 = colorbar;
-caxis([0, 90]);
-cbar2.FontName     = 'Arial';
-cbar2.FontSize     = 10;
-cbar2.Ticks        = [bins_impactAngles(1:end-1), 90];
-cbar2.TickLabels = num2cell([bins_impactAngles(1:end-1), 90]);
-cbar2.Label.String = {'Impact Angle °'};
-cbar2.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
-cbar2.Label.Position = [.2, 95, 0];
-binColors_ImpactAngles_spaced = [...
-    repmat(binColors_ImpactAngles(1,:),1,1);...
-    repmat(binColors_ImpactAngles(2,:),3,1);...
-    repmat(binColors_ImpactAngles(3,:),4,1);...
-    repmat(binColors_ImpactAngles(4,:),4,1);...
-    repmat(binColors_ImpactAngles(5,:),6,1)];
-colormap(binColors_ImpactAngles_spaced)
-
-
-%     % -------------------------------------------------
-%     % Save figure
-%     % -------------------------------------------------
-%     if saveFigures == 1
-%         figure(1)
-%         figPath = '/Users/lukebury/Documents/MATLAB/CU/Research/Moon_Landing/Figures/';
-%         figName = sprintf('3DMC_%s%sL%1d_%1.1fpi_dvLp%2.2f.png', figPath,...
-%             secondaryName(1:3), Lpoint, t_f/pi, dvLp_mps);
-%         % ex: 3DMC_EurL1_1.0pi_dvLp56.50.0.png
-%         saveas(gcf,figName)
-%         close all
-%     end
-
-toc(ticWhole)
 
 
 

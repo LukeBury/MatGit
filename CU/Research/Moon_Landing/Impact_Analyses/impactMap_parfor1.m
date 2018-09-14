@@ -1,7 +1,7 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MATLAB/mbin'))
+addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin'))
 ticWhole = tic;
 % ========================================================================
 %%% Run-Switches
