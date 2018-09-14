@@ -1,0 +1,14 @@
+License checkout failed.
+License Manager Error -15
+MATLAB is unable to connect to the license server. 
+Check that the license manager has been started, and that the MATLAB client machine can communicate
+with the license server.
+
+Troubleshoot this issue by visiting: 
+http://www.mathworks.com/support/lme/R2017a/15
+
+Diagnostic Information:
+Feature: MATLAB 
+License path: /home/lubu8198/.matlab/R2017a_licenses:/usr/local/MATLAB/R2017a/licenses/license.dat:/usr/local/MATL
+AB/R2017a/licenses/license.lic 
+Licensing error: -15,570. System Error: 115
