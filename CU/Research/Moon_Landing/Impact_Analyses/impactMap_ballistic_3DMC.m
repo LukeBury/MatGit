@@ -18,7 +18,7 @@ plot_sectionColors    = 1;
 saveFigures            = 0;
 
 %%% Fortuna?
-on_Fortuna             = 1;
+on_Fortuna             = 0;
 
 % ========================================================================
 %%% Setup
@@ -67,7 +67,7 @@ dvLp_mps = 200; % Meters per second
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
 % r0GridSpacing_km = 10; % km - Enceladus
-r0GridSpacing_km = 1500; % km
+r0GridSpacing_km = 500; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
 % v0AngularSpace_deg = 15; % degrees - Europa
