@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin'))
+addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin')) % Mac
+addpath(genpath('/home/lubu8198/MatGit/mbin')) % Fortuna
 ticWhole = tic;
 % ========================================================================
 %%% Run Switches
