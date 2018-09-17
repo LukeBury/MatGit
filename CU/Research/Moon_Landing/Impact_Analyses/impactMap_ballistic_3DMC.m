@@ -25,6 +25,12 @@ if isequal(computer,'MACI64')      % Mac
 elseif isequal(computer,'GLNXA64') % Fortuna
     on_Fortuna         = 1;
     mbinPath = '/home/lubu8198/MatGit/mbin';
+%   N = maxNumCompThreads returns the current maximum number of computational threads N.
+%   LASTN = maxNumCompThreads(N) sets the maximum number of computational threads to N, 
+%        and returns the previous maximum number of computational threads, LASTN.
+%   LASTN = maxNumCompThreads('automatic') sets the maximum number of computational threads
+%        using what the MATLAB® software determines to be the most desirable. It additionally
+%        returns the previous maximum number of computational threads, LASTN.
 else 
     warning('This computer will explode in 5 seconds!')
 end
@@ -706,7 +712,7 @@ if on_Fortuna == 0
 elseif on_Fortuna == 1
     clear time0_n 
     finalToc = toc(ticWhole);
-    coreInfo = feature('numcores');
+    coreNumber = feature('numcores');
     save('/home/lubu8198/MatGit/MatlabOutputs/impactMap_ballistic_3DMC_WS.mat')
 end
 
