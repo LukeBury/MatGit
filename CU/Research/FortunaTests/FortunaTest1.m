@@ -3,4 +3,4 @@ clc
 
 a = computer;
 
-csvwrite(FortunaMatlabComputerName.csv,a);
+csvwrite('FortunaMatlabComputerName.csv',a);
