@@ -1,8 +1,8 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin')) % Mac
-addpath(genpath('/home/lubu8198/MatGit/mbin')) % Fortuna
+
+
 ticWhole = tic;
 % ========================================================================
 %%% Run Switches
@@ -25,10 +25,20 @@ on_Fortuna             = 0;
 %%% Setup
 % ========================================================================
 % -------------------------------------------------
+% Paths
+% -------------------------------------------------
+if on_Fortuna == 0 % Mac
+    mbinPath = '/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin';
+    addpath(genpath()) 
+elseif on_Fortuna == 1 % Fortuna
+    mbinPath = '/home/lubu8198/MatGit/mbin';
+    addpath(genpath())
+end
+% -------------------------------------------------
 % Choose system
 % -------------------------------------------------
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 %%% Color options/schemes
 colors = get_colors();
 

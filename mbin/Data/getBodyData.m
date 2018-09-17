@@ -1,4 +1,4 @@
-function [bodies] = getBodyData()
+function [bodies] = getBodyData(mbinPath)
 
 % Values from Wikipedia and Vallado and MONTE and NAIF ... Questionable at worst
 % ------------------------------------------------------------------------
@@ -49,7 +49,7 @@ bodies.venus.MR = bodies.venus.mass / (bodies.venus.mass + bodies.sun.mass);
 %%% Earth
 bodies.earth.name = 'Earth';
 bodies.earth.color = [36, 38, 235]./255;
-bodies.earth.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/earthSurfTex.jpg');
+bodies.earth.img = imread([mbinPath,'/textures/earthSurfTex.jpg']);
 bodies.earth.mass = 5.9742e24; % kg
 bodies.earth.u = 398600.4415; % km^3 * s^-2
 bodies.earth.a = 149600000; % km
@@ -63,7 +63,7 @@ bodies.earth.J4 = -0.0000016204;
 %%% Moon
 bodies.moon.name = 'Moon';
 bodies.moon.color = [168, 168, 168]./255;
-bodies.moon.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/moonSurfTex.jpg');
+bodies.moon.img = imread([mbinPath,'/textures/moonSurfTex.jpg']);
 bodies.moon.mass = 7.347e22; % kg
 bodies.moon.u = 4902.799; % km^3 * s^-2
 bodies.moon.a = 384748; % km
@@ -79,7 +79,7 @@ bodies.moon.J2 = (9.08901807505999991e-05)*sqrt(5); % from MONTE ... sqrt(5) is 
 %%% Mars
 bodies.mars.name = 'Mars';
 bodies.mars.color = [224, 112, 99]./255;
-bodies.mars.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/marsSurfTex.jpg');
+bodies.mars.img = imread([mbinPath,'/textures/marsSurfTex.jpg']);
 bodies.mars.mass = 6.39e23; % kg
 bodies.mars.u = 4.305e4; % km^3 * s^-2
 bodies.mars.R = 3390; % km
@@ -117,7 +117,7 @@ bodies.jupiter.name = 'Jupiter';
 bodies.jupiter.mass = 1.89819e27; % kg
 bodies.jupiter.u = 1.268e8; % km^3 * s^-2
 bodies.jupiter.color = [235,214,173]./255;
-bodies.jupiter.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/jupiterSurfTex.jpg');
+bodies.jupiter.img = imread([mbinPath,'/textures/jupiterSurfTex.jpg']);
 bodies.jupiter.R = 69911; % km
 bodies.jupiter.J2 = 0.01469562; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
@@ -126,7 +126,7 @@ bodies.jupiter.J4 = -0.00059131; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_
 %%% Io
 bodies.io.name = 'Io';
 bodies.io.mass = 8.94e22; % kg
-bodies.io.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/ioSurfTex.jpg');
+bodies.io.img = imread([mbinPath,'/textures/ioSurfTex.jpg']);
 bodies.io.color = [1,1,1]./255;
 bodies.io.a = 421800; % km
 bodies.io.R = 1821.5; % km
@@ -138,7 +138,7 @@ bodies.io.J2 = (8.188668558770e-04)*sqrt(5); % from MONTE ... sqrt(5) is normali
 %%% Europa
 bodies.europa.name = 'Europa';
 bodies.europa.color = [0, 1, 1];
-bodies.europa.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/europaSurfTex.jpg');
+bodies.europa.img = imread([mbinPath,'/textures/europaSurfTex.jpg']);
 bodies.europa.mass = 4.799e22; % kg
 bodies.europa.u = 3203.413216; % km^3 / s^2
 bodies.europa.a = 671100; % km
@@ -178,7 +178,7 @@ bodies.saturn.name = 'Saturn';
 bodies.saturn.mass = 5.683e26; % kg
 bodies.saturn.u = 3.794e7; % km^3 * s^-2
 bodies.saturn.color = [1,1,1]./255;
-bodies.saturn.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/saturnSurfTex.jpg');
+bodies.saturn.img = imread([mbinPath,'/textures/saturnSurfTex.jpg']);
 bodies.saturn.R = 58232; % km
 bodies.saturn.J2 = 0.01629071; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
@@ -187,7 +187,7 @@ bodies.saturn.J4 = -0.00093583; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_f
 %%% Enceladus
 bodies.enceladus.name = 'Enceladus';
 bodies.enceladus.color = [136, 194, 235]./255;
-bodies.enceladus.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/enceladusSurfTex.jpg');
+bodies.enceladus.img = imread([mbinPath,'/textures/enceladusSurfTex.jpg']);
 bodies.enceladus.mass = 1.08e20; % kg
 bodies.enceladus.a = 237948; % km
 bodies.enceladus.R = 252; % km
@@ -219,7 +219,7 @@ bodies.rhea.MR = bodies.rhea.mass / (bodies.rhea.mass + bodies.saturn.mass);  % 
 %%% Titan
 bodies.titan.name = 'Titan';
 bodies.titan.color = [57, 181, 134]./255;
-bodies.titan.img = imread('/Users/lukebury/Documents/MATLAB/mbin/textures/titanSurfTex.png');
+bodies.titan.img = imread([mbinPath,'/textures/titanSurfTex.jpg']);
 bodies.titan.mass = 1.345e23; % kg
 bodies.titan.a = 1221870; % km
 bodies.titan.R = 2575.5; % km
