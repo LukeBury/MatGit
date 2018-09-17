@@ -1,8 +1,9 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin'))
+addpath(genpath('/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin'))
 tic
+
 % ========================================================================
 %%% Run/Plot Switches
 % ========================================================================
@@ -65,10 +66,10 @@ for sys_i = systems
     d_L2sNX = abs(JC_L2 - JC_sNX);
     
     %%% Calculating minimum necessary DV to stop on surface
-    sys.dV_L1sPX_mps = sqrt(d_L1sPX)*1000;
-    sys.dV_L1sNX_mps = sqrt(d_L1sNX)*1000;
-    sys.dV_L2sPX_mps = sqrt(d_L2sPX)*1000;
-    sys.dV_L2sNX_mps = sqrt(d_L2sNX)*1000;
+    sys.dV_L1sPX_mps = sqrt(d_L1sPX)*systems{kk}.vNorm*1000;
+    sys.dV_L1sNX_mps = sqrt(d_L1sNX)*systems{kk}.vNorm*1000;
+    sys.dV_L2sPX_mps = sqrt(d_L2sPX)*systems{kk}.vNorm*1000;
+    sys.dV_L2sNX_mps = sqrt(d_L2sNX)*systems{kk}.vNorm*1000;
     
     %%% Calculating differences between L1 and L2
     sys.diff = sys.dV_L2sPX_mps - sys.dV_L1sPX_mps;
