@@ -2,6 +2,7 @@ clear
 clc
 close all
 
+
 ticWhole = tic;
 % ========================================================================
 %%% Run Switches
@@ -12,28 +13,28 @@ store_trajectories     = 0;
 %%% Plot switches
 plot_initialConditions = 1;
 plot_fullSystemContour = 1;
-plot_sectionColors     = 1;
+plot_sectionColors    = 1;
 
-%%% Save plots
+%%% Save plots?d
 saveFigures            = 0;
 
-%%% Computer?
-if isequal(computer,'MACI64')      % Mac
-    on_Fortuna         = 0;
-    mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-    
-elseif isequal(computer,'GLNXA64') % Fortuna
-    on_Fortuna         = 1;
-    mbinPath = '/home/lubu8198/MatGit/mbin';
-else 
-    warning('This computer will explode in 5 seconds!')
-end
-
-addpath(genpath(mbinPath))
+%%% Fortuna?
+on_Fortuna             = 0;
 
 % ========================================================================
 %%% Setup
 % ========================================================================
+% -------------------------------------------------
+% Paths
+% -------------------------------------------------
+if on_Fortuna == 0 % Mac
+    mbinPath22222 = '/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin';
+    addpath(genpath(mbinPath))
+elseif on_Fortuna == 1 % Fortuna
+    mbinPath = '/home/lubu8198/MatGit/mbin';
+    addpath(genpath(mbinPath))
+end
+989
 % -------------------------------------------------
 % Choose system
 % -------------------------------------------------
