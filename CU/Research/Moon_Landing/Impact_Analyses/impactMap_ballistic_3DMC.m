@@ -2,7 +2,6 @@ clear
 clc
 close all
 
-
 ticWhole = tic;
 % ========================================================================
 %%% Run Switches
@@ -28,12 +27,13 @@ on_Fortuna             = 0;
 % Paths
 % -------------------------------------------------
 if on_Fortuna == 0 % Mac
-    mbinPath = '/Users/CU_Google_Drive/lukebury/Documents/MatGit/mbin';
-    addpath(genpath()) 
+    mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+    addpath(genpath(mbinPath))
 elseif on_Fortuna == 1 % Fortuna
     mbinPath = '/home/lubu8198/MatGit/mbin';
-    addpath(genpath())
+    addpath(genpath(mbinPath))
 end
+
 % -------------------------------------------------
 % Choose system
 % -------------------------------------------------

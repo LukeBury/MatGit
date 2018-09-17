@@ -219,7 +219,7 @@ bodies.rhea.MR = bodies.rhea.mass / (bodies.rhea.mass + bodies.saturn.mass);  % 
 %%% Titan
 bodies.titan.name = 'Titan';
 bodies.titan.color = [57, 181, 134]./255;
-bodies.titan.img = imread([mbinPath,'/textures/titanSurfTex.jpg']);
+bodies.titan.img = imread([mbinPath,'/textures/titanSurfTex.png']);
 bodies.titan.mass = 1.345e23; % kg
 bodies.titan.a = 1221870; % km
 bodies.titan.R = 2575.5; % km
