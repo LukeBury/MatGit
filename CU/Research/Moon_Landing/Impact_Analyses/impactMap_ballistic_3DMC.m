@@ -695,7 +695,7 @@ if on_Fortuna == 0
 elseif on_Fortuna == 1
     clear time0_n 
     finalToc = toc(ticWhole);
-    save('/home/lubu8198/MatlabOutputs/impactMap_ballistic_3DMC')
+    save('/home/lubu8198/MatGit/MatlabOutputs/impactMap_ballistic_3DMC_WS.mat')
 end
 
 
