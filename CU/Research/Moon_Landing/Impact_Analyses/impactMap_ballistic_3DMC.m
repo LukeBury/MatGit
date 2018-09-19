@@ -91,12 +91,12 @@ dvLp_mps = 200; % Meters per second
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
 % r0GridSpacing_km = 10; % km - Enceladus
-r0GridSpacing_km = 1000; % km
+r0GridSpacing_km = 50; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
 % v0AngularSpace_deg = 15; % degrees - Europa
 % v0AngularSpace_deg = 15; % degrees - Enceladus
-v0AngularSpace_deg = 90; % degrees
+v0AngularSpace_deg = 15; % degrees
 
 %%% Selecting time vector
 t_i = 0; % sec
@@ -753,13 +753,30 @@ if on_Fortuna == 0
     %         saveas(gcf,figName)
     %         close all
     %     end
-    finalToc = toc(ticWhole)
+    finalToc = toc(ticWhole);
     
 elseif on_Fortuna == 1
     clear time0_n 
     finalToc = toc(ticWhole);
     coreNumber = feature('numcores');
 %     save('/home/lubu8198/MatGit/MatlabOutputs/impactMap_ballistic_3DMC_WS.mat')
+
+    % -------------------------------------------------
+    % Creating file of Fortuna info
+    % -------------------------------------------------
+    %%% Writing header
+    filename = fullfile(savepath, sprintf('%sL.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
+    fid = fopen(filename, 'wt');
+    fprintf(fid,'Run Time (sec):\t\t%1.1f\n',finalToc);
+    fprintf(fid,'Run Time (min):\t\t%1.1f\n',finalToc/60);
+    fprintf(fid,'number of r0s:\t\t%1.0f\n',n_r0s);
+    fprintf(fid,'v0s per r0s:\t\t%1.0f\n',n_v0s_per_r0);
+    fprintf(fid,'total trajs:\t\t%1.0f\n',n_traj);
+
+  
+    %%% Close file
+    fclose(fid);
+
 end
 
 
