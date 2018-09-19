@@ -84,7 +84,7 @@ dvLp_mps = 200; % Meters per second
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
 % r0GridSpacing_km = 10; % km - Enceladus
-r0GridSpacing_km = 500; % km
+r0GridSpacing_km = 1000; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
 % v0AngularSpace_deg = 15; % degrees - Europa
@@ -226,6 +226,10 @@ azimuths   = 0 : v0AngularSpace_deg : 360-v0AngularSpace_deg; % deg
 elevations = 0 : v0AngularSpace_deg : 90; % deg
 
 n_v0s_per_r0 = (length(azimuths)*length(elevations)-(length(azimuths)-1));
+
+%%% For reference, total number of trajectories to simulate
+n_traj = n_r0s * n_v0s_per_r0;
+
 % -------------------------------------------------
 % Predefining some things before parfor
 % -------------------------------------------------
@@ -440,20 +444,12 @@ ticLoop = tic;
     if store_trajectories == 1
         r0Data{ii}.trajs   = trajs_ii;
     end
-    
-    
-    % -------------------------------------------------
-    % Let the people know
-    % -------------------------------------------------
-    fprintf('%3.1f Minutes Ellapsed\n',toc(ticWhole)/60)
+
 end
 
 % -------------------------------------------------
 % Concatenating data
 % -------------------------------------------------
-%%% Number of trajectories
-n_traj = n_r0s * n_v0s_per_r0;
-
 %%% Preallocate general data
 X0s          = zeros(n_traj,6);
 latLons      = zeros(n_traj,2);
@@ -706,8 +702,7 @@ if on_Fortuna == 0
     %         saveas(gcf,figName)
     %         close all
     %     end
-    
-    toc(ticWhole)
+    finalToc = toc(ticWhole);
     
 elseif on_Fortuna == 1
     clear time0_n 

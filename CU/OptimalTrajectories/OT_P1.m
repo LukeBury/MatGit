@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MatGit/mbin'))
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 % ========================================================================
 %%% Run/Plot Switches
@@ -11,7 +12,7 @@ tic
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -66,14 +67,25 @@ inequality_f = @(r) (sqrt(2*r/(1+r)) - 1 + 1/sqrt(r) - sqrt(2/(r*(1+r)))) - ((sq
 x = 0:.001:20;
 inequalitySolution = x.^3 - (7 + 4*sqrt(2)).*x.^2 + (3 + 4*sqrt(2)).*x - 1;
 
-hold all
-inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
+
 
 
 inequalityFromEquations = (sqrt(2.*x./(1+x)) - 1 + 1./sqrt(x) - sqrt(2./(x.*(1+x)))) - ((sqrt(2)-1).*(1 + 1./sqrt(x)));
 
 % figure
+
+
+
+
+figure
+subplot(1,2,1); hold all
 inEq = plot(x,inequalityFromEquations,'b','linewidth',1.5);
+% inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
+PlotBoi2('r','Cost',14,'LaTex')
+
+subplot(1,2,2); hold all
+inEq = plot(x,inequalityFromEquations,'b','linewidth',1.5);
+inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
 
 plot([min(x) max(x)],[0 0],'k')
 
