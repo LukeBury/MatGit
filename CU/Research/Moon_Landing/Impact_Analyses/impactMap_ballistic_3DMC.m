@@ -21,16 +21,23 @@ saveFigures            = 0;
 if isequal(computer,'MACI64')      % Mac
     on_Fortuna         = 0;
     mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+    savepath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs';
+    computerTag = 'M';
     
 elseif isequal(computer,'GLNXA64') % Fortuna
     on_Fortuna         = 1;
     mbinPath = '/home/lubu8198/MatGit/mbin';
+    savepath = '/home/lubu8198/MatGit/MatlabOutputs';
+    computerTag = 'F';
 %   N = maxNumCompThreads returns the current maximum number of computational threads N.
 %   LASTN = maxNumCompThreads(N) sets the maximum number of computational threads to N, 
 %        and returns the previous maximum number of computational threads, LASTN.
 %   LASTN = maxNumCompThreads('automatic') sets the maximum number of computational threads
 %        using what the MATLAB® software determines to be the most desirable. It additionally
 %        returns the previous maximum number of computational threads, LASTN.
+
+
+
 else 
     warning('This computer will explode in 5 seconds!')
 end
@@ -447,59 +454,103 @@ ticLoop = tic;
 
 end
 
+
 % -------------------------------------------------
-% Concatenating data
+% Writing data to CSV
 % -------------------------------------------------
-%%% Preallocate general data
-X0s          = zeros(n_traj,6);
-latLons      = zeros(n_traj,2);
-impactSpeeds = zeros(n_traj,1);
-impactAngles = zeros(n_traj,1);
+%%% Writing header
+filename = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
+fid = fopen(filename, 'wt');
+fprintf(fid,'%s,%s,%s,%s,%s\n', 'bin_impactAngle','bin_neckSection','latitude','longitude','impactAngle');  % header
 
-%%% Preallocate bins for neck sections
-binData_neckSections(length(bins_neckSections)).latLons = [];
-
-%%% Preallocate bins for impact angles
-binData_impactAngles(binCount_ImpactAngles).latLons = [];
-
-%%% Store full trajectories
-if store_trajectories == 1
-    trajs   = zeros(n_traj,3);
-end
-
-%%% Bring data together into single variables
-tCount = 0;
-for kk = 1:length(r0Data)
-    for jj = 1:size(r0Data{kk}.X0s,1)
-        %%% Count trajectory
-        tCount = tCount + 1;
-        
-        %%% Store
-        X0s(tCount,:)        = r0Data{kk}.X0s(jj,:);
-        latLons(tCount,:)    = r0Data{kk}.latLons(jj,:);
-        impactSpeeds(tCount) = r0Data{kk}.impactSpeeds(jj);
-        impactAngles(tCount) = r0Data{kk}.impactAngles(jj);
-        
-        %%% Binning appropriate data
-        binData_neckSections(r0Data{kk}.bin_neckSections(jj)).latLons =...
-            [binData_neckSections(r0Data{kk}.bin_neckSections(jj)).latLons; r0Data{kk}.latLons(jj,:)];
+%%% Writing dataa
+for kk = 1:n_r0s
+    for jj = 1:n_v0s_per_r0
+        %%% If this trajectory impacted
         if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-            binData_impactAngles(r0Data{kk}.bin_impactAngles(jj)).latLons =...
-                [binData_impactAngles(r0Data{kk}.bin_impactAngles(jj)).latLons; r0Data{kk}.latLons(jj,:)];
-        end
-        
-        if store_trajectories == 1
-            trajs(tCount,:)  = r0Data{kk}.trajs(jj,:);
+            fprintf(fid,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
         end
     end
 end
 
-if tCount ~= n_traj
-    warning('Houston we''ve got a problem')
-end
+%%% Close file
+fclose(fid);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if on_Fortuna == 0
+
+    % -------------------------------------------------
+    % Concatenating data
+    % -------------------------------------------------
+    %%% Preallocate general data
+    X0s          = zeros(n_traj,6);
+    latLons      = zeros(n_traj,2);
+    impactSpeeds = zeros(n_traj,1);
+    impactAngles = zeros(n_traj,1);
+
+    %%% Preallocate bins for neck sections
+    binData_neckSections(length(bins_neckSections)).latLons = [];
+
+    %%% Preallocate bins for impact angles
+    binData_impactAngles(binCount_ImpactAngles).latLons = [];
+
+    %%% Store full trajectories
+    if store_trajectories == 1
+        trajs   = zeros(n_traj,3);
+    end
+
+    %%% Bring data together into single variables
+    tCount = 0;
+    for kk = 1:length(r0Data)
+        for jj = 1:size(r0Data{kk}.X0s,1)
+            %%% Count trajectory
+            tCount = tCount + 1;
+
+            %%% Store
+            X0s(tCount,:)        = r0Data{kk}.X0s(jj,:);
+            latLons(tCount,:)    = r0Data{kk}.latLons(jj,:);
+            impactSpeeds(tCount) = r0Data{kk}.impactSpeeds(jj);
+            impactAngles(tCount) = r0Data{kk}.impactAngles(jj);
+
+            %%% Binning appropriate data
+            binData_neckSections(r0Data{kk}.bin_neckSections(jj)).latLons =...
+                [binData_neckSections(r0Data{kk}.bin_neckSections(jj)).latLons; r0Data{kk}.latLons(jj,:)];
+            if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
+                binData_impactAngles(r0Data{kk}.bin_impactAngles(jj)).latLons =...
+                    [binData_impactAngles(r0Data{kk}.bin_impactAngles(jj)).latLons; r0Data{kk}.latLons(jj,:)];
+            end
+
+            if store_trajectories == 1
+                trajs(tCount,:)  = r0Data{kk}.trajs(jj,:);
+            end
+        end
+    end
+
+    if tCount ~= n_traj
+        warning('Houston we''ve got a problem')
+    end
+
+
+
     % -------------------------------------------------
     % Plotting
     % -------------------------------------------------
@@ -702,13 +753,13 @@ if on_Fortuna == 0
     %         saveas(gcf,figName)
     %         close all
     %     end
-    finalToc = toc(ticWhole);
+    finalToc = toc(ticWhole)
     
 elseif on_Fortuna == 1
     clear time0_n 
     finalToc = toc(ticWhole);
     coreNumber = feature('numcores');
-    save('/home/lubu8198/MatGit/MatlabOutputs/impactMap_ballistic_3DMC_WS.mat')
+%     save('/home/lubu8198/MatGit/MatlabOutputs/impactMap_ballistic_3DMC_WS.mat')
 end
 
 
