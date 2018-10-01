@@ -57,45 +57,66 @@ colors = get_colors();
 % Jt_P = @(r) (sqrt(2)-1)*(1 + 1/sqrt(r))
 
 % --------------------------------
-
-syms r real
-assume(r>1)
-
-inequality = (sqrt(2*r/(1+r)) - 1 + 1/sqrt(r) - sqrt(2/(r*(1+r)))) - ((sqrt(2)-1)*(1 + 1/sqrt(r)));
-inequality_f = @(r) (sqrt(2*r/(1+r)) - 1 + 1/sqrt(r) - sqrt(2/(r*(1+r)))) - ((sqrt(2)-1)*(1 + 1/sqrt(r)));
-
-x = 0:.001:20;
-inequalitySolution = x.^3 - (7 + 4*sqrt(2)).*x.^2 + (3 + 4*sqrt(2)).*x - 1;
-
-
+% % % % 
+% % % % syms r real
+% % % % assume(r>1)
+% % % % 
+% % % % inequality = (sqrt(2*r/(1+r)) - 1 + 1/sqrt(r) - sqrt(2/(r*(1+r)))) - ((sqrt(2)-1)*(1 + 1/sqrt(r)));
+% % % % inequality_f = @(r) (sqrt(2*r/(1+r)) - 1 + 1/sqrt(r) - sqrt(2/(r*(1+r)))) - ((sqrt(2)-1)*(1 + 1/sqrt(r)));
+% % % % 
+r = 0:.001:12;
+inequalitySolution = r.^3 - (7 + 4*sqrt(2)).*r.^2 + (3 + 4*sqrt(2)).*r - 1;
 
 
-inequalityFromEquations = (sqrt(2.*x./(1+x)) - 1 + 1./sqrt(x) - sqrt(2./(x.*(1+x)))) - ((sqrt(2)-1).*(1 + 1./sqrt(x)));
 
+
+inequalityFromEquations = (sqrt(2.*r./(1+r)) - 1 + 1./sqrt(r) - sqrt(2./(r.*(1+r)))) - ((sqrt(2)-1).*(1 + 1./sqrt(r)));
+% % % % 
+% % % % % figure
+% % % % 
+% % % % 
+% % % % 
+% % % % 
+% % % % figure
+% % % % subplot(1,2,1); hold all
+% % % % inEq = plot(r,inequalityFromEquations,'b','linewidth',1.5);
+% % % % % inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
+% % % % PlotBoi2('r','Cost',14,'LaTex')
+% % % % 
+% % % % subplot(1,2,2); hold all
+% % % % inEq = plot(r,inequalityFromEquations,'b','linewidth',1.5);
+% % % % inSo = plot(r,inequalitySolution,'r','linewidth',1.5);
+% % % % 
+% % % % plot([min(r) max(r)],[0 0],'k')
+% % % % 
+% % % % legend([inSo inEq], 'Given Solution','From Equations')
+% % % % PlotBoi2('r','Cost',14,'LaTex')
+% % % % ylim([-10 10])
+% % % % set(gcf,'Position',[-989 344 560 420]);
+
+%%%% Comparing current equation
+y = ((sqrt(2)*((r-1)./(sqrt(r+1)) - sqrt(r) - 1) + 2)).*(r-0.5715).*(r-0.1466).*11.1374.*3;
+% y = ((sqrt(2)*((r-1)./(sqrt(r+1)) - sqrt(r) - 1) + 2))
+
+figure; hold all
+inEq = plot(r,inequalityFromEquations,'b','linewidth',1.5);
+inSo = plot(r,inequalitySolution,'r','linewidth',1.5);
+myTest = plot(r,y,'g','linewidth',1.5);
+
+plot([min(r) max(r)],[0 0],'k')
+
+legend([inSo inEq myTest], 'Given Solution','From Equations','My Test')
+PlotBoi2('r','Cost',14,'LaTex')
+ylim([-5 5])
+set(gcf,'Position',[-989 344 560 420]);
+
+
+
+% 
+% x = 0:.01:10;
+% y = 1 - 1./x;
 % figure
-
-
-
-
-figure
-subplot(1,2,1); hold all
-inEq = plot(x,inequalityFromEquations,'b','linewidth',1.5);
-% inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
-PlotBoi2('r','Cost',14,'LaTex')
-
-subplot(1,2,2); hold all
-inEq = plot(x,inequalityFromEquations,'b','linewidth',1.5);
-inSo = plot(x,inequalitySolution,'r','linewidth',1.5);
-
-plot([min(x) max(x)],[0 0],'k')
-
-legend([inSo inEq], 'Given Solution','From Equations')
-PlotBoi2('r','Cost',14,'LaTex')
-ylim([-10 10])
-
-
-
-
+% plot(x,y)
 
 
 

@@ -1,7 +1,8 @@
 clear
 clc
-% close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+close all
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 
 % ========================================================================
 %%% Run switches
@@ -11,7 +12,7 @@ run_symbollicWork = 0;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -57,7 +58,7 @@ u = secondary.MR;
 % ------------------------------------------------- 
 %%% Periodic Orbit options
 % -------------------------------------------------
-n = 300;
+n = 500;
 L_Point = 2;
 dS_PO = .0001;
 % dS_PO = .000001;
@@ -261,7 +262,7 @@ axis square
 
 [JC_L1]   = JacobiConstantCalculator(secondary.MR,Ls_n(1,:),[0,0,0])
 [JC_L2]   = JacobiConstantCalculator(secondary.MR,Ls_n(2,:),[0,0,0])
-[JC_Surf] = JacobiConstantCalculator(secondary.MR,[1-secondary.MR-secondary.R_n,0,0],[0,0,0])
+[JC_sNX] = JacobiConstantCalculator(secondary.MR,[1-secondary.MR-secondary.R_n,0,0],[0,0,0])
 % 
 JCs_PO = zeros(1,size(POs,2));
 for kk = 1:size(POs,2)

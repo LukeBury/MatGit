@@ -71,6 +71,9 @@ colors.sch.r9 = [107 11 11;179 19 19;240 80 83;246 127 61;247 180 32;247 212 32;
 % redish, blueish, greenish
 colors.sch.d3_1 = [239 71 111; 0 136 204; 4 173 74]./255; 
 
+% redish, yellowish, blueish (from wild cherry background)
+colors.sch.d3_2 = [255 81 104; 255 181 32; 107 165 211]./255; 
+
 %%% 4 colors
 % 4 distinct colors #1 (from my NSTRF '18)
 colors.sch.d4_1 = [6 214 160; 38 84 124; 239 71 111; 255 196 61]./255; 
@@ -82,7 +85,7 @@ colors.sch.d4_1 = [6 214 160; 38 84 124; 239 71 111; 255 196 61]./255;
 colors.sch.s3_1 = [0 43 65;25 100 126;40 175 176]./255; 
 
 %%% 5 colors
-% Pinkish gradient
+% Pinkish gradient with cyan finisher
 colors.sch.s5_1 = [254, 184, 212; 229, 153, 215; 187, 163, 211; 146, 181, 216; 1, 248, 217]./255;
 
 %==========================================================================

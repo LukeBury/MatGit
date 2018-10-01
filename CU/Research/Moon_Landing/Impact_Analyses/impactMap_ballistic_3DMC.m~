@@ -7,26 +7,31 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Data switches
-store_trajectories     = 0;
+store_trajectories     = 0; % Literally stores all the trajectories ... don't do this
 
 %%% Plot switches
 plot_initialConditions = 1;
 plot_fullSystemContour = 1;
 plot_sectionColors     = 1;
 
-%%% Save plots
-saveFigures            = 0;
+% %%% Save plots
+% saveFigures            = 0;
+
+%%% Plot data from file
+loadDataAndPlot        = 0;
 
 %%% Computer?
 if isequal(computer,'MACI64')      % Mac
     on_Fortuna         = 0;
     mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+    moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
     savepath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs';
     computerTag = 'M';
     
 elseif isequal(computer,'GLNXA64') % Fortuna
     on_Fortuna         = 1;
     mbinPath = '/home/lubu8198/MatGit/mbin';
+    moonFuncsPath = '/home/lubu8198/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
     savepath = '/home/lubu8198/MatGit/MatlabOutputs';
     computerTag = 'F';
 %   N = maxNumCompThreads returns the current maximum number of computational threads N.
@@ -43,6 +48,7 @@ else
 end
 
 addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
 
 % ========================================================================
 %%% Setup
@@ -79,10 +85,6 @@ Lpoint = 2;  % 1 or 2
 L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 Lpoint_x = L123(Lpoint,1);
 
-% %%% Choosing number of elevations and azimuths per starting spot in 3D neck
-% n_el = 3;
-% n_az = 3;
-
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
@@ -91,25 +93,21 @@ dvLp_mps = 200; % Meters per second
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
 % r0GridSpacing_km = 10; % km - Enceladus
-r0GridSpacing_km = 1000; % km
+r0GridSpacing_km = 1200; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
-% v0AngularSpace_deg = 15; % degrees - Europa
-% v0AngularSpace_deg = 15; % degrees - Enceladus
-v0AngularSpace_deg = 90; % degrees
+n_v0s_per_r0_target = 145/2;
+% n_target = 1297; % ~ 5 deg spacing
+% n_target = 352;  % ~ 10 deg spacing
+% n_target = 145;  % ~ 15 deg spacing - should be used
+% n_target = 37;   % ~ 30 deg spacing - decent
+% n_target = 17;   % ~ 45 deg spacing
+% n_target = 5;    % ~ 90 deg spacing
 
 %%% Selecting time vector
 t_i = 0; % sec
 t_f = 4*pi;
-dt = t_f/10000;
-
-% -------------------------------------------------
-% Trouble with settings?
-% -------------------------------------------------
-if v0AngularSpace_deg > 90
-    warning('Angular spacing too large for v0s')
-    return
-end
+dt = t_f/1000;
 
 % -------------------------------------------------
 % Bin settings
@@ -210,6 +208,7 @@ for yk = 1:size(Y_yz,1)
     end
 end
 
+%%% Total number of r0s
 n_r0s = size(r0s,1);
 
 % -------------------------------------------------
@@ -226,15 +225,23 @@ smallNeck = smallerValue(z_neck_upper, y_neck_upper);
 largeNeck = largerValue(z_neck_upper, y_neck_upper);
 bins_neckSections = [linspace(0,smallNeck,binCount_NeckSections), largeNeck];
 
-% -------------------------------------------------
-% Defining azimuths and elevations to loop through per r0
-% -------------------------------------------------
-azimuths   = 0 : v0AngularSpace_deg : 360-v0AngularSpace_deg; % deg
-elevations = 0 : v0AngularSpace_deg : 90; % deg
+% % -------------------------------------------------
+% % Defining azimuths and elevations to loop through per r0
+% % -------------------------------------------------
+% azimuths   = 0 : v0AngularSpace_deg : 360-v0AngularSpace_deg; % deg
+% elevations = 0 : v0AngularSpace_deg : 90; % deg
+% 
+% n_v0s_per_r0 = (length(azimuths)*length(elevations)-(length(azimuths)-1));
 
-n_v0s_per_r0 = (length(azimuths)*length(elevations)-(length(azimuths)-1));
+%%% Acquiring matrix of vHat vectors
+if Lpoint == 1
+    [vHats2] = vHatHemisphere(n_v0s_per_r0_target,'x');
+elseif Lpoint == 2
+    [vHats2] = vHatHemisphere(n_v0s_per_r0_target,'-x');
+end
 
 %%% For reference, total number of trajectories to simulate
+n_v0s_per_r0 = size(vHats2,1);
 n_traj = n_r0s * n_v0s_per_r0;
 
 % -------------------------------------------------
@@ -244,6 +251,7 @@ n_traj = n_r0s * n_v0s_per_r0;
 time0_n = t_i:dt:t_f;
 
 %%% Choosing ode45 tolerance
+% tol = 2.22045e-14;
 tol = 1e-10;
 
 %%% Setting integrator options
@@ -253,11 +261,13 @@ options_Impact = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 % ========================================================================
 %%% Loop through conditions, store results in bins, and plot
 % ========================================================================
+if loadDataAndPlot == 0
 r0Data = {};
 % parforSize = 2;
 if Lpoint ~= 2
     warning('must reconfigure v0 calculator for this Lpoint')
 end
+clear vHats
 parfor ii = 1:n_r0s
 ticLoop = tic;
 
@@ -265,11 +275,24 @@ ticLoop = tic;
     % Reducing broadcast variables
     % -------------------------------------------------
     L123mat = L123;
+    vHats = vHats2;
+    
     % -------------------------------------------------
     % Setting current initial position
     % -------------------------------------------------
     r0_i = r0s(ii,:);
     
+%     % -------------------------------------------------
+%     % Doing this again because parfor is dumb
+%     % -------------------------------------------------
+%     %%% Acquiring matrix of vHat vectors
+%     vHats = [];
+%     if Lpoint == 1
+%         [vHats] = vHatHemisphere(n_v0s_per_r0_target,'x');
+%     elseif Lpoint == 2
+%         [vHats] = vHatHemisphere(n_v0s_per_r0_target,'-x');
+%     end
+
     % -------------------------------------------------
     % Finding necessary v0 to maintain correct JC0
     % -------------------------------------------------
@@ -282,158 +305,135 @@ ticLoop = tic;
     dJC_forInitialVelocity = JC_initialPos - JC_scInitial;
     
     %%% Setting variables so they're not considered 'temporary variables'
-    vRef  = [];
+    v0i_mag = [];
     
     %%% Find necessary velocity magnitude
     if dJC_forInitialVelocity < 0
         warning('Spacecraft starting in a forbidden zone')
     elseif dJC_forInitialVelocity >= 0
-        v0i = sqrt(abs(dJC_forInitialVelocity));
-        
-        v0Hat = [0, 0, 1];
-        
-        % Create initial velocity vector
-        vRef = v0Hat .* v0i;
+        v0i_mag = sqrt(abs(dJC_forInitialVelocity));
     end
     
     % -------------------------------------------------
     % Looping through velocity vectors
-    % -------------------------------------------------
-    trajCount = 0;
-    elevation90HasBeenDone = 0;
-    
+    % -------------------------------------------------    
     %%% Initializing data matrices
-    X0s_ii               = zeros(n_v0s_per_r0,6);
-    latLons_ii           = zeros(n_v0s_per_r0,2);
-    trajs_ii             = zeros(n_v0s_per_r0,3);
-    impactSpeeds_ii      = zeros(n_v0s_per_r0,1);
-    impactAngles_ii      = zeros(n_v0s_per_r0,1);
+    X0s_ii                        = zeros(n_v0s_per_r0,6);
+    latLons_ii                    = zeros(n_v0s_per_r0,2);
+    trajs_ii                      = zeros(n_v0s_per_r0,3);
+    impactSpeeds_ii               = zeros(n_v0s_per_r0,1);
+    impactAngles_ii               = zeros(n_v0s_per_r0,1);
     
-    bin_impactAngles_ii  = zeros(n_v0s_per_r0,1);
-    bin_neckSections_ii  = zeros(n_v0s_per_r0,1);
+    bin_impactAngles_ii           = zeros(n_v0s_per_r0,1);
+    bin_neckSections_ii           = zeros(n_v0s_per_r0,1);
+    
+    landingTrajs_ii = [];
     
     %%% Running loop
-    for az_i = azimuths
-        for el_i = elevations
-            %%% Making sure elevation-90 isn't redone
-            if el_i == 90 && elevation90HasBeenDone == 1
-                continue
+    for vi = 1:n_v0s_per_r0
+
+        %%% Setting v0
+        v0_i = vHats(vi,:) .* v0i_mag;
+        
+        %%% Setting X0
+        X0_n = [r0_i, v0_i];
+
+        % ---------------------------------------
+        % Integrating
+        % ---------------------------------------
+        %%% Propagating trajectory
+        [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+            time0_n, X0_n, options_Impact, MR, R2_n);
+
+        % ---------------------------------------
+        % Preallocating temporary variables
+        % ---------------------------------------
+        impactLatLon = []
+        impactSpeed  = [];
+        impactAngle  = [];
+        landingTraj  = [];
+
+        % ---------------------------------------
+        % Determining lat/lon, speed, and angle of impact
+        % ---------------------------------------
+
+        if isempty(X_eventImpact) == 0
+            % --------------------------
+            % Impact lat/lon
+            % --------------------------
+            %%% Creating SCR position
+            rImpact_SCR = X_eventImpact(1,1:3) - [1-MR, 0, 0];
+
+            %%% Finding lat/lon of impact site
+            [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
+            impactLatLon = [lat, lon];
+
+            % --------------------------
+            % Impact speed
+            % --------------------------
+            impactSpeed = norm(X_eventImpact(end,4:6));
+
+            % --------------------------
+            % Impact Angle
+            % --------------------------
+            %%% Creating SCR position vector
+            rImpact_SCR_n = X_eventImpact(end,1:3) - [1-MR,0,0];
+            rImpact_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
+
+            %%% Velocity unit vector at impact
+            vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
+
+            %%% Angle between velocity and surface
+            A = R3(rImpact_SCR_n,pi/2);
+            B = vHatImpact_n;
+            impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
+            if impactAngle > pi/2
+                impactAngle = pi - impactAngle;
             end
 
-            %%% Counting IC
-            trajCount = trajCount + 1;
+            %%% Going with degrees
+            impactAngle = impactAngle*180/pi;
 
-            %%% Determining current v0
-            v1 = R2(vRef, -el_i*pi/180);
-            v0_i = R1(v1, az_i*pi/180);
-            
-            %%% Setting X0
-            X0_n = [r0_i, v0_i];
-            
+        elseif isempty(X_eventImpact) == 1
+            impactLatLon = [NaN, NaN];
+            impactSpeed  = NaN;
+            impactAngle  = NaN;                
+        end
 
-            % ---------------------------------------
-            % Integrating
-            % ---------------------------------------
-            %%% Propagating trajectory
-            [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode45(@Int_CR3Bn,...
-                time0_n, X0_n, options_Impact, MR, R2_n);
-            
-            % ---------------------------------------
-            % Preallocating temporary variables
-            % ---------------------------------------
-            impactLatLon = []
-            impactSpeed  = [];
-            impactAngle  = [];
-            
-            % ---------------------------------------
-            % Determining lat/lon, speed, and angle of impact
-            % ---------------------------------------
-            
-            if isempty(X_eventImpact) == 0
-                % --------------------------
-                % Impact lat/lon
-                % --------------------------
-                %%% Creating SCR position
-                rImpact_SCR = X_eventImpact(1,1:3) - [1-MR, 0, 0];
+        % =======================================
+        % Storing results of trajectory
+        % ---------------------------------------
+        X0s_ii(vi,:)        = X0_n;
+        latLons_ii(vi,:)    = impactLatLon;
+        impactSpeeds_ii(vi) = impactSpeed;
+        impactAngles_ii(vi) = impactAngle;
 
-                %%% Finding lat/lon of impact site
-                [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
-                impactLatLon = [lat, lon];
-                
-                % --------------------------
-                % Impact speed
-                % --------------------------
-                impactSpeed = norm(X_eventImpact(end,4:6));
-                
-                % --------------------------
-                % Impact Angle
-                % --------------------------
-                %%% Creating SCR position vector
-                rImpact_SCR_n = X_eventImpact(end,1:3) - [1-MR,0,0];
-                rImpact_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
-                
-                %%% Velocity unit vector at impact
-                vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
-                
-                %%% Angle between velocity and surface
-                A = R3(rImpact_SCR_n,pi/2);
-                B = vHatImpact_n;
-                impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-                if impactAngle > pi/2
-                    impactAngle = pi - impactAngle;
-                end
-                
-                %%% Going with degrees
-                impactAngle = impactAngle*180/pi;
-                
-            elseif isempty(X_eventImpact) == 1
-                impactLatLon = [NaN, NaN];
-                impactSpeed  = NaN;
-                impactAngle  = NaN;
-                
-            end
-            
-            % =======================================
-            % Storing results of trajectory
-            % ---------------------------------------
-            X0s_ii(trajCount,:)        = X0_n;
-            latLons_ii(trajCount,:)    = impactLatLon;
-            impactSpeeds_ii(trajCount) = impactSpeed;
-            impactAngles_ii(trajCount) = impactAngle;
-            
-            % ---------------------------------------
-            % Assigning bins
-            % ---------------------------------------
-            %%% Bin - Impact Angle
-            bin_impactAngles_ii(trajCount) = discretize(impactAngle, bins_impactAngles);
-    
-            %%% Bin - Neck Section
-            % Calculate radial distance from r0 to LPoint
-            r0LPointDist = norm(X0_n(1:3) - L123mat(Lpoint,:));
-            
-            bin_neckSections_ii(trajCount) = discretize(r0LPointDist, bins_neckSections);
-            
-%             if     X0_n(2) >  0 && X0_n(3) >= 0
-%                 bin_neckSections_ii(trajCount) = 1;
-%             elseif X0_n(2) >= 0 && X0_n(3) <  0
-%                 bin_neckSections_ii(trajCount) = 2;
-%             elseif X0_n(2) <  0 && X0_n(3) <= 0
-%                 bin_neckSections_ii(trajCount) = 3;
-%             elseif X0_n(2) <= 0 && X0_n(3) >  0
-%                 bin_neckSections_ii(trajCount) = 4;
-%             end
 
-            if store_trajectories == 1
+        % ---------------------------------------
+        % Assigning bins
+        % ---------------------------------------
+        %%% Bin - Impact Angle
+        bin_impactAngles_ii(vi) = discretize(impactAngle, bins_impactAngles);
+
+        %%% Bin - Neck Section
+        % Calculate radial distance from r0 to LPoint
+        r0LPointDist = norm(X0_n(1:3) - L123mat(Lpoint,:));
+
+        bin_neckSections_ii(vi) = discretize(r0LPointDist, bins_neckSections);
+
+        % ---------------------------------------
+        % Storing Low-landing-angle trajectories
+        % ---------------------------------------
+        if isempty(X_eventImpact) == 0 && bin_impactAngles_ii(vi) == 1
+            landingTraj = [time_n, X_BCR_n];
+            landingTrajs_ii = [landingTrajs_ii; NaN(1,size(landingTraj,2)) ;landingTraj];
+        elseif isempty(X_eventImpact) == 1
+            landingTraj = NaN;
+        end
+
+        if store_trajectories == 1
 %                 trajs = [X_BCR_n(:,1:3); NaN(1,3)];
 %                 trajs_ii(trajCount,:) = trajs;
-            end
-            
-            % ---------------------------------------
-            % Making sure elevation-90 is only done once in for-loop
-            % ---------------------------------------
-            if el_i == 90
-                elevation90HasBeenDone = 1;
-            end
         end
     end
     
@@ -445,6 +445,8 @@ ticLoop = tic;
     r0Data{ii}.impactSpeeds = impactSpeeds_ii;
     r0Data{ii}.impactAngles = impactAngles_ii;
     
+    r0Data{ii}.landingTrajs = landingTrajs_ii;
+    
     r0Data{ii}.bin_neckSections = bin_neckSections_ii;
     r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
     
@@ -454,38 +456,84 @@ ticLoop = tic;
 
 end
 
-
 % -------------------------------------------------
 % Writing data to CSV
 % -------------------------------------------------
+%%
 %%% Writing header
-filename = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
-fid = fopen(filename, 'wt');
-fprintf(fid,'%s,%s,%s,%s,%s\n', 'bin_impactAngle','bin_neckSection','latitude','longitude','impactAngle');  % header
+filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
+f_allTraj = fopen(filename_allTraj, 'wt');
+fprintf(f_allTraj,'bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle\n');  % header
 
-%%% Writing dataa
+filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg_land.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
+f_landingTraj = fopen(filename_landingTraj, 'wt');
+fprintf(f_landingTraj,'t_n,x_n,y_n,z_n,dx_n,dy_n,dz_n\n');  % header
+
+%%% Writing data
 for kk = 1:n_r0s
     for jj = 1:n_v0s_per_r0
         %%% If this trajectory impacted
         if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-            fprintf(fid,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
+            fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
+           
+        end
+    end
+    if isempty(r0Data{kk}.landingTrajs) == 0
+        for rr = 1:size(r0Data{kk}.landingTrajs,1)
+            if isnan(r0Data{kk}.landingTrajs(rr,1)) == 1
+                fprintf(f_landingTraj,'NaN, NaN, NaN, NaN, NaN, NaN, NaN\n');
+            else
+                fprintf(f_landingTraj,'%1.6f, %1.8f, %1.8f, %1.8f, %1.8f, %1.8f, %1.8f\n',r0Data{kk}.landingTrajs(rr,:));
+            end
+            
         end
     end
 end
 
 %%% Close file
-fclose(fid);
+fclose(f_allTraj);
+fclose(f_landingTraj);
+
+end % if loadDataAndPlot == 0
 
 
 
 
 
 
+% -------------------------------------------------
+% Load other data from file
+% -------------------------------------------------
+if loadDataAndPlot == 1
 
-
-
-
-
+    %%% Load data
+    dataMat = dlmread('/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_EurL2_200mps_50km_15deg.txt',',',1,0);
+    
+    %%% set column specifiers
+    c_impactBin = 1;
+    c_neckBin   = 2;
+    c_latitude  = 3;
+    c_longitude = 4;
+    c_impactAng = 5;
+    
+    %%% Preallocate
+    binData_impactAngles(binCount_ImpactAngles).latLons = [];
+    binData_neckSections(length(bins_neckSections)).latLons = [];
+    
+    %%% Store impact angle bins
+    for kk = 1:binCount_ImpactAngles
+        currentBinIndices = find(dataMat(:,c_impactBin)==kk);
+        binData_impactAngles(kk).latLons = dataMat(currentBinIndices,[c_latitude,c_longitude]);
+    end
+    
+    for kk = 1:binCount_NeckSections
+        currentBinIndices = find(dataMat(:,c_neckBin)==kk);
+        binData_neckSections(kk).latLons = dataMat(currentBinIndices,[c_latitude,c_longitude]);
+    end
+    
+    
+    
+end
 
 
 
@@ -498,8 +546,9 @@ fclose(fid);
 
 if on_Fortuna == 0
 
+    if loadDataAndPlot == 0
     % -------------------------------------------------
-    % Concatenating data
+    % Concatenating data (if not loaded)
     % -------------------------------------------------
     %%% Preallocate general data
     X0s          = zeros(n_traj,6);
@@ -548,6 +597,8 @@ if on_Fortuna == 0
     if tCount ~= n_traj
         warning('Houston we''ve got a problem')
     end
+    
+    
 
 
 
@@ -560,14 +611,24 @@ if on_Fortuna == 0
         r0Data{1}.X0s(:,4),r0Data{1}.X0s(:,5),r0Data{1}.X0s(:,6))
     PlotBoi3('X','Y','Z',15)
     axis equal
-
+% %     figure; hold all
+% %     plot3(r0Data{1}.X0s(:,4),r0Data{1}.X0s(:,5),r0Data{1}.X0s(:,6),'.')
+% %     PlotBoi3('X','Y','Z',15)
+% %     axis equal
+    
+    
 
     figure; hold all
     plot(latLons(:,2),latLons(:,1),'r.','linewidth',1.5,'markersize',13)
     xlim([-180 180])
     ylim([-90 90])
     PlotBoi2('Longitude','Latitude',15)
-
+    
+    
+    
+    
+    
+    
     % if store_trajectories == 1
     %     figure(3); hold all
     %     plot3(trajs(:,1),trajs(:,2),trajs(:,3))
@@ -617,7 +678,10 @@ if on_Fortuna == 0
         camva(9)
         axis equal
     end
-
+    
+    end % if loadDataAndPlot == 0
+    
+    
     if plot_fullSystemContour == 1
         %%% Creating ZV contours
         % Contour bounds
@@ -656,30 +720,14 @@ if on_Fortuna == 0
 
     if plot_sectionColors == 1
         figure; hold all
-
-        for kk = binCount_NeckSections+1:-1:2
-            plotBody2(bins_neckSections(kk),[0,0,0], binColors_NeckSections(kk-1,:), binColors_NeckSections(kk-1,:), 1)
-        end
-
-        fillout(yzContourPoints(1,:),yzContourPoints(2,:));
+        fill(yzContourPoints(1,:),yzContourPoints(2,:),binColors_NeckSections(4,:))
+        
         plot(yzContourPoints(1,:), yzContourPoints(2,:),'k','linewidth',3)
-    % 
-    %     eps = 1e-17;
-    %     pypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[0, 100, 100, 0],[eps, eps, 100, 100]));
-    %     pynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[eps, 100, 100, eps],[0, 0, -100, -100]));
-    %     nynz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 0 0 -100],[-eps -eps -100 -100]));
-    %     nypz = yzContourPoints(:,inpolygon(yzContourPoints(1,:), yzContourPoints(2,:),[-100 -eps -eps -100],[100 100 0 0]));
-    % 
-    %     pypz = [pypz, [0, 0, y_neck_upper; 0, z_neck_upper, 0]];
-    %     pynz = [pynz, [0, 0, y_neck_upper; 0, -z_neck_upper, 0]];
-    %     nynz = [nynz, [-y_neck_upper, 0, 0; 0, -z_neck_upper, 0]];
-    %     nypz = [nypz, [-y_neck_upper, 0, 0; 0, z_neck_upper, 0]];
-    % 
-    %     area(pypz(1,:),pypz(2,:),'FaceColor',binColors_NeckSections(1,:))
-    %     area(pynz(1,:),pynz(2,:),'FaceColor',binColors_NeckSections(2,:))
-    %     area(nynz(1,:),nynz(2,:),'FaceColor',binColors_NeckSections(3,:))
-    %     area(nypz(1,:),nypz(2,:),'FaceColor',binColors_NeckSections(4,:))
-
+        
+        for kk = binCount_NeckSections-1:-1:1
+            plotBody2(bins_neckSections(kk+1),[0,0,0], binColors_NeckSections(kk,:), binColors_NeckSections(kk,:), 1)
+        end
+        
         axis equal
         PlotBoi3('Y','Z','X',14)
     end
@@ -753,7 +801,7 @@ if on_Fortuna == 0
     %         saveas(gcf,figName)
     %         close all
     %     end
-    finalToc = toc(ticWhole)
+    finalToc = toc(ticWhole);
     
 elseif on_Fortuna == 1
     clear time0_n 
@@ -765,22 +813,17 @@ elseif on_Fortuna == 1
     % Creating file of Fortuna info
     % -------------------------------------------------
     %%% Writing header
-    filename = fullfile(savepath, sprintf('%sL.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
-    fid = fopen(filename, 'wt');
-    fprintf(fid,'%s,%s,%s,%s,%s\n', 'bin_impactAngle','bin_neckSection','latitude','longitude','impactAngle');  % header
+    filename_runData = fullfile(savepath, sprintf('%sLog.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fdeg.txt',computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,v0AngularSpace_deg));
+    f_runData = fopen(filename_runData, 'wt');
+    fprintf(f_runData,'Run Time (sec):\t\t%1.1f\n',finalToc);
+    fprintf(f_runData,'Run Time (min):\t\t%1.1f\n',finalToc/60);
+    fprintf(f_runData,'number of r0s:\t\t%1.0f\n',n_r0s);
+    fprintf(f_runData,'v0s per r0s:\t\t%1.0f\n',n_v0s_per_r0);
+    fprintf(f_runData,'total trajs:\t\t%1.0f\n',n_traj);
 
-    %%% Writing dataa
-    for kk = 1:n_r0s
-        for jj = 1:n_v0s_per_r0
-            %%% If this trajectory impacted
-            if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(fid,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
-            end
-        end
-    end
-
+  
     %%% Close file
-    fclose(fid);
+    fclose(f_runData);
 
 end
 

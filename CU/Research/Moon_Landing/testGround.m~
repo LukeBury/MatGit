@@ -2,9 +2,8 @@ clear
 clc
 close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon-L';
 addpath(genpath(mbinPath))
-addpath(genpath(moonFuncsPath))
 
 % ========================================================================
 %%% Importing Data
@@ -65,7 +64,7 @@ colors = get_colors();
 % % % % % % % PlotBoi3('x','y','z',14)
 % % % % % % % view(-90,90)
 
-[vHats] = vHatHemisphere(352,'-z');
+[vHats] = vHatHemisphere(352,'-y');
 figure
 plot3(vHats(:,1),vHats(:,2),vHats(:,3),'.','markersize',16)
 axis equal
