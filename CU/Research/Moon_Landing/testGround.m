@@ -1,6 +1,6 @@
 clear
-clc
-close all
+% clc
+% close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
@@ -19,113 +19,118 @@ colors = get_colors();
 %%% Testing
 % ========================================================================
 
-% a = icoSphereMesh(1);
-% length(a.x)
-% 
-% a = icoSphereMesh(2);
-% length(a.x)
-% 
-% a = icoSphereMesh(3);
-% length(a.x)
-% 
-% 
-% a = icoSphereMesh(10);
-% length(a.x)
-% figure
-% plot3(a.x,a.y,a.z,'.')
-% axis equal
+
+primary = bodies.jupiter;
+secondary = bodies.europa;
+
+%%% Normalizing constants
+rNorm = secondary.a;         % n <-> km
+tNorm = 1/secondary.meanMot; % n <-> sec
+vNorm = rNorm / tNorm;       % n <-> km/sec
+
+X0_n = [1.02046170, 0.00483566, -0.00102579, -0.01164610, -0.00122405, -0.00248909];
+
+%%% Selecting time vector
+t_i = 0; % sec
+t_f = 4*pi;
+dt = t_f/1000;
+time0_n = t_i:dt:t_f;
+
+%%% Choosing ode45 tolerance
+tol = 1e-13;
+
+%%% Setting integrator options
+options_Impact = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 
-% % % % % % % % n_tgt = 1297; % ~ 5 deg spacing
-% % % % % % % n_tgt = 352;  % ~ 10 deg spacing
-% % % % % % % % n_tgt = 145;  % ~ 15 deg spacing - should be used
-% % % % % % % % n_tgt = 37;   % ~ 30 deg spacing - decent
-% % % % % % % % n_tgt = 17;   % ~ 45 deg spacing
-% % % % % % % % n_tgt = 5;    % ~ 90 deg spacing
-% % % % % % % 
-% % % % % % % [x,y,z] = mySphere(n_tgt*2);
-% % % % % % % figure
-% % % % % % % plot3(x,y,z,'.','markersize',16)
-% % % % % % % axis equal
-% % % % % % % PlotBoi3('x','y','z',14)
-% % % % % % % view(0,90)
-% % % % % % % 
-% % % % % % % points = find(y<=1e-15);
-% % % % % % % x_hem = x(points);
-% % % % % % % y_hem = y(points);
-% % % % % % % z_hem = z(points);
-% % % % % % % pts = [x_hem',y_hem',z_hem'];
-% % % % % % % n_actual = length(points);
-% % % % % % % n_tgt
-% % % % % % % n_actual
-% % % % % % % 
-% % % % % % % figure
-% % % % % % % plot3(x_hem,y_hem,z_hem,'.','markersize',16)
-% % % % % % % axis equal
-% % % % % % % PlotBoi3('x','y','z',14)
-% % % % % % % view(-90,90)
+[time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+            time0_n, X0_n, options_Impact, secondary.MR, secondary.R_n);
+        
+% r_SCR_n = X_BCR_n(:,1:3) - [1-secondary.MR, 0, 0];
+%%% Creating SCR position
+rImpact_SCR_n = X_eventImpact(1,1:3) - [1-secondary.MR, 0, 0];
 
-[vHats] = vHatHemisphere(352,'-z');
+%%% Finding lat/lon of impact site
+[lat, lon] = ECEF2latlon(rImpact_SCR_n,'degrees','stupidMoon');
+impactLatLon = [lat, lon];
+
 figure
-plot3(vHats(:,1),vHats(:,2),vHats(:,3),'.','markersize',16)
+plot(lon, lat, 'rx','markersize',10)
+PlotBoi2('Longitude','Latitude',16)
+xlim([-180 180])
+ylim([-90 90])
+
+
+figure; hold all
+plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'linewidth',1.5)
+PlotBoi3('x','y','z',16)
 axis equal
-PlotBoi3('x','y','z',14)
 
-% 
-% primary = bodies.jupiter;
-% secondary = bodies.europa;
-% 
-% %%% Normalizing constants
-% rNorm = secondary.a;         % n <-> km
-% tNorm = 1/secondary.meanMot; % n <-> sec
-% vNorm = rNorm / tNorm;       % n <-> km/sec
-% 
-% %%% Acquire Collinear Lagrange points
-% L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
-% 
-% %%% Jacobi constant of Lagrange point
-% [JC_L1] = JacobiConstantCalculator(secondary.MR,L123(1,:),[0,0,0]);
-% [JC_L2] = JacobiConstantCalculator(secondary.MR,L123(2,:),[0,0,0]);
-% [JC_L3] = JacobiConstantCalculator(secondary.MR,L123(3,:),[0,0,0]);
-% 
-% %%% Creating ZV contours
-% % Contour bounds
-% xCont_min = L123(1,1)-5*secondary.R_n;
-% xCont_max = L123(2,1)+5*secondary.R_n;
-% yCont_min = -secondary.R_n*8;
-% yCont_max = secondary.R_n*8;
-% 
-% % Creating x-y grid
-% xs = linspace(xCont_min,xCont_max,750);
-% ys = linspace(yCont_min,yCont_max,750);
-% [X_xy, Y_xy] = meshgrid(xs,ys);
-% clear xs ys
-% 
-% % Calculating JCs across x-y grid
-% JCs_xy = zeros(size(X_xy));
-% for xk = 1:size(X_xy,1)
-%     for yk = 1:size(X_xy,2)
-%         %%% Zero-Velocity Curve
-%         zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0] ,[0, 0, 0]);
-%         JCs_xy(xk,yk) = zv;
-%     end
-% end
-% 
-% figure; hold all
-% plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-% % plotBodyTexture3(primary.R./rNorm, [-secondary.MR, 0, 0], primary.img)
-% [xyContourPoints,href] = contourf(X_xy,Y_xy,JCs_xy,[JC_L2-.00001, JC_L2-.00001],...
-%     'color',colors.std.black,'linewidth',1.5);
-% colormap(colors.sch.r6(6,:))
-% PlotBoi3('X','Y','Z',14)
-% view(0,90)
-% camva(9)
-% axis equal
-% set(gcf,'Position',[440 146 839 652]); % fullscreen mac
+a = dlmread('/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/M.iGS_EurL2_200mps_1200km_156v0s_land.txt',',',1,0);
+
+plot3(a(:,2),a(:,3),a(:,4),'r','linewidth',1.5)
+
+diff = abs(a(2:end,2:4) - X_BCR_n(:,1:3))
 
 
 
 
 
+%%% Creating SCR position vector
+rImpactHat_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
 
+%%% Velocity unit vector at impact
+vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
+
+%%% Angle between velocity and surface
+A = R3(rImpactHat_SCR_n,pi/2);
+B = vHatImpact_n;
+impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
+if impactAngle > pi/2
+    impactAngle = pi - impactAngle;
+end
+
+%%% Going with degrees
+impactAngle = impactAngle*180/pi
+
+
+
+%%% Creating SCR position vector
+rImpactHat_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
+
+%%% Velocity unit vector at impact
+vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
+
+%%% Angle between velocity and surface
+A = R3(rImpactHat_SCR_n,pi/2);
+B = vHatImpact_n;
+impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
+if impactAngle > pi/2
+    impactAngle = pi - impactAngle;
+end
+
+%%% Going with degrees
+impactAngle = impactAngle*180/pi
+
+
+
+
+%%% Creating SCR position vector
+rImpact_SCR_n = a(end,2:4) - [1-secondary.MR, 0, 0];
+rImpactHat_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
+
+%%% Velocity unit vector at impact
+vHatImpact_n = a(end,5:7)./norm(a(end,5:7));
+
+%%% Angle between velocity and surface
+A = R3(rImpactHat_SCR_n,pi/2);
+B = vHatImpact_n;
+impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
+if impactAngle > pi/2
+    impactAngle = pi - impactAngle;
+end
+
+%%% Going with degrees
+impactAngle = impactAngle*180/pi
 

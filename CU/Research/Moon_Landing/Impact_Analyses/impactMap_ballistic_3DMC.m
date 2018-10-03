@@ -92,17 +92,17 @@ dvLp_mps = 200; % Meters per second
 
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
-% r0GridSpacing_km = 10; % km - Enceladus
-r0GridSpacing_km = 1200; % km
+% r0GridSpacing_km = 10;  % km - Enceladus
+r0GridSpacing_km = 50; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
-n_v0s_per_r0_target = 145/2;
-% n_target = 1297; % ~ 5 deg spacing
-% n_target = 352;  % ~ 10 deg spacing
-% n_target = 145;  % ~ 15 deg spacing - should be used
-% n_target = 37;   % ~ 30 deg spacing - decent
-% n_target = 17;   % ~ 45 deg spacing
-% n_target = 5;    % ~ 90 deg spacing
+n_v0s_per_r0_target = 145;
+% n_target = 1297; % ~ old  5 deg spacing
+% n_target = 352;  % ~ old 10 deg spacing
+% n_target = 145;  % ~ old 15 deg spacing - should be used
+% n_target = 37;   % ~ old 30 deg spacing - decent
+% n_target = 17;   % ~ old 45 deg spacing
+% n_target = 5;    % ~ old 90 deg spacing
 
 %%% Selecting time vector
 t_i = 0; % sec
