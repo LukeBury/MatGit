@@ -43,8 +43,10 @@ for kk = 1:length(primaries)
     
 end
 
-
+dataMat = zeros(length(systems),2);
+counter = 0;
 for sys_i = systems
+    counter = counter + 1;
     sys = sys_i{1};
     
     %%% Acquire Collinear Lagrange points
@@ -101,7 +103,9 @@ for sys_i = systems
     figure(2); hold all
     plot(sys.secondary.MR, sys.diff_sY_mps,'b.','markersize',30)
     
-    
+    %%% Storing values for matrix to be printed to LaTex
+    dataMat(counter,1) = round(sys.dV_minLanding,2);
+    dataMat(counter,2) = round(sys.diff_sY_mps,2);
 end
 
 figure(1)

@@ -32,7 +32,7 @@ vBi_p = sqrt(2*l/(1+l));
 vBi_a = sqrt(2/(l*(1+l)));
 
 % Creating x-y grid
-resolution = 10000;
+resolution = 100;
 di_1 = linspace(0,90,resolution);
 di_3 = di_1;
 [di1, di3] = meshgrid(di_1,di_3);
@@ -88,6 +88,7 @@ min_di3
 
 if resolution <= 1000
     surf(di_1,di_3,dv_total)
+    PlotBoi3('$\Delta i_1$', '$\Delta i_3$','Cost', 18, 'LaTex')
 end
 
 toc

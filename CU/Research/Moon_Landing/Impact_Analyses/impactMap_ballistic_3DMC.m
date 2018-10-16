@@ -18,7 +18,7 @@ plot_sectionColors     = 1;
 % saveFigures            = 0;
 
 %%% Plot data from file
-loadDataAndPlot        = 0;
+loadDataAndPlot        = 1;
 
 %%% Computer?
 if isequal(computer,'MACI64')      % Mac
@@ -245,13 +245,13 @@ n_traj = n_r0s * n_v0s_per_r0;
 %%% Setting time vector
 time0_n = t_i:dt:t_f;
 
-%%% Choosing ode45 tolerance
+%%% Choosing ode tolerance
 % tol = 2.22045e-14;
 tol = 1e-10;
 
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
-options_Impact = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options_Impact = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 % ========================================================================
 %%% Loop through conditions, store results in bins, and plot
@@ -337,8 +337,14 @@ ticLoop = tic;
         % Integrating
         % ---------------------------------------
         %%% Propagating trajectory
+        prms(ii).u = MR;
+        prms(ii).R2_n = R2_n;
+        prms(ii).L1x = L123mat(1,1);
+        prms(ii).L2x = L123mat(2,1);
         [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-            time0_n, X0_n, options_Impact, MR, R2_n);
+            time0_n, X0_n, options_Impact, prms(ii));
+%         [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+%             time0_n, X0_n, options_Impact, MR, R2_n);
 
         % ---------------------------------------
         % Preallocating temporary variables
@@ -448,7 +454,7 @@ ticLoop = tic;
     if store_trajectories == 1
         r0Data{ii}.trajs   = trajs_ii;
     end
-
+    
 end
 
 % -------------------------------------------------
@@ -502,7 +508,7 @@ end % if loadDataAndPlot == 0
 if loadDataAndPlot == 1
 
     %%% Load data
-    dataMat = dlmread('/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_EurL2_200mps_50km_15deg.txt',',',1,0);
+    dataMat = dlmread('/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_EurL2_200mps_50km_156v0s_data.txt',',',1,0);
     
     %%% set column specifiers
     c_impactBin = 1;

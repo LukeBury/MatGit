@@ -17,7 +17,7 @@ function [vHats] = vHatHemisphere(n_target,centerAxis)
 [x,y,z] = mySphere(n_target*2);
 
 %%% Find hemisphere of points
-points = find(y<=1e-15);
+points = find(y<=0);
 x_hem  = x(points);
 y_hem  = y(points);
 z_hem  = z(points);
