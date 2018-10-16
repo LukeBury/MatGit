@@ -7,14 +7,9 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 1;
+testCaseOn             = 0;
 
-%%% Plot switches
-plot_initialConditions = 1;
-plot_fullSystemContour = 1;
-plot_sectionColors     = 1;
-
-%%% Computer?
+%%% Set paths based on computer
 if isequal(computer,'MACI64')      % Mac
     on_Fortuna         = 0;
     mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
