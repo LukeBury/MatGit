@@ -485,7 +485,7 @@ for kk = 1:n_r0s
             %%% If this was a low-impact-angle trajectory
             if r0Data{kk}.bin_impactAngles(jj) == 1
                 lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                fprintf(f_landingTraj,'%1.11f, %1.11f, %1.11f, %1.10f, %1.10f, %1.10f, %1d, %2.1f, %2.1f\n',r0Data{kk}.X0s(jj,:),...
+                fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.1f, %2.1f\n',r0Data{kk}.X0s(jj,:),...
                     r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
             end
             
