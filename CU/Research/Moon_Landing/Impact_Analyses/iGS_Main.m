@@ -98,7 +98,7 @@ end
 
 %%% Selecting time vector
 t_i = 0; % sec
-t_f = 6*pi; % Long bc events are watching for impact or escape
+t_f = 4*pi; % Long bc events are watching for impact or escape
 dt = t_f/10000;
 
 % -------------------------------------------------
