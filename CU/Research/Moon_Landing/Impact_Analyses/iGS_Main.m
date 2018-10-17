@@ -98,7 +98,7 @@ end
 
 %%% Selecting time vector
 t_i = 0; % sec
-t_f = 4*pi; % Long bc events are watching for impact or escape
+t_f = 6*pi; % Long bc events are watching for impact or escape
 dt = t_f/10000;
 
 % -------------------------------------------------
@@ -455,7 +455,7 @@ if testCaseOn == 0
     filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     %%% Log file
-    filename_runData = fullfile(savepath, sprintf('%sLog.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
+    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
 elseif testCaseOn == 1
     %%% All impact data

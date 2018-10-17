@@ -2,11 +2,12 @@ clear
 clc
 close all
 
-logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
-impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_data.txt';
-lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_land.txt';
+logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log.txt';
+impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data.txt';
+lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land.txt';
 
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 bodies = getBodyData(mbinPath);
 primary = bodies.jupiter;
 secondary = bodies.europa;
@@ -156,7 +157,15 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
     PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
     axis equal
     for kk = 1:length(lowTrajs)
-        plot3(lowTrajs{kk}(:,1),lowTrajs{kk}(:,2),lowTrajs{kk}(:,3))
+        plot3(lowTrajs{kk}(:,1),lowTrajs{kk}(:,2),lowTrajs{kk}(:,3),'b')
+    end
+    
+    figure; hold all
+    plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
+    PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+    axis equal
+    for kk = 1:length(lowTrajs)
+        plot3(lowTrajs{kk}(1,1),lowTrajs{kk}(1,2),lowTrajs{kk}(1,3),'b.','markersize',16)
     end
 end % size(lowImpactMat) ~= [1,1]
 % ========================================================================
