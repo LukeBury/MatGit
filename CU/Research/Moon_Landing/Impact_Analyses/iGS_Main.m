@@ -7,7 +7,7 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 1;
+testCaseOn             = 0;
 
 %%% Set paths based on computer
 if isequal(computer,'MACI64')      % Mac
