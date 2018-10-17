@@ -1,0 +1,5 @@
+Run Time (sec):		20417.5
+Run Time (min):		340.3
+number of r0s:		39872
+v0s per r0s:		149
+total trajs:		5940928
