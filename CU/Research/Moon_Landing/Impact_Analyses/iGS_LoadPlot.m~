@@ -2,37 +2,75 @@ clear
 clc
 close all
 tic
-% logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log_4pi.txt';
-% impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
-% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
-logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
+logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log_4pi.txt';
 impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
 lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
 
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 addpath(genpath(mbinPath))
 bodies = getBodyData(mbinPath);
-% primary = bodies.jupiter;
-% secondary = bodies.europa;
-% 
-% bins_impactAngles = [0, 5, 20, 40, 60, 91];
-% bins_neckSections = [0, 0.002555110294761, 0.005110220589522, 0.007665330884284, 0.009204876638791];
-% JC_scInitial = 3.003397404246083;
-% Lpoint = 2;
-% y_neck_upper = 0.009204876638791;
-% z_neck_upper = 0.007665330884284;
+primary = bodies.jupiter;
+secondary = bodies.europa;
+
+bins_impactAngles = [0, 5, 20, 40, 60, 91];
+bins_neckSections = [0, 0.002555110294761, 0.005110220589522, 0.007665330884284, 0.009204876638791];
+JC_scInitial = 3.003397404246083;
+Lpoint = 2;
+y_neck_upper = 0.009204876638791;
+z_neck_upper = 0.007665330884284;
 
 
 
 testFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
 
+ftestFile = fopen(testFile);
+% line1 = textscan(ftestFile, '%s,%s\r\n %*[^\n]','HeaderLines',5);
+% dlmread(testFile,',',0,0)
+
+c = textscan(ftestFile, '%s %s','delimiter',':')
+fclose(ftestFile);
+
+for kk = 1:size(c{1})
+if isequal(c{1}{kk},'primary') == 1
+pTest = getfield(bodies,c{2}{kk})
+end
+
+if isequal(c{1}{kk},'secondary') == 1
+pTest = getfield(bodies,c{2}{kk})
+end
+
+if isequal(c{1}{kk},'bins_impactAngles') == 1
+    bins_impactAngles = str2num(c{2}{kk});
+end
+
+if isequal(c{1}{kk},'bins_neckSections') == 1
+    bins_neckSections = textscan( c{2}{kk}, '%f', 'Delimiter',',' );
+end
+
+if isequal(c{1}{kk},'JC_scInitial') == 1
+    JC_scInitial = 
+end
+
+if isequal(c{1}{kk},'') == 1
+    d
+end
+
+if isequal(c{1}{kk},'') == 1
+    d
+end
+
+if isequal(c{1}{kk},'') == 1
+    d
+end
+end
 
 
-iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
-% iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,primary,secondary,bins_impactAngles,bins_neckSections,JC_scInitial,Lpoint,y_neck_upper,z_neck_upper)
+989
+return
+
+iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,primary,secondary,bins_impactAngles,bins_neckSections,JC_scInitial,Lpoint,y_neck_upper,z_neck_upper)
 toc
-function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
-% function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,primary,secondary,bins_impactAngles,bins_neckSections,JC_scInitial,Lpoint,y_neck_upper,z_neck_upper)
+function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,primary,secondary,bins_impactAngles,bins_neckSections,JC_scInitial,Lpoint,y_neck_upper,z_neck_upper)
 %%% For numerical integration in the normalized CR3BP with J2 of each body
 %%% Inputs:
 %          filePath -
@@ -53,69 +91,29 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
 %%% Settings and Run Switches
 % ========================================================================
 % -------------------------------------------------
+% File names
+% -------------------------------------------------
+% logFile    = 'F.iGS_EurL2_200mps_50km_156v0s_log.txt';
+% impactFile = 'F.iGS_EurL2_200mps_50km_156v0s_data.txt';
+% lowImpactAngleFile = 'F.iGS_EurL2_200mps_50km_156v0s_land.txt';
+
+
+% -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
-plot_initialConditions = 1;
+plot_initialConditions = 0;
 plot_fullSystemContour = 0;
 plot_sectionColors     = 0;
 
 % ========================================================================
 %%% Setting data
 % ========================================================================
-% -------------------------------------------------
-% Importing data structures
-% -------------------------------------------------
+% %%% Load log data
+% logData = dlmread(logFile,':',[5 2 inf 2]);
+
 %%% Color options/schemes
 colors = get_colors();
 
-%%% General data on solar system bodies
-bodies = getBodyData(mbinPath);
-% -------------------------------------------------
-% Loading data from log file
-% -------------------------------------------------
-flogFile = fopen(logFile);
-logData = textscan(flogFile, '%s %s','delimiter',':');
-fclose(flogFile);
-
-for kk = 1:size(logData{1})
-if isequal(logData{1}{kk},'primary') == 1
-primary = getfield(bodies,logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'secondary') == 1
-secondary = getfield(bodies,logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'bins_impactAngles') == 1
-    bins_impactAngles = str2num(logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'bins_neckSections') == 1
-    bins_neckSections =str2num(logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'JC_scInitial') == 1
-    JC_scInitial = str2num(logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'Lpoint') == 1
-    Lpoint = str2num(logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'y_neck_upper') == 1
-    y_neck_upper = str2num(logData{2}{kk});
-end
-
-if isequal(logData{1}{kk},'z_neck_upper') == 1
-    z_neck_upper = str2num(logData{2}{kk});
-end
-end
-
-
-
-% -------------------------------------------------
-% Getting constants
-% -------------------------------------------------
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
@@ -138,8 +136,8 @@ c_longitude = 4;
 c_impactAng = 5;
 
 %%% Bin counts
-binCount_ImpactAngles = length(bins_impactAngles) - 1;
 binCount_NeckSections = length(bins_neckSections) - 1;
+binCount_ImpactAngles = length(bins_impactAngles) - 1;
 
 %%% Preallocate
 binData_impactAngles(binCount_ImpactAngles).latLons = [];
@@ -287,8 +285,10 @@ if plot_initialConditions == 1
     end
 
     figure; hold all
+%     plot3(r0s(:,1),r0s(:,2),r0s(:,3),'.')
     plot3(ones(size(yzContourPoints,2),1).*L123(Lpoint,1), yzContourPoints(1,:),yzContourPoints(2,:),'k','linewidth',3)
     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+%     quiver3(X0s(:,1),X0s(:,2),X0s(:,3),X0s(:,4),X0s(:,5),X0s(:,6))
     [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
         'color',colors.std.black,'linewidth',3);
     PlotBoi3('x$_n$','y$_n$','z$_n$',14,'LaTex')

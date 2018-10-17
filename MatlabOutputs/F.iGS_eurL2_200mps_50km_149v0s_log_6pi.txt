@@ -1,8 +1,8 @@
-Run Time (sec):		81.8
-Run Time (min):		1.4
-number of r0s:		24
-v0s per r0s:		356
-total trajs:		8544
+Run Time (sec):		17408.6
+Run Time (min):		290.1
+number of r0s:		39872
+v0s per r0s:		149
+total trajs:		5940928
 primary:jupiter
 secondary:europa
 bins_impactAngles:0,5,20,40,60,91
