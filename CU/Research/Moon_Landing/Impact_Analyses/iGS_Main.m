@@ -75,7 +75,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 150; % Meters per second
+dvLp_mps = 200; % Meters per second
 
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
@@ -92,9 +92,13 @@ n_v0s_per_r0_target = 145;
 % n_target = 5;    % ~ old 90 deg spacing
 
 if testCaseOn == 1
+%     %%% To get a couple of low impacts ... 
+%     r0GridSpacing_km = 2000;
+%     n_v0s_per_r0_target = 350;
+    
     %%% To get a couple of low impacts ... 
-    r0GridSpacing_km = 2000;
-    n_v0s_per_r0_target = 350;
+    r0GridSpacing_km = 500;
+    n_v0s_per_r0_target = 5;
 end
 
 %%% Selecting time vector
@@ -190,13 +194,13 @@ for yk = 1:size(Y_yz,1)
 end
 
 %%% Get points of y-z contour in 3D space
-[ yzContourPoints ] = getContourPoints( Y_yz, Z_yz, JCs_yz_Lpoint, JC_scInitial );
+[ yzContourPoints4 ] = getContourPoints( Y_yz, Z_yz, JCs_yz_Lpoint, JC_scInitial );
 
 %%% Search grid for points lying within y-z contour and keep those as r0s
 r0s = [];
 for yk = 1:size(Y_yz,1)
     for zk = 1:size(Z_yz,2)
-        if inpolygon(Y_yz(yk,zk), Z_yz(yk,zk),yzContourPoints(1,:),yzContourPoints(2,:)) == 1
+        if inpolygon(Y_yz(yk,zk), Z_yz(yk,zk),yzContourPoints4(1,:),yzContourPoints4(2,:)) == 1
             r0s = [r0s; L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)];
         end
     end
@@ -213,9 +217,17 @@ n_r0s = size(r0s,1);
 bins_impactAngles = [0, 5, 20, 40, 60, 91];
 
 %%% Bins for neck sections
-smallNeck = smallerValue(z_neck_upper, y_neck_upper);
-largeNeck = largerValue(z_neck_upper, y_neck_upper);
-bins_neckSections = [linspace(0,smallNeck,binCount_NeckSections), largeNeck];
+% smallNeck = smallerValue(z_neck_upper, y_neck_upper);
+% largeNeck = largerValue(z_neck_upper, y_neck_upper);
+% bins_neckSections = [linspace(0,smallNeck,binCount_NeckSections), largeNeck];
+bins_neckSectionScalars = [0.25, 0.5, 0.75, 1];
+
+% -------------------------------------------------
+% Making polygons to bin initial neck position
+% -------------------------------------------------
+yzContourPoints3 = yzContourPoints4.*bins_neckSectionScalars(3);
+yzContourPoints2 = yzContourPoints4.*bins_neckSectionScalars(2);
+yzContourPoints1 = yzContourPoints4.*bins_neckSectionScalars(1);
 
 % -------------------------------------------------
 % Velocity vectors at each point
@@ -257,7 +269,11 @@ parfor ii = 1:n_r0s
     % -------------------------------------------------
     L123mat = L123;
     vHats = vHats2;
-
+    yzContourPoints11 = yzContourPoints1;
+    yzContourPoints22 = yzContourPoints2;
+    yzContourPoints33 = yzContourPoints3;
+    yzContourPoints44 = yzContourPoints4;
+    
     % -------------------------------------------------
     % Setting parameters for integration
     % -------------------------------------------------
@@ -324,15 +340,15 @@ parfor ii = 1:n_r0s
         % ---------------------------------------
         % Determining end conditions
         % ---------------------------------------
-        endCase = []; % 1-impact, 2-escape, 3-still in orbit
+        impact1_escape2_orbit3 = []; % 1-impact, 2-escape, 3-still in orbit
         if isempty(X_eventImpact) == 0
             if abs(norm(X_eventImpact(1:3)-[1-MR,0,0])-R2_n) < 1e-9 % impact
-                endCase = 1;
-            elseif X_eventImpact(1) <= L123mat(1,1) || X_eventImpact(1) >= L123mat(2,1) % escape
-                endCase = 2;
+                impact1_escape2_orbit3 = 1;
+            elseif X_eventImpact(1) <= prms.L1x || X_eventImpact(1) >= prms.L2x % escape
+                impact1_escape2_orbit3 = 2;
             end
         elseif isempty(X_eventImpact) == 1 % No event yet, still in orbit
-            endCase = 3;
+            impact1_escape2_orbit3 = 3;
         end
         
         
@@ -346,8 +362,7 @@ parfor ii = 1:n_r0s
         % ---------------------------------------
         % Determining lat/lon, speed, and angle of impact
         % ---------------------------------------
-
-        if endCase == 1
+        if impact1_escape2_orbit3 == 1
             % --------------------------
             % Impact lat/lon
             % --------------------------
@@ -384,11 +399,11 @@ parfor ii = 1:n_r0s
             %%% Going with degrees
             impactAngle = impactAngle*180/pi;
 
-        elseif endCase == 2 % escape
+        elseif impact1_escape2_orbit3 == 2 % escape
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN;     
-        elseif endCase == 3 % orbit
+        elseif impact1_escape2_orbit3 == 3 % orbit
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN; 
@@ -403,16 +418,28 @@ parfor ii = 1:n_r0s
         impactAngles_ii(vi) = impactAngle;
 
         % ---------------------------------------
-        % Assigning bins
+        % Assigning impact-angle bin
         % ---------------------------------------
         %%% Bin - Impact Angle
         bin_impactAngles_ii(vi) = discretize(impactAngle, bins_impactAngles);
-
+        
+        % ---------------------------------------
+        % Assigning neck-section bin
+        % ---------------------------------------
         %%% Bin - Neck Section
-        % Calculate radial distance from r0 to LPoint
-        r0LPointDist = norm(X0_n(1:3) - L123mat(Lpoint,:));
-
-        bin_neckSections_ii(vi) = discretize(r0LPointDist, bins_neckSections);
+        if inpolygon(X0_n(2),X0_n(3),yzContourPoints11(1,:),yzContourPoints11(2,:)) == 1
+            bin_neckSections_ii(vi) = 1;
+        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints22(1,:),yzContourPoints22(2,:)) == 1
+            bin_neckSections_ii(vi) = 2;
+        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints33(1,:),yzContourPoints33(2,:)) == 1
+            bin_neckSections_ii(vi) = 3;
+        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints44(1,:),yzContourPoints44(2,:)) == 1
+            bin_neckSections_ii(vi) = 4;
+        else % In case it was just missed by the resolution of the outer-most polygon
+            bin_neckSections_ii(vi) = 4;
+        end
+            
+%         if inpolygon(Y_yz(yk,zk), Z_yz(yk,zk),yzContourPoints4(1,:),yzContourPoints4(2,:)) == 1
     end
     
     % -------------------------------------------------
@@ -476,17 +503,9 @@ for kk = 1:n_r0s
             
         end
     end
-%     if isempty(r0Data{kk}.landingTrajs) == 0
-%         for rr = 1:size(r0Data{kk}.landingTrajs,1)
-%             if isnan(r0Data{kk}.landingTrajs(rr,1)) == 1
-%                 fprintf(f_landingTraj,'NaN, NaN, NaN, NaN, NaN, NaN, NaN\n');
-%             else
-%                 fprintf(f_landingTraj,'%1.6f, %1.8f, %1.8f, %1.8f, %1.8f, %1.8f, %1.8f\n',r0Data{kk}.X0s(rr,:));
-%             end
-%             
-%         end
-%     end
+
 end
+%%% Just making the file not empty
 if lowImpactAngleCounter == 0
     fprintf(f_landingTraj,',\n');
 end
@@ -512,7 +531,7 @@ fprintf(f_runData,'total trajs:\t\t%1.0f\n',n_traj);
 fprintf(f_runData,'primary:%s\n',primary.name);
 fprintf(f_runData,'secondary:%s\n',secondary.name);
 fprintf(f_runData,'bins_impactAngles:%1.0f,%1.0f,%1.0f,%1.0f,%1.0f,%1.0f\n',bins_impactAngles);
-fprintf(f_runData,'bins_neckSections:%1.15f,%1.15f,%1.15f,%1.15f,%1.15f,\n',bins_neckSections);
+fprintf(f_runData,'bins_neckSectionScalars:%1.15f,%1.15f,%1.15f,%1.15f\n',bins_neckSectionScalars);
 fprintf(f_runData,'JC_scInitial:%1.15f\n',JC_scInitial);
 fprintf(f_runData,'Lpoint:%1.0d\n',Lpoint);
 fprintf(f_runData,'y_neck_upper:%1.15f\n',y_neck_upper);

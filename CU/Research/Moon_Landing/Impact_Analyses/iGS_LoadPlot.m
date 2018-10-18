@@ -2,12 +2,24 @@ clear
 clc
 close all
 tic
+
+logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
+impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_data.txt';
+lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_land.txt';
+
+
 % logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log_4pi.txt';
 % impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
 % lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
-logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
-impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
-lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
+% logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
+% impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
+% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
+
+
+
+
+
+
 
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 addpath(genpath(mbinPath))
@@ -56,8 +68,8 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
 % Run Switches
 % -------------------------------------------------
 plot_initialConditions = 1;
-plot_fullSystemContour = 0;
-plot_sectionColors     = 0;
+plot_fullSystemContour = 1;
+plot_sectionColors     = 1;
 
 % ========================================================================
 %%% Setting data
@@ -90,8 +102,8 @@ if isequal(logData{1}{kk},'bins_impactAngles') == 1
     bins_impactAngles = str2num(logData{2}{kk});
 end
 
-if isequal(logData{1}{kk},'bins_neckSections') == 1
-    bins_neckSections =str2num(logData{2}{kk});
+if isequal(logData{1}{kk},'bins_neckSectionScalars') == 1
+    bins_neckSectionScalars =str2num(logData{2}{kk});
 end
 
 if isequal(logData{1}{kk},'JC_scInitial') == 1
@@ -139,11 +151,11 @@ c_impactAng = 5;
 
 %%% Bin counts
 binCount_ImpactAngles = length(bins_impactAngles) - 1;
-binCount_NeckSections = length(bins_neckSections) - 1;
+binCount_NeckSections = length(bins_neckSectionScalars);
 
 %%% Preallocate
 binData_impactAngles(binCount_ImpactAngles).latLons = [];
-binData_neckSections(length(bins_neckSections)).latLons = [];
+binData_neckSections(length(bins_neckSectionScalars)).latLons = [];
 
 %%% Store impact angle bins
 for kk = 1:binCount_ImpactAngles
@@ -222,7 +234,7 @@ end % size(lowImpactMat) ~= [1,1]
 % ========================================================================
 
 % -------------------------------------------------
-% Find Y-Z contour points
+% Find Y-Z contour points and making neck section bins
 % -------------------------------------------------
 %%% Create grid of starting locations based on y-z neck
 ys = linspace(-y_neck_upper*2, y_neck_upper*2, 1000);
@@ -240,9 +252,11 @@ for yk = 1:size(Y_yz,1)
 end
 
 %%% Get points of y-z contour in 3D space
-[ yzContourPoints ] = getContourPoints( Y_yz, Z_yz, JCs_yz_Lpoint, JC_scInitial );
+[ yzContourPoints4 ] = getContourPoints( Y_yz, Z_yz, JCs_yz_Lpoint, JC_scInitial );
 
-
+yzContourPoints3 = yzContourPoints4.*bins_neckSectionScalars(3);
+yzContourPoints2 = yzContourPoints4.*bins_neckSectionScalars(2);
+yzContourPoints1 = yzContourPoints4.*bins_neckSectionScalars(1);
 
 
 
@@ -287,7 +301,7 @@ if plot_initialConditions == 1
     end
 
     figure; hold all
-    plot3(ones(size(yzContourPoints,2),1).*L123(Lpoint,1), yzContourPoints(1,:),yzContourPoints(2,:),'k','linewidth',3)
+    plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,:),yzContourPoints4(2,:),'k','linewidth',3)
     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
     [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
         'color',colors.std.black,'linewidth',3);
@@ -341,13 +355,16 @@ end
 % -------------------------------------------------
 if plot_sectionColors == 1
     figure; hold all
-    fill(yzContourPoints(1,:),yzContourPoints(2,:),binColors_NeckSections(4,:))
+    plot(yzContourPoints4(1,:), yzContourPoints4(2,:),'k','linewidth',3)
+    fill(yzContourPoints4(1,:),yzContourPoints4(2,:),binColors_NeckSections(4,:))
+    fill(yzContourPoints3(1,:),yzContourPoints3(2,:),binColors_NeckSections(3,:))
+    fill(yzContourPoints2(1,:),yzContourPoints2(2,:),binColors_NeckSections(2,:))
+    fill(yzContourPoints1(1,:),yzContourPoints1(2,:),binColors_NeckSections(1,:))
+    
 
-    plot(yzContourPoints(1,:), yzContourPoints(2,:),'k','linewidth',3)
-
-    for kk = binCount_NeckSections-1:-1:1
-        plotBody2(bins_neckSections(kk+1),[0,0,0], binColors_NeckSections(kk,:), binColors_NeckSections(kk,:), 1)
-    end
+%     for kk = binCount_NeckSections-1:-1:1
+%         plotBody2(bins_neckSections(kk+1),[0,0,0], binColors_NeckSections(kk,:), binColors_NeckSections(kk,:), 1)
+%     end
 
     axis equal
     PlotBoi3('Y','Z','X',14)
@@ -375,9 +392,10 @@ cbar1 = colorbar;
 caxis([0 size(binColors_NeckSections,1)]);
 cbar1.FontName     = 'Arial';
 cbar1.FontSize     = 10;
-cbar1.Ticks        = sort(0:binCount_NeckSections-1);
-cbar1.TickLabels = num2cell(bins_neckSections(1:end-1).*rNorm);
-cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
+cbar1.Ticks        = [0.5, 1.5, 2.5, 3.5];
+% cbar1.TickLabels = num2cell(bins_neckSectionScalars(1:end-1).*rNorm);
+cbar1.TickLabels = num2cell([1 2 3 4]);
+% cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
 cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
 cbar1.Label.Position = [.2, 4.2, 0];
 colormap(binColors_NeckSections)
