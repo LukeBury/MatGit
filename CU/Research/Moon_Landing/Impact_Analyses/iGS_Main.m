@@ -263,7 +263,6 @@ r0Data = {};
 
 parfor ii = 1:n_r0s
     ticLoop = tic;
-
     % -------------------------------------------------
     % Reducing broadcast variables
     % -------------------------------------------------
@@ -488,19 +487,22 @@ fprintf(f_landingTraj,'x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude
 %%% Writing data
 lowImpactAngleCounter = 0;
 for kk = 1:n_r0s
-    for jj = 1:n_v0s_per_r0
-        %%% If this trajectory impacted, write impact data
-        if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-            fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),...
-                r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
-            
-            %%% If this was a low-impact-angle trajectory
-            if r0Data{kk}.bin_impactAngles(jj) == 1
-                lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.1f, %2.1f\n',r0Data{kk}.X0s(jj,:),...
-                    r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
+    %%% If there were impacts from this r0
+    if isempty(r0Data{kk}) == 0
+        for jj = 1:n_v0s_per_r0
+            %%% If this trajectory impacted, write impact data
+            if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
+                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),...
+                    r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
+
+                %%% If this was a low-impact-angle trajectory
+                if r0Data{kk}.bin_impactAngles(jj) == 1
+                    lowImpactAngleCounter = lowImpactAngleCounter + 1;
+                    fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.1f, %2.1f\n',r0Data{kk}.X0s(jj,:),...
+                        r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
+                end
+
             end
-            
         end
     end
 
