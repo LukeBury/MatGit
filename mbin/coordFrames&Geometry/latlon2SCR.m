@@ -1,16 +1,13 @@
 %%% Given latitude (deg), longitude (deg), and body radius (km)
-%%% Returns surface coordinates in ECEF
-function [rECEF] = latlon2surfECEF(lat, lon, rad, extras)
+%%% Returns surface coordinates in SCR frame where 0-lon on secondary body
+%%% points towards the primary (-x)
+%%%
+%%% For use in CR3BP
+function [rECEF] = latlon2SCR(lat, lon, rad)
 
 %%% Convert to radians
 lat = lat * pi/180;
-lon = lon * pi/180;
-
-if nargin == 4
-    if isfield(extras,'stupidMoon') == 1
-        lon = lon + pi;
-    end
-end
+lon = lon * pi/180 + pi;
 
 %%% Assign x coordinate
 x = rad * cos(lat) * cos(lon);

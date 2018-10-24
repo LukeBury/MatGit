@@ -161,27 +161,14 @@ binData_neckSections(length(bins_neckSectionScalars)).latLons = [];
 maxLat = 0;
 minLat = 0;
 for kk = 1:binCount_ImpactAngles
-    %%% Indices of all impact trajectories that belong to the current bin
     currentBinIndices = find(impactData(:,c_impactBin)==kk);
-    
-    %%% Grabbing those trajectories and storing their impact lat/lon
     binData_impactAngles(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
-    
-    %%% Assigning max and min latitudes reached for whole data set
     if max(binData_impactAngles(kk).latLons(:,1)) > maxLat
-        maxLat = max(binData_impactAngles(kk).latLons(:,1));
-    end
-    if min(binData_impactAngles(kk).latLons(:,1)) < minLat
-        minLat = min(binData_impactAngles(kk).latLons(:,1));
-    end
+        max
 end
 
-%%% Store neck section bins
 for kk = 1:binCount_NeckSections
-    %%% Indices of all impact trajectories that belong to the current bin
     currentBinIndices = find(impactData(:,c_neckBin)==kk);
-    
-    %%% Grabbing those trajectories and storing their impact lat/lon
     binData_neckSections(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
 end
 
