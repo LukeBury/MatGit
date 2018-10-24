@@ -1,2 +1,0 @@
-bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle
-4,4,-7.0,-70.3,50.6
