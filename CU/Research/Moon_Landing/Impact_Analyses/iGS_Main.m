@@ -148,7 +148,7 @@ z = 0;
 f = @(y) x^2 + y.^2 - c + 2*(1-u)./sqrt((x+u)^2+y.^2+z^2) + 2*u./sqrt((x-1+u)^2+y.^2+z^2);
 
 %%% Find the root of this function in the appropriate range
-y_neck_upper = fzero(f,[0 6*secondary.R_n]);
+y_neck_upper = fzero(f,[0 10*secondary.R_n]);
 
 %%% Clear variables
 clear c u x f z
@@ -166,7 +166,7 @@ y = 0;
 f = @(z) x^2 + y.^2 - c + 2*(1-u)./sqrt((x+u)^2+y^2+z.^2) + 2*u./sqrt((x-1+u)^2+y^2+z.^2);
 
 %%% Find the root of this function in the appropriate range
-z_neck_upper = fzero(f,[0 6*secondary.R_n]);
+z_neck_upper = fzero(f,[0 10*secondary.R_n]);
 
 %%% Clear variables
 clear c u x f y
@@ -262,6 +262,7 @@ options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'A
 r0Data = {};
 
 parfor ii = 1:n_r0s
+    ii
     ticLoop = tic;
     % -------------------------------------------------
     % Reducing broadcast variables

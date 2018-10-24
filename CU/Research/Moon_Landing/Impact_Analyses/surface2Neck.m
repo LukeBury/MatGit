@@ -20,7 +20,7 @@ nvHats = 100;
 
 %%% How fast the SC would be traveling over L2
 % dvLp_mps = 200; % Meters per second
-dvLp_mps = 200; % Meters per second
+dvLp_mps = 350; % Meters per second
 
 %%% Final time
 t_f = 2*pi;
