@@ -1,0 +1,13 @@
+Run Time (sec):		20323.8
+Run Time (min):		338.7
+number of r0s:		39872
+v0s per r0s:		149
+total trajs:		5940928
+primary:jupiter
+secondary:europa
+bins_impactAngles:0,5,20,40,60,91
+bins_neckSectionScalars:0.250000000000000,0.500000000000000,0.750000000000000,1.000000000000000
+JC_scInitial:3.003397404246083
+Lpoint:2
+y_neck_upper:0.009204876638791
+z_neck_upper:0.007665330884284
