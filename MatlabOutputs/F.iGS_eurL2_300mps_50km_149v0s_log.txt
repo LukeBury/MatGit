@@ -7,7 +7,10 @@ primary:jupiter
 secondary:europa
 bins_impactAngles:0,5,20,40,60,91
 bins_neckSectionScalars:0.250000000000000,0.500000000000000,0.750000000000000,1.000000000000000
+dvLp_mps:300
 JC_scInitial:3.003132670751979
 Lpoint:2
 y_neck_upper:0.015295296739075
 z_neck_upper:0.012038349838782
+maxLat:80.1
+maxLowLat:14.9

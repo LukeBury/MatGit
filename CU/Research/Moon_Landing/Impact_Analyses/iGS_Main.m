@@ -75,7 +75,9 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 51; % Meters per second
+dvLp_mps = 50; % Meters per second
+
+
 
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
@@ -250,7 +252,7 @@ n_traj = n_r0s * n_v0s_per_r0;
 time0_n = t_i:dt:t_f;
 
 %%% Choosing ode tolerance
-tol = 1e-12;
+tol = 1e-13;
 
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
