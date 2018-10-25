@@ -75,12 +75,12 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 50; % Meters per second
+dvLp_mps = 100; % Meters per second
 
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
 % r0GridSpacing_km = 10;  % km - Enceladus
-r0GridSpacing_km = 100; % km
+r0GridSpacing_km = 50; % km
 
 %%% Spacing between azimuths and elevations of v0s per r0
 n_v0s_per_r0_target = 145;
