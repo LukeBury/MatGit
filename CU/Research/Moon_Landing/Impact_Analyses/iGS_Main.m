@@ -261,7 +261,7 @@ options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'A
 % ========================================================================
 r0Data = {};
 
-parfor(24) ii = 1:n_r0s
+parfor ii = 1:n_r0s
     ticLoop = tic;
     % -------------------------------------------------
     % Reducing broadcast variables
@@ -502,7 +502,7 @@ for kk = 1:n_r0s
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.2f, %2.2f\n',r0Data{kk}.X0s(jj,:),...
+                    fprintf(f_landingTraj,'%1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1d, %2.2f, %2.2f\n',r0Data{kk}.X0s(jj,:),...
                         r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
                     if maxLowLat < r0Data{kk}.latLons(jj,1)
                         maxLowLat = r0Data{kk}.latLons(jj,1);
