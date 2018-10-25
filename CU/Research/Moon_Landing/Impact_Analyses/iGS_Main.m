@@ -75,7 +75,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 150; % Meters per second
+dvLp_mps = 51; % Meters per second
 
 %%% Spacing of initial positions within 3D neck
 % r0GridSpacing_km = 100; % km - Europa
@@ -261,7 +261,7 @@ options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'A
 % ========================================================================
 r0Data = {};
 
-parfor ii = 1:n_r0s
+parfor(24) ii = 1:n_r0s
     ticLoop = tic;
     % -------------------------------------------------
     % Reducing broadcast variables
@@ -502,7 +502,7 @@ for kk = 1:n_r0s
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.1f, %2.1f\n',r0Data{kk}.X0s(jj,:),...
+                    fprintf(f_landingTraj,'%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1d, %2.2f, %2.2f\n',r0Data{kk}.X0s(jj,:),...
                         r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
                     if maxLowLat < r0Data{kk}.latLons(jj,1)
                         maxLowLat = r0Data{kk}.latLons(jj,1);
@@ -541,12 +541,13 @@ fprintf(f_runData,'primary:%s\n',primary.name);
 fprintf(f_runData,'secondary:%s\n',secondary.name);
 fprintf(f_runData,'bins_impactAngles:%1.0f,%1.0f,%1.0f,%1.0f,%1.0f,%1.0f\n',bins_impactAngles);
 fprintf(f_runData,'bins_neckSectionScalars:%1.15f,%1.15f,%1.15f,%1.15f\n',bins_neckSectionScalars);
+fprintf(f_runData,'dvLp_mps:%1.0f\n',dvLp_mps);
 fprintf(f_runData,'JC_scInitial:%1.15f\n',JC_scInitial);
 fprintf(f_runData,'Lpoint:%1.0d\n',Lpoint);
 fprintf(f_runData,'y_neck_upper:%1.15f\n',y_neck_upper);
 fprintf(f_runData,'z_neck_upper:%1.15f\n',z_neck_upper);
 fprintf(f_runData,'maxLat:%1.2f\n',maxLat);
-fprintf(f_runData,'maxLowLow:%1.2f\n',maxLowLat);
+fprintf(f_runData,'maxLowLat:%1.2f\n',maxLowLat);
 
 %%% Close file
 fclose(f_runData);
