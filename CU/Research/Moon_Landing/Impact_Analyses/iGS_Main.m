@@ -250,7 +250,7 @@ n_traj = n_r0s * n_v0s_per_r0;
 time0_n = t_i:dt:t_f;
 
 %%% Choosing ode tolerance
-tol = 1e-10;
+tol = 1e-12;
 
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
@@ -460,13 +460,13 @@ end
 %%% File Names
 if testCaseOn == 0
     %%% All impact data
-    filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data.txt',...
+    filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data2.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     %%% Low-impact-angle data
-    filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
+    filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land2.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     %%% Log file
-    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
+    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log2.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
 elseif testCaseOn == 1
     %%% All impact data
