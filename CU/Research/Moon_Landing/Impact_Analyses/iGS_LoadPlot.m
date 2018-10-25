@@ -3,17 +3,24 @@ clc
 % close all
 tic
 
-logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
-impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_data.txt';
-lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_land.txt';
-
-
-% logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log_4pi.txt';
-% impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
-% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
 % logFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
-% impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data_4pi.txt';
-% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land_4pi.txt';
+% impactFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_data.txt';
+% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_land.txt';
+
+% %%% 200 mps
+% logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log.txt';
+% impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data.txt';
+% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land.txt';
+
+% %%% 250 mps
+% logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_log.txt';
+% impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_data.txt';
+% lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_land.txt';
+
+%%% 300 mps
+logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_log.txt';
+impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_data.txt';
+lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_land.txt';
 
 
 
@@ -121,6 +128,14 @@ end
 if isequal(logData{1}{kk},'z_neck_upper') == 1
     z_neck_upper = str2num(logData{2}{kk});
 end
+
+if isequal(logData{1}{kk},'maxLat') == 1
+    maxLat = str2num(logData{2}{kk});
+end
+
+if isequal(logData{1}{kk},'maxLowLat') == 1
+    maxLowLat = str2num(logData{2}{kk});
+end
 end
 
 
@@ -175,6 +190,8 @@ for kk = 1:binCount_ImpactAngles
         minLat = min(binData_impactAngles(kk).latLons(:,1));
     end
 end
+maxLat
+minLat
 
 %%% Store neck section bins
 for kk = 1:binCount_NeckSections
@@ -229,7 +246,8 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
 
         lowTrajs{kk} = [X_BCR_n, time_n];
     end
-
+    
+    %%% Plotting full low-landing-angle trajectories
     figure; hold all
     plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
     PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
@@ -238,6 +256,7 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
         plot3(lowTrajs{kk}(:,1),lowTrajs{kk}(:,2),lowTrajs{kk}(:,3),'b')
     end
     
+    %%% Plotting initial positions of low-landing-angle trajectories
     figure; hold all
     plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
     PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
