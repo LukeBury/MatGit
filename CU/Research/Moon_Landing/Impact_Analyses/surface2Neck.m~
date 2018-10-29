@@ -67,7 +67,7 @@ r0_n = rSCR0_n + [1-secondary.MR, 0, 0];
 
 if onlyLowAngleTrajs == 1
     %%% Angle between velocity and surface
-    A = R3(rSCR0_n,pi/2);
+    A = R3(rImpact_SCR_n,pi/2);
     B = vHatImpact_n;
     impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
     if impactAngle > pi/2

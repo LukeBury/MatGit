@@ -7,7 +7,7 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 0;
+testCaseOn             = 1;
 
 %%% Set paths based on computer
 if isequal(computer,'MACI64')      % Mac
@@ -75,7 +75,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 150; % Meters per second
+dvLp_mps = 50; % Meters per second
 
 
 
@@ -396,12 +396,13 @@ parfor ii = 1:n_r0s
 %             if impactAngle > pi/2
 %                 impactAngle = pi - impactAngle;
 %             end
+            
             A = rImpact_SCR_n;
             B = vHatImpact_n;
             impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-            if 0 <= impactAngle <= pi/2
+            if 0 <= impactAngle && impactAngle <= pi/2
                 impactAngle = pi/2 - impactAngle;
-            elseif pi/2 < impactAngle <= pi
+            elseif pi/2 < impactAngle && impactAngle <= pi
                 impactAngle = impactAngle - pi/2;
             end
 
