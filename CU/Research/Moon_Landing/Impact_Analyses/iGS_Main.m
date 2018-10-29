@@ -75,7 +75,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 350; % Meters per second
+dvLp_mps = 50; % Meters per second
 
 
 
@@ -390,11 +390,19 @@ parfor ii = 1:n_r0s
             vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
 
             %%% Angle between velocity and surface
-            A = R3(rImpact_SCR_n,pi/2);
+%             A = R3(rImpact_SCR_n,pi/2);
+%             B = vHatImpact_n;
+%             impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
+%             if impactAngle > pi/2
+%                 impactAngle = pi - impactAngle;
+%             end
+            A = rImpact_SCR_n;
             B = vHatImpact_n;
             impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-            if impactAngle > pi/2
-                impactAngle = pi - impactAngle;
+            if 0 <= impactAngle <= pi/2
+                impactAngle = pi/2 - impactAngle;
+            elseif pi/2 < impactAngle <= pi
+                impactAngle = impactAngle - pi/2;
             end
 
             %%% Going with degrees
@@ -462,13 +470,13 @@ end
 %%% File Names
 if testCaseOn == 0
     %%% All impact data
-    filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data2.txt',...
+    filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data3.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     %%% Low-impact-angle data
-    filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land2.txt',...
+    filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land3.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     %%% Log file
-    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log2.txt',...
+    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log3.txt',...
         computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
 elseif testCaseOn == 1
     %%% All impact data
