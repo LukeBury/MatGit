@@ -425,19 +425,15 @@ parfor ii = 1:n_r0s
 
             %%% Going with degrees
             impactAngle = impactAngle*180/pi;
-            
-            %%% Storing endTime
-            endTime = time_n(end);
+
         elseif impact1_escape2_orbit3 == 2 % escape
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN;     
-            endTime      = NaN;
         elseif impact1_escape2_orbit3 == 3 % orbit
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN; 
-            endTime      = NaN;
         end
             
         % =======================================
@@ -447,7 +443,6 @@ parfor ii = 1:n_r0s
         latLons_ii(vi,:)    = impactLatLon;
         impactSpeeds_ii(vi) = impactSpeed;
         impactAngles_ii(vi) = impactAngle;
-        endTimes_ii(vi)     = endTime;
 
         % ---------------------------------------
         % Assigning impact-angle bin
@@ -481,7 +476,6 @@ parfor ii = 1:n_r0s
     r0Data{ii}.latLons      = latLons_ii;
     r0Data{ii}.impactSpeeds = impactSpeeds_ii;
     r0Data{ii}.impactAngles = impactAngles_ii;
-    r0Data{ii}.endTimes     = endTimes_ii;
     r0Data{ii}.bin_neckSections = bin_neckSections_ii;
     r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
     
@@ -528,17 +522,16 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f\n',r0Data{kk}.bin_impactAngles(jj),...
-                    r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),...
-                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj));
+                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f\n',r0Data{kk}.bin_impactAngles(jj),...
+                    r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.impactAngles(jj));
                 if maxLat < r0Data{kk}.latLons(jj,1)
                     maxLat = r0Data{kk}.latLons(jj,1);
                 end
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.2f,%2.2f,%1.5f\n',r0Data{kk}.X0s(jj,:),...
-                        r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.endTimes(jj));
+                    fprintf(f_landingTraj,'%1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1d, %2.2f, %2.2f\n',r0Data{kk}.X0s(jj,:),...
+                        r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2));
                     if maxLowLat < r0Data{kk}.latLons(jj,1)
                         maxLowLat = r0Data{kk}.latLons(jj,1);
                     end
