@@ -23,7 +23,7 @@ latCutoff_deg = 80; % degrees
 
 %%% Timing info
 n_dt = 10000;
-t_i = 4*pi;
+t_f = 4*pi;
 
 %%% Spacing of grid in neck
 r0GridSpacing_km = 1000; % km
@@ -46,11 +46,6 @@ colors = get_colors();
 % -------------------------------------------------
 % Choose system
 % -------------------------------------------------
-%%% General data on solar system bodies
-bodies = getBodyData(mbinPath);
-%%% Color options/schemes
-colors = get_colors();
-
 %%% 3B system
 primary   = bodies.jupiter;
 secondary = bodies.europa;
@@ -178,7 +173,7 @@ n_traj = n_r0s * n_v0s_per_r0;
 % Predefining some things before parfor
 % -------------------------------------------------
 %%% Setting time vector
-t_f = 0;
+t_i = 0;
 time0_n = linspace(t_i,t_f,n_dt);
 
 %%% Choosing ode tolerance
@@ -252,7 +247,7 @@ parfor ii = 1:n_r0s
         v0_i = vHats(vi,:) .* v0i_mag;
         
         %%% Setting X0
-        X0_n = [r0_i, -v0_i];
+        X0_n = [r0_i, v0_i];
 
         % ---------------------------------------
         % Integrating

@@ -65,13 +65,14 @@ r0_n = rSCR0_n + [1-secondary.MR, 0, 0];
 %%% Create matrix of initial velocity directions
 [vHatHem] = vHatHemisphere(nvHats,'z');
 
+v0s = [];
 if onlyLowAngleTrajs == 1
-    %%% Angle between velocity and surface
-    A = R3(rImpact_SCR_n,pi/2);
-    B = vHatImpact_n;
-    impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-    if impactAngle > pi/2
-        impactAngle = pi - impactAngle;
+    for kk = 1:size(vHatHem,1)
+        [impactAngle] = impactAngle(rSCR0_n,vHatHem(kk,:),'degrees');
+        
+        if impactAngle < 5
+            v0s = [v0s; vHatHem(kk,:)];
+        end
     end
 end
 

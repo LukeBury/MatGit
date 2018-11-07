@@ -24,9 +24,8 @@ nvHats = 100;
 % dvLp_mps = 200; % Meters per second
 dvLp_mps = 350; % Meters per second
 
-%%% Final time
-t_f = 2*pi;
-% t_f = 0.01;
+%%% "Final" time
+t_i = 4*pi;
 
 % ========================================================================
 %%% Importing Data
@@ -63,20 +62,19 @@ lon0 = 0;
 r0_n = rSCR0_n + [1-secondary.MR, 0, 0];
 
 %%% Create matrix of initial velocity directions
-[vHatHem] = vHatHemisphere(nvHats,'z');
+[vHatHem] = vHatHemisphere(nvHats,'-z');
 
+v0s = [];
 if onlyLowAngleTrajs == 1
-    %%% Angle between velocity and surface
-    A = R3(rSCR0_n,pi/2);
-    B = vHatImpact_n;
-    impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-    if impactAngle > pi/2
-        impactAngle = pi - impactAngle;
+    for kk = 1:size(vHatHem,1)
+        [impactAngle_kk] = calcImpactAngle(rSCR0_n,vHatHem(kk,:),'degrees');
+        
+        if impactAngle_kk < 5
+            v0s = [v0s; vHatHem(kk,:)];
+        end
     end
 end
 
-989
-return
 % -------------------------------------------------
 % Determing |v0| based on desired JC (in terms of L2-flyover)
 % -------------------------------------------------
@@ -109,10 +107,10 @@ end
 % -------------------------------------------------
 % Preparing for integration
 % -------------------------------------------------
-%%% Selecting time vector
-t_i = 0; % sec
-dt = t_f/1000;
-time0_n = t_i:dt:t_f;
+%%% Setting time vector
+t_f = 0;
+n_dt = 1000;
+time0_n = linspace(t_i,t_f,n_dt);
 
 %%% Choosing ode tolerance
 tol = 1e-12;
@@ -125,12 +123,12 @@ options = odeset('RelTol',tol,'AbsTol',tol);
 % Propagating states
 % -------------------------------------------------
 %%% Preallocating
-trajs{size(vHatHem,1)} = [];
+trajs{size(v0s,1)} = [];
 
 %%% Looping through conditions
-for kk = 1:size(vHatHem,1)
+for kk = 1:size(v0s,1)
     %%% Initial state
-    v0_n = vHatHem(kk,:).*v0Mag;
+    v0_n = v0s(kk,:).*v0Mag;
     
     X0_n = [r0_n, v0_n]';
     
@@ -201,7 +199,7 @@ toc
 figure; hold all
 for kk = 1:length(trajs)
 maxRad = max(rowNorm(trajs{kk}(:,1:3)-[1-secondary.MR,0,0]));
-plot(dot([0,0,1],vHatHem(kk,:)),maxRad,'b.','markersize',10)
+plot(dot([0,0,1],v0s(kk,:)),maxRad,'b.','markersize',10)
 end
 
 

@@ -407,24 +407,7 @@ parfor ii = 1:n_r0s
             vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
 
             %%% Angle between velocity and surface
-%             A = R3(rImpact_SCR_n,pi/2);
-%             B = vHatImpact_n;
-%             impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-%             if impactAngle > pi/2
-%                 impactAngle = pi - impactAngle;
-%             end
-            
-            A = rImpact_SCR_n;
-            B = vHatImpact_n;
-            impactAngle = acos(dot(A,B)/(norm(A)*norm(B)));
-            if 0 <= impactAngle && impactAngle <= pi/2
-                impactAngle = pi/2 - impactAngle;
-            elseif pi/2 < impactAngle && impactAngle <= pi
-                impactAngle = impactAngle - pi/2;
-            end
-
-            %%% Going with degrees
-            impactAngle = impactAngle*180/pi;
+            [impactAngle] = calcImpactAngle(rImpact_SCR_n,vHatImpact_n,'degrees');
             
             %%% Storing endTime
             endTime = time_n(end);
