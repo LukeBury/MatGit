@@ -333,68 +333,7 @@ parfor ii = 1:n_r0s
 
     
 end
-% -------------------------------------------------
-% Saving data
-% -------------------------------------------------
-%%% Filename
-filename_polarTraj = fullfile(polarTrajDataPath, sprintf('PolarXs_%s_%1.0fmps_%1.0fkm_%1.0fv0s.txt',...
-    secondary.name(1:3),dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
-    
-%%% Opening files and writing header
-f_allTraj = fopen(filename_polarTraj, 'wt');
-fprintf(f_allTraj,'X0/Xf,tf,x,y,z,dx,dy,dz\n');  % header
-
-%%% Writing data
-for kk = 1:n_r0s
-    %%% If there were impacts from this r0
-    if isempty(polarR0Data{kk}) == 0
-        for jj = 1:n_v0s_per_r0
-            %%% If this trajectory impacted, write impact data
-            if isnan(polarR0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f\n',polarR0Data{kk}.bin_impactAngles(jj),...
-                    polarR0Data{kk}.bin_neckSections(jj),polarR0Data{kk}.latLons(jj,1),polarR0Data{kk}.latLons(jj,2),...
-                    polarR0Data{kk}.impactAngles(jj),polarR0Data{kk}.endTimes(jj));
-                if maxLat < polarR0Data{kk}.latLons(jj,1)
-                    maxLat = polarR0Data{kk}.latLons(jj,1);
-                end
-                %%% If this was a low-impact-angle trajectory
-                if polarR0Data{kk}.bin_impactAngles(jj) == 1
-                    lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.2f,%2.2f,%1.5f\n',polarR0Data{kk}.X0s(jj,:),...
-                        polarR0Data{kk}.bin_neckSections(jj),polarR0Data{kk}.latLons(jj,1),polarR0Data{kk}.latLons(jj,2),polarR0Data{kk}.endTimes(jj));
-                    if maxLowLat < polarR0Data{kk}.latLons(jj,1)
-                        maxLowLat = polarR0Data{kk}.latLons(jj,1);
-                    end
-                end
-
-            end
-        end
-    end
-
-end
-%%% Just making the file not empty
-if lowImpactAngleCounter == 0
-    fprintf(f_landingTraj,',\n');
-end
-
-%%% Close file
-fclose(f_allTraj);
-fclose(f_landingTraj);
-
-
 end % run_newPolarTrajs
-
-
-
-
-
-
-
-
-
-
-
-
 % ========================================================================
 %%% Grab the X0 and Xf from polar impacters, the re-propagate
 % ========================================================================

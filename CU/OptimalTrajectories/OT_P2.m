@@ -8,7 +8,7 @@ tic
 %%% Run/Plot Switches
 % ========================================================================
 run_symbolicWork = 1;
-run_plotWork     = 0;
+run_plotWork     = 1;
 
 save_Figure = 1;
 % ========================================================================
@@ -42,7 +42,8 @@ eps = 0;
 eval_dfde_meps = subs(dfde_meps);
 
 pretty(simplify(eval_dfde_meps))
-
+989
+return
 rr = 1:.01:50;
 J_meps = (1./rr).^(3/2) - 2^(1/2)./(2.*(rr./(rr + 1)).^(1/2).*(rr + 1).^2) - (2^(1/2).*(2.*rr + 1))./(2.*rr.^2.*(1./(rr.*(rr + 1))).^(1/2).*(rr + 1).^2);
 figure(1); hold all
