@@ -11,7 +11,7 @@ tic
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-run_newPolarTrajs = 1;
+run_newPolarTrajs = 0;
 
 % ========================================================================
 %%% Free variables
@@ -190,7 +190,6 @@ options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'A
 % ========================================================================
 %%% Loop through conditions, store results - or load results
 % ========================================================================
-if run_newPolarTrajs == 1
 polarR0Data = {};
 
 parfor ii = 1:n_r0s
@@ -333,53 +332,33 @@ parfor ii = 1:n_r0s
 
     
 end
-end % run_newPolarTrajs
-% ========================================================================
-%%% Grab the X0 and Xf from polar impacters, the re-propagate
-% ========================================================================
-X0s_new_neck = [];
-X0s_new_pole = [];
+% -------------------------------------------------
+% Saving data
+% -------------------------------------------------
+%%% Filename
+filename_polarTraj = fullfile(polarTrajDataPath, sprintf('PolarXs_%s_%1.0fmps_%1.0fkm_%1.0fv0s.txt',...
+    secondary.name(1:3),dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+    
+%%% Opening files and writing header
+f_polarTraj = fopen(filename_polarTraj, 'wt');
+fprintf(f_polarTraj,'t0/tf,x,y,z,dx,dy,dz\n');  % header
 
-for kk = 1:length(polarR0Data)
-for jj = 1:size(polarR0Data{kk}.latLons,1)
-if isnan(polarR0Data{kk}.latLons(jj,1)) == 0
-    fprintf('r0_n = %1.0f\nlatLon = [%1.2f, %1.2f]\nendTime = %1.2f\n---------\n',...
-        kk,polarR0Data{kk}.latLons(jj,1),polarR0Data{kk}.latLons(jj,2),polarR0Data{kk}.endTimes(jj))
-    
-    X0s_new_neck = [X0s_new_neck; polarR0Data{kk}.X0s(jj,:)];
-    X0s_new_pole = [X0s_new_pole; polarR0Data{kk}.Xfs(jj,:)];
-    
-end
-end
-end
+%%% Writing data
+for kk = 1:n_r0s
+    for jj = 1:n_v0s_per_r0
+        %%% If this trajectory impacted, write impact data
+        if isnan(polarR0Data{kk}.endTimes(jj)) == 0
+            %%% X0 (t0 = 0)
+            fprintf(f_polarTraj,'0,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f\n',polarR0Data{kk}.X0s(jj,:));
+            %%% Xf (tf = tf);
+            fprintf(f_polarTraj,'%1.8f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f\n',polarR0Data{kk}.endTimes(jj),polarR0Data{kk}.Xfs(jj,:));
+        end
+    end
 
-prms = struct();
-prms.u = secondary.MR;
-prms.R2_n = secondary.R_n;
-prms.L1x = L123(1,1);
-prms.L2x = L123(2,1);
-figure; hold all
-for kk = 1:size(X0s_new_neck,1)
-    
-    % ---------------------------------------
-    % Integrating each case
-    % ---------------------------------------
-    %%% Propagating neck trajectory
-    [time_neck_n, X_BCR_neck_n, time_neck_eventImpact, X_neck_eventImpact, index_neck_eventImpact] = ode113(@Int_CR3Bn,...
-        time0_n, [X0s_new_neck(kk,1:3),X0s_new_neck(kk,4:6)], options_ImpactEscape, prms);
-    
-    %%% Propagating pole trajectory
-    [time_pole_n, X_BCR_pole_n, time_pole_eventImpact, X_pole_eventImpact, index_pole_eventImpact] = ode113(@Int_CR3Bn,...
-        fliplr(time0_n), [X0s_new_pole(kk,1:3),X0s_new_pole(kk,4:6)], options_ImpactEscape, prms);
-    
-    plot3(X_BCR_neck_n(:,1),X_BCR_neck_n(:,2),X_BCR_neck_n(:,3),'b','linewidth',1.5)
-    plot3(X_BCR_pole_n(:,1),X_BCR_pole_n(:,2),X_BCR_pole_n(:,3),'r','linewidth',1.5)
-    
 end
 
-plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
-axis equal
-PlotBoi3('x','y','z',16,'LaTex')
+%%% Close file
+fclose(f_polarTraj);
 
 toc
 
