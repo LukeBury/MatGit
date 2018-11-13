@@ -53,9 +53,9 @@ for kk = 8
     end
 
 
-    logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_log.txt';
-    impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_data.txt';
-    lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_land.txt';
+    logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/test_log.txt';
+    impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_51mps_50km_149v0s_data.txt';
+    lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_51mps_50km_149v0s_land.txt';
 
     
 
@@ -107,13 +107,13 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
 % Run Switches
 % -------------------------------------------------
 plot_fullLowTrajectories = 1;
-plot_LowTrajectories_r0  = 1;
-plot_initialConditions   = 1;
-plot_fullSystemContour   = 1;
-plot_sectionColors       = 1;
+plot_LowTrajectories_r0  = 0;
+plot_initialConditions   = 0;
+plot_fullSystemContour   = 0;
+plot_sectionColors       = 0;
 
 plot_binImpactAngles     = 1;
-plot_binNeckSections     = 1;
+plot_binNeckSections     = 0;
 
 % ========================================================================
 %%% Setting data
