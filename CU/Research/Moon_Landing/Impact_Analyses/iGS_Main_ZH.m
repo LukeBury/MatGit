@@ -7,10 +7,10 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 1;
+testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21      = 1;
+on_J21                 = 1;
 
 
 %%% Set paths based on computer
