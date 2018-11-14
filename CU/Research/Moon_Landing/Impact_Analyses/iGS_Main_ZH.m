@@ -86,7 +86,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 100; % Meters per second
+dvLp_mps = 150; % Meters per second
 
 
 
