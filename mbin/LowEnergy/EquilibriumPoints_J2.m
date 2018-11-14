@@ -1,4 +1,4 @@
-function L = EquilibriumPoints_J2(u,J21,J22,R1,R2,points)
+function L = EquilibriumPoints_J2(u,J21,J22,R1_n,R2_n,points)
 %EquilibriumPoints calculates the equilibrium points of a CR3BP system.
 %   EquilibriumPoints inputs a mass ration for a CR3BP system and a scalar
 %   or vector of integer identifies for each of the L1-5 equilibrium points
@@ -29,8 +29,8 @@ y = zeros(numPoints,1);
 z = zeros(numPoints,1);
 
 % Collinear equilibrium points 
-dUdx = @(x) x - (1-u)*(x+u)/abs(x+u)^3 - u*(x-1+u)/abs(x-1+u)^3  - 3*J21*R1^2*(1-u)*(x+u)/(2*abs(x+u)^5)- 3*J22*R2^2*u*(x-1+u)/(2*abs(x-1+u)^5);
-d2Udx2 = @(x) 1 + 2*(1-u)/abs(x+u)^3 + 2*u/abs(x-1+u)^3 + 6*J21*R1^2*(1-u)/abs(x+u)^5 + 6*J22*R2^2*u/abs(x-1+u)^5;
+dUdx = @(x) x - (1-u)*(x+u)/abs(x+u)^3 - u*(x-1+u)/abs(x-1+u)^3  - 3*J21*R1_n^2*(1-u)*(x+u)/(2*abs(x+u)^5)- 3*J22*R2_n^2*u*(x-1+u)/(2*abs(x-1+u)^5);
+d2Udx2 = @(x) 1 + 2*(1-u)/abs(x+u)^3 + 2*u/abs(x-1+u)^3 + 6*J21*R1_n^2*(1-u)/abs(x+u)^5 + 6*J22*R2_n^2*u/abs(x-1+u)^5;
 
 for ii = 1:numPoints
     switch points(ii)
