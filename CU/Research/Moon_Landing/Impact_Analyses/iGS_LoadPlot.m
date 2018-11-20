@@ -8,7 +8,7 @@ tic
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = [13]
+for kk = 1:14
     if kk == 1
         %%% 50 mps
         logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_log.txt';
@@ -164,14 +164,16 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath,on_J21)
 % -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
-plot_fullLowTrajectories = 1;
-plot_LowTrajectories_r0  = 1;
-plot_initialConditions   = 1;
-plot_fullSystemContour   = 1;
-plot_sectionColors       = 1;
+plot_fullLowTrajectories = 0;
+plot_LowTrajectories_r0  = 0;
+plot_initialConditions   = 0;
+plot_fullSystemContour   = 0;
+plot_sectionColors       = 0;
 
-plot_binImpactAngles     = 1;
-plot_binNeckSections     = 1;
+plot_binImpactAngles     = 0;
+plot_binNeckSections     = 0;
+plot_metaData            = 1;
+plot_latitudeV0AngleCorr = 1;
 
 % ========================================================================
 %%% Setting data
@@ -301,7 +303,6 @@ for kk = 1:binCount_NeckSections
     binData_neckSections(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
 end
 
-
 % ========================================================================
 %%% Loading Low-Impact-Angle Data
 % ========================================================================
@@ -317,6 +318,7 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
     % -------------------------------------------------
     % Propagate low-impact-angle trajectories
     % -------------------------------------------------
+    if plot_fullLowTrajectories == 1 || plot_LowTrajectories_r0 == 1
     %%% Preallocating
     lowTrajs{nLowImpactTraj} = [];
 
@@ -376,6 +378,7 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
             plot3(lowTrajs{kk}(1,1),lowTrajs{kk}(1,2),lowTrajs{kk}(1,3),'b.','markersize',16)
         end
     end
+    end % plot_fullLowTrajectories == 1 || plot_LowTrajectories_r0 == 1
 end % size(lowImpactMat) ~= [1,1]
 % ========================================================================
 %%% Determining necessary data for plotting
@@ -599,25 +602,84 @@ if plot_binImpactAngles == 1
 end
 
 
+% -------------------------------------------------
+% Metadata
+% -------------------------------------------------
+if plot_metaData == 1
+    if on_J21 == 0
+        color1 = colors.std.red;
+        color2 = colors.std.black;
+    elseif on_J21 == 1
+        color1 = colors.std.blue;
+        color2 = colors.std.grn;
+    end
+    figure(20); hold all
+    plot(dvLp_mps,nLowImpactTraj,'x','linewidth',2,'markersize',10,'color',color1)
+    PlotBoi2('L2 flyover speed, $mps$','Number of low-impact-angle landings',14,'LaTex')
+    if on_J21 == 0
+        legend('nominal')
+    elseif on_J21 == 1
+        legend('J21')
+    end
 
+    figure(21); hold all
+    plot(dvLp_mps,nLowImpactTraj/nImpactTraj*100,'x','linewidth',2,'markersize',10,'color',color1)
+    PlotBoi2('L2 flyover speed, $mps$','\% of all impacts that were low-angle',14,'LaTex')
+    if on_J21 == 0
+        legend('nominal')
+    elseif on_J21 == 1
+        legend('J21')
+    end
 
-figure(20); hold all
-plot(dvLp_mps,nLowImpactTraj,'rx','linewidth',2,'markersize',10)
-PlotBoi2('L2 flyover speed, $mps$','Number of low-impact-angle landings',14,'LaTex')
+    figure(22); hold all
+    plot(dvLp_mps,nImpactTraj/nTraj*100,'x','linewidth',2,'markersize',10,'color',color1)
+    PlotBoi2('L2 flyover speed, $mps$','\% of all trajectories that impacted',14,'LaTex')
+    if on_J21 == 0
+        legend('nominal')
+    elseif on_J21 == 1
+        legend('J21')
+    end
 
-figure(21); hold all
-plot(dvLp_mps,nLowImpactTraj/nImpactTraj*100,'rx','linewidth',2,'markersize',10)
-PlotBoi2('L2 flyover speed, $mps$','\% of all impacts that were low-angle',14,'LaTex')
+    figure(23); hold all
+    p1 = plot(dvLp_mps,maxLat,'x','linewidth',2,'markersize',10,'color',color1);
+    p2 = plot(dvLp_mps,maxLowLat,'x','linewidth',2,'markersize',10,'color',color2);
+    % legend([p1 p2],'MaxLat','MaxLowLat')
+    PlotBoi2('L2 flyover speed, $mps$','Max Latitudes',14,'LaTex')
+    if on_J21 == 0
+        legend([p1 p2],'nominal - MaxLat','nominal - MaxLowLat')
+    elseif on_J21 == 1
+        legend([p1 p2],'J21 - MaxLat','J21 - MaxLowLat')
+    end
 
-figure(22); hold all
-plot(dvLp_mps,nImpactTraj/nTraj*100,'rx','linewidth',2,'markersize',10)
-PlotBoi2('L2 flyover speed, $mps$','\% of all trajectories that impacted',14,'LaTex')
+end % plot_metaData
 
-figure(23); hold all
-p1 = plot(dvLp_mps,maxLat,'kx','linewidth',2,'markersize',10);
-p2 = plot(dvLp_mps,maxLowLat,'bx','linewidth',2,'markersize',10);
-legend([p1 p2],'MaxLat','MaxLowLat')
-PlotBoi2('L2 flyover speed, $mps$','Max Latitudes',14,'LaTex')
+% ========================================================================
+%%% Correlation between impact latitude and angle between v0 and y-z plane
+% ========================================================================
+if plot_latitudeV0AngleCorr == 1
+    %%% preallocate vector for angels between v0s and YZ plane
+    v0_YZ_angles_deg = zeros(size(lowImpactMat,1),1);
+    
+    %%% Vector perpendicular to YZ plane
+    nz_vec = [-1, 0, 0];
+    
+    %%% Column indices
+    col_v0  = [4, 5, 6];
+    col_lat = 8;
+    
+    %%% Loop through low-angle impact trajectories and store v0-YZ angles
+    for kk = 1:size(lowImpactMat,1)
+        v0_YZ_angles_deg(kk) = 90 - acosd(dot(nz_vec,lowImpactMat(kk,col_v0))/norm(lowImpactMat(kk,col_v0)));
+    end
+    
+    corrcoef(v0_YZ_angles_deg,abs(lowImpactMat(:,col_lat)))
+    
+    %%% Plotting
+    figure; hold all
+    plot(v0_YZ_angles_deg,abs(lowImpactMat(:,col_lat)),'.','markersize',10,'color',colors.std.blue)
+    PlotBoi2('Angle between v0 and impact latitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+
+end
 
 
 end

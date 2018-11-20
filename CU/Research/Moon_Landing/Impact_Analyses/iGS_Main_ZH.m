@@ -1,5 +1,5 @@
 clear
-clc
+% clc
 close all
 
 ticWhole = tic;
@@ -10,7 +10,7 @@ ticWhole = tic;
 testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21                 = 1;
+on_J21                 = 0;
 
 
 %%% Set paths based on computer
@@ -86,7 +86,7 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 350; % Meters per second
+dvLp_mps = 50; % Meters per second
 
 
 
