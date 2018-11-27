@@ -1,5 +1,5 @@
 clear
-clc
+% clc
 close all
 
 ticWhole = tic;
@@ -8,6 +8,10 @@ ticWhole = tic;
 % ========================================================================
 %%% Testing?
 testCaseOn             = 0;
+
+%%% Zonal harmonics (J21)
+on_J21                 = 0;
+
 
 %%% Set paths based on computer
 if isequal(computer,'MACI64')      % Mac
@@ -58,9 +62,12 @@ tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
 
 %%% Setting new variables because parfor is picky
+R1_n = primary.R/rNorm;
 R2_n = secondary.R_n;
 MR = secondary.MR;
 secondaryName = secondary.name;
+J21 = primary.J2;
+J22 = 0;
 
 % -------------------------------------------------
 % Grid-search settings
@@ -69,7 +76,11 @@ secondaryName = secondary.name;
 Lpoint = 2;  % 1 or 2
 
 %%% Acquire Collinear Lagrange points
-L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+if on_J21 == 0
+    L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+elseif on_J21 == 1
+    L123 = EquilibriumPoints_J2(secondary.MR,J21,J22,R1_n,R2_n,1:3);
+end
 Lpoint_x = L123(Lpoint,1);
 
 %%% How fast the SC would be traveling over the Lagrange point
@@ -78,8 +89,6 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second
 
 for dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
-
-
 
 
 
@@ -135,7 +144,11 @@ binColors_NeckSections = [colors.sch.d4_1(2,:);colors.sch.d4_1(1,:);...
 % Finding initial JC of spacecraft
 % -------------------------------------------------
 %%% Jacobi constant of Lagrange point
-[JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(Lpoint,:),[0,0,0]);
+if on_J21 == 0
+    [JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(Lpoint,:),[0,0,0]);
+elseif on_J21 == 1
+    [JC_Lp] = JacobiConstantCalculator_J2(secondary.MR,L123(Lpoint,:),[0,0,0], R1_n, R2_n, J21, J22);
+end
 
 dJC_vel_kps = dvLp_mps/1000;
 dJC_Lp = (dJC_vel_kps/vNorm)^2;
@@ -153,8 +166,16 @@ u = secondary.MR;
 x = L123(Lpoint,1);
 z = 0;
 
+
 %%% JC function equal to zero
-f = @(y) x^2 + y.^2 - c + 2*(1-u)./sqrt((x+u)^2+y.^2+z^2) + 2*u./sqrt((x-1+u)^2+y.^2+z^2);
+r1 = @(x,y,z) sqrt((x+u)^2+y.^2+z^2);
+r2 = @(x,y,z) sqrt((x-1+u)^2+y.^2+z^2);
+if on_J21 == 0
+    f = @(y) x^2 + y.^2 - c + 2*(1-u)./r1(x,y,z) + 2*u./r2(x,y,z);
+elseif on_J21 == 1
+    f = @(y) x^2 + y.^2 - c + 2*(1-u)./r1(x,y,z) + 2*u./r2(x,y,z) + R1_n*R1_n*J21*(1-u)*(r1(x,y,z)^2 - 3*z*z)/(r1(x,y,z)^5);
+end
+
 
 %%% Find the root of this function in the appropriate range
 y_neck_upper = fzero(f,[0 10*secondary.R_n]);
@@ -172,7 +193,14 @@ x = L123(Lpoint,1);
 y = 0;
 
 %%% JC function equal to zero
-f = @(z) x^2 + y.^2 - c + 2*(1-u)./sqrt((x+u)^2+y^2+z.^2) + 2*u./sqrt((x-1+u)^2+y^2+z.^2);
+r1 = @(x,y,z) sqrt((x+u)^2+y.^2+z^2);
+r2 = @(x,y,z) sqrt((x-1+u)^2+y.^2+z^2);
+
+if on_J21 == 0
+    f = @(z) x^2 + y.^2 - c + 2*(1-u)./r1(x,y,z) + 2*u./r2(x,y,z);
+elseif on_J21 == 1
+    f = @(z) x^2 + y.^2 - c + 2*(1-u)./r1(x,y,z) + 2*u./r2(x,y,z) + R1_n*R1_n*J21*(1-u)*(r1(x,y,z)^2 - 3*z*z)/(r1(x,y,z)^5);
+end
 
 %%% Find the root of this function in the appropriate range
 z_neck_upper = fzero(f,[0 10*secondary.R_n]);
@@ -197,7 +225,11 @@ JCs_yz_Lpoint = zeros(size(Y_yz));
 for yk = 1:size(Y_yz,1)
     for zk = 1:size(Y_yz,2)
         %%% Zero-Velocity Curve
-        zv = JacobiConstantCalculator(secondary.MR,[L123(2,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+        if on_J21 == 0
+            zv = JacobiConstantCalculator(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+        elseif on_J21 == 1
+            zv = JacobiConstantCalculator_J2(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)],[0,0,0], R1_n, R2_n, J21, J22);
+        end
         JCs_yz_Lpoint(yk,zk) = zv;
     end
 end
@@ -300,6 +332,11 @@ parfor ii = 1:n_r0s
     prms.R2_n = R2_n;
     prms.L1x = L123mat(1,1);
     prms.L2x = L123mat(2,1);
+    
+    if on_J21 == 1
+        prms.R1_n = R1_n;
+        prms.J21  = J21;
+    end
 
     % -------------------------------------------------
     % Setting current initial position
@@ -311,7 +348,12 @@ parfor ii = 1:n_r0s
     % -------------------------------------------------
     %%% With JC0 defined, starting velocity is a function of position. So first
     %%% we must calculate the JC of the stationary starting position
-    JC_initialPos = JacobiConstantCalculator(MR,r0_i,[0,0,0]);
+    JC_initialPos = [];
+    if on_J21 == 0
+        JC_initialPos = JacobiConstantCalculator(MR,r0_i,[0,0,0]);
+    elseif on_J21 == 1
+        JC_initialPos = JacobiConstantCalculator_J2(MR,r0_i, [0,0,0], R1_n, R2_n, J21, J22);
+    end
     
     %%% Starting velocity is found from difference between s/c JC (JC_scDesired) and the
     %%% JC of the stationary starting position (JC_initialPos)
@@ -339,9 +381,23 @@ parfor ii = 1:n_r0s
     endTimes_ii         = zeros(n_v0s_per_r0,1);
     bin_impactAngles_ii = zeros(n_v0s_per_r0,1);
     bin_neckSections_ii = zeros(n_v0s_per_r0,1);
+    trajIDs_ii          = zeros(n_v0s_per_r0,1);
+    v0AzEls_ii          = zeros(n_v0s_per_r0,2);
         
     %%% Running loop
     for vi = 1:n_v0s_per_r0
+        % ---------------------------------------
+        % Preallocating temporary variables
+        % ---------------------------------------
+        trajID       = [];
+        impactLatLon = [];
+        impactSpeed  = [];
+        impactAngle  = [];
+        endTime      = [];
+        v0AzEl       = [];
+        
+        %%% Compute unique trajectory identification
+        trajID = (ii-1)*n_v0s_per_r0 + vi;
 
         %%% Setting v0
         v0_i = vHats(vi,:) .* v0i_mag;
@@ -353,8 +409,18 @@ parfor ii = 1:n_r0s
         % Integrating
         % ---------------------------------------
         %%% Propagating trajectory
-        [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-            time0_n, X0_n, options_ImpactEscape, prms);
+        time_n            = [];
+        X_BCR_n           = [];
+        time_eventImpact  = [];
+        X_eventImpact     = [];
+        index_eventImpact = [];
+        if on_J21 == 0
+            [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+                time0_n, X0_n, options_ImpactEscape, prms);
+        elseif on_J21 == 1
+            [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn_ZH,...
+                time0_n, X0_n, options_ImpactEscape, prms);
+        end
         
         % ---------------------------------------
         % Determining end conditions
@@ -370,15 +436,12 @@ parfor ii = 1:n_r0s
             impact1_escape2_orbit3 = 3;
         end
         
+        % ---------------------------------------
+        % Determining azimuth and elevation of v0
+        % ---------------------------------------
+        [Az,El,Rad] = cart2sph(X0_n(4), X0_n(5), X0_n(6))
+        v0AzEl = [Az, El];
         
-        % ---------------------------------------
-        % Preallocating temporary variables
-        % ---------------------------------------
-        impactLatLon = [];
-        impactSpeed  = [];
-        impactAngle  = [];
-        endTime      = [];
-
         % ---------------------------------------
         % Determining lat/lon, speed, and angle of impact
         % ---------------------------------------
@@ -428,11 +491,13 @@ parfor ii = 1:n_r0s
         % =======================================
         % Storing results of trajectory
         % ---------------------------------------
+        trajIDs_ii(vi)      = trajID;
         X0s_ii(vi,:)        = X0_n;
         latLons_ii(vi,:)    = impactLatLon;
         impactSpeeds_ii(vi) = impactSpeed;
         impactAngles_ii(vi) = impactAngle;
         endTimes_ii(vi)     = endTime;
+        v0AzEls_ii(vi,:)    = v0AzEl;
 
         % ---------------------------------------
         % Assigning impact-angle bin
@@ -462,13 +527,15 @@ parfor ii = 1:n_r0s
     % -------------------------------------------------
     % Storing data from all azimuths/elevations
     % -------------------------------------------------
-    r0Data{ii}.X0s          = X0s_ii;
-    r0Data{ii}.latLons      = latLons_ii;
-    r0Data{ii}.impactSpeeds = impactSpeeds_ii;
-    r0Data{ii}.impactAngles = impactAngles_ii;
-    r0Data{ii}.endTimes     = endTimes_ii;
+    r0Data{ii}.trajIDs          = trajIDs_ii;
+    r0Data{ii}.X0s              = X0s_ii;
+    r0Data{ii}.latLons          = latLons_ii;
+    r0Data{ii}.impactSpeeds     = impactSpeeds_ii;
+    r0Data{ii}.impactAngles     = impactAngles_ii;
+    r0Data{ii}.endTimes         = endTimes_ii;
     r0Data{ii}.bin_neckSections = bin_neckSections_ii;
     r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
+    r0Data{ii}.v0AzEls          = v0AzEls_ii; 
     
 end
 
@@ -478,30 +545,58 @@ end
 % -------------------------------------------------
 %%% File Names
 if testCaseOn == 0
-    %%% All impact data
-    filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data3.txt',...
-        computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
-    %%% Low-impact-angle data
-    filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land3.txt',...
-        computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
-    %%% Log file
-    filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log3.txt',...
-        computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+    if on_J21 == 0
+        %%% All impact data
+        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        %%% Low-impact-angle data
+        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        %%% Log file
+        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+    elseif on_J21 == 1
+        %%% All impact data
+        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_data.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        %%% Low-impact-angle data
+        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_land.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        %%% Log file
+        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_log.txt',...
+            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+    end
 elseif testCaseOn == 1
-    %%% All impact data
-    filename_allTraj     = fullfile(savepath,'testFile_data.txt');
-    %%% Low-impact-angle data
-    filename_landingTraj = fullfile(savepath,'testFile_land.txt');
-    %%% Log file
-    filename_runData     = fullfile(savepath,'testFile_log.txt');
+    if on_J21 == 0
+        %%% All impact data
+        filename_allTraj     = fullfile(savepath,'testFile_data.txt');
+        %%% Low-impact-angle data
+        filename_landingTraj = fullfile(savepath,'testFile_land.txt');
+        %%% Log file
+        filename_runData     = fullfile(savepath,'testFile_log.txt');
+    elseif on_J21 == 1
+        %%% All impact data
+        filename_allTraj     = fullfile(savepath,'testFile_J21_data.txt');
+        %%% Low-impact-angle data
+        filename_landingTraj = fullfile(savepath,'testFile_J21_land.txt');
+        %%% Log file
+        filename_runData     = fullfile(savepath,'testFile_J21_log.txt');
+    end
 end
+
+% %%% Opening files and writing header
+% f_allTraj = fopen(filename_allTraj, 'wt');
+% fprintf(f_allTraj,'bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime\n');  % header
+% 
+% f_landingTraj = fopen(filename_landingTraj, 'wt');
+% fprintf(f_landingTraj,'x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime\n');  % header
 
 %%% Opening files and writing header
 f_allTraj = fopen(filename_allTraj, 'wt');
-fprintf(f_allTraj,'bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime,y0_n,z0_n\n');  % header
+fprintf(f_allTraj,'trajID,bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime,y0_n,z0_n,v0_Azimuth,v0_Elevation\n');  % header
 
 f_landingTraj = fopen(filename_landingTraj, 'wt');
-fprintf(f_landingTraj,'x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime\n');  % header
+fprintf(f_landingTraj,'trajID,x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime\n');  % header
 
 %%% Writing data (and finding maximum latitudes)
 maxLat    = 0;
@@ -513,16 +608,16 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f,%1.5f,%1.5f\n',r0Data{kk}.bin_impactAngles(jj),...
+                fprintf(f_allTraj,'%1d,%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f,%1.5f,%1.5f,%1.5f,%1.5f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.bin_impactAngles(jj),...
                     r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),...
-                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3));
+                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3),r0Data{kk}.v0AzEls(jj,1:2));
                 if maxLat < r0Data{kk}.latLons(jj,1)
                     maxLat = r0Data{kk}.latLons(jj,1);
                 end
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.2f,%2.2f,%1.5f\n',r0Data{kk}.X0s(jj,:),...
+                    fprintf(f_landingTraj,'%1d,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.2f,%2.2f,%1.5f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,:),...
                         r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.endTimes(jj));
                     if maxLowLat < r0Data{kk}.latLons(jj,1)
                         maxLowLat = r0Data{kk}.latLons(jj,1);
