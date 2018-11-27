@@ -75,7 +75,9 @@ Lpoint_x = L123(Lpoint,1);
 %%% How fast the SC would be traveling over the Lagrange point
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
-dvLp_mps = 50; % Meters per second
+% dvLp_mps = 50; % Meters per second
+
+for dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
 
 
 
@@ -496,7 +498,7 @@ end
 
 %%% Opening files and writing header
 f_allTraj = fopen(filename_allTraj, 'wt');
-fprintf(f_allTraj,'bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime\n');  % header
+fprintf(f_allTraj,'bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime,y0_n,z0_n\n');  % header
 
 f_landingTraj = fopen(filename_landingTraj, 'wt');
 fprintf(f_landingTraj,'x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime\n');  % header
@@ -511,9 +513,9 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f\n',r0Data{kk}.bin_impactAngles(jj),...
+                fprintf(f_allTraj,'%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f,%1.5f,%1.5f\n',r0Data{kk}.bin_impactAngles(jj),...
                     r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),...
-                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj));
+                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3));
                 if maxLat < r0Data{kk}.latLons(jj,1)
                     maxLat = r0Data{kk}.latLons(jj,1);
                 end
@@ -572,7 +574,7 @@ fclose(f_runData);
 
 finalToc = toc(ticWhole);
 
-
+end % dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
 
 
 
