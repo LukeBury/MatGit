@@ -1,5 +1,5 @@
 clear
-% clc
+clc
 close all
 
 ticWhole = tic;
@@ -10,7 +10,7 @@ ticWhole = tic;
 testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21                 = 1;
+on_J21                 = 0;
 
 
 %%% Set paths based on computer
@@ -53,8 +53,8 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 %%% 3B system
-primary   = bodies.jupiter;
-secondary = bodies.europa;
+primary   = bodies.saturn;
+secondary = bodies.enceladus;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -88,20 +88,27 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
-for dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
+% for dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
+for dvLp_mps = [13, 26, 39, 52, 65, 78, 91]
 
 
 
 
 
 
-%%% Spacing of initial positions within 3D neck
-% r0GridSpacing_km = 100; % km - Europa
-% r0GridSpacing_km = 10;  % km - Enceladus
-r0GridSpacing_km = 50; % km
 
-%%% Spacing between azimuths and elevations of v0s per r0
-n_v0s_per_r0_target = 145;
+
+if isequal(secondary.name,'europa')
+    %%% Spacing of initial positions within 3D neck
+    r0GridSpacing_km = 50; % km
+    %%% Spacing between azimuths and elevations of v0s per r0
+    n_v0s_per_r0_target = 145;
+elseif isequal(secondary.name,'enceladus')
+    %%% Spacing of initial positions within 3D neck
+    r0GridSpacing_km = 4; % km
+    %%% Spacing between azimuths and elevations of v0s per r0
+    n_v0s_per_r0_target = 145;
+end
 % n_target = 1297; % ~ old  5 deg spacing
 % n_target = 352;  % ~ old 10 deg spacing
 % n_target = 145;  % ~ old 15 deg spacing - should be used
@@ -115,8 +122,13 @@ if testCaseOn == 1
 %     n_v0s_per_r0_target = 350;
     
     %%% To get a couple of low impacts ... 
-    r0GridSpacing_km = 500;
-    n_v0s_per_r0_target = 5;
+    if isequal(secondary.name,'europa')
+        r0GridSpacing_km = 500;
+        n_v0s_per_r0_target = 5;
+    elseif isequal(secondary.name,'enceladus')
+        r0GridSpacing_km = 75;
+        n_v0s_per_r0_target = 30;
+    end
 end
 
 %%% Selecting time vector
@@ -251,7 +263,9 @@ r0s = [];
 for yk = 1:size(Y_yz_r0s,1)
     for zk = 1:size(Z_yz_r0s,2)
         if inpolygon(Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk),yzContourPoints4(1,:),yzContourPoints4(2,:)) == 1
-            r0s = [r0s; L123(2,1), Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk)];
+            if Z_yz_r0s(yk,zk) >= 0 % dynamics are symmetric about z=0, so only need to check one side of that
+                r0s = [r0s; L123(2,1), Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk)];
+            end
         end
     end
 end
