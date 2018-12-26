@@ -109,7 +109,7 @@ prms.J21 = primary.J2;
 % -------------------------------------------------
 % Plotting colors
 % -------------------------------------------------
-[ colorMatrix ] = colorScale([colors.std.black; colors.std.mag],length(JC_scalars) );
+[ colorMatrix ] = colorScale([colors.std.black; colors.std.ltgrn],length(JC_scalars) );
 % ========================================================================
 %%% Integrating nominal cases
 % ========================================================================

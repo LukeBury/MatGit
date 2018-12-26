@@ -1,5 +1,7 @@
 %%% Given latitude (deg), longitude (deg), and body radius (km)
 %%% Returns surface coordinates in ECEF
+%%% 
+%%% supply 'extras.stupidMoon' to set 0-longitude to -x axis
 function [rECEF] = latlon2surfECEF(lat, lon, rad, extras)
 
 %%% Convert to radians

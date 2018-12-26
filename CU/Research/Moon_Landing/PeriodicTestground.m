@@ -113,7 +113,7 @@ A(6,3) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) + zL*((3*u*zL)/((u + xL - 1)^2
 %%% Finding center manifold (purely imaginary eigenvalue) ... or maybe not
 for ev_i = 1:size(eVals,1)
     if abs(real(eVals(ev_i,ev_i))) < 5e-16 && abs(imag(eVals(ev_i,ev_i))) > 5e-16 % If real() == 0 and imag() ~= 0
-        ev_i = 3
+        ev_i = 5
         warning('eigenvalue not dynamic')
         eVal_CM = eVals(ev_i,ev_i);
         eVec_CM = eVecs(:,ev_i);

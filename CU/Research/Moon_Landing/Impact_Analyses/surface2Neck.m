@@ -7,22 +7,28 @@ addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
 tic
 
+%%% This script backwards-propagates trajectories from the north pole of
+%%% europa at a specified energy level (in terms of L2-flyover speed)
 % ========================================================================
 %%% Run Switches
 % ========================================================================
 storePlot_FullTraj = 1;
 useEvents          = 1; % stop int on impact or interior escape
 
+print_lowImpactL2Trajs = 1;
+
 onlyLowAngleTrajs  = 1;
+impactAngleUpperLimit_deg = 40;
 % ========================================================================
 %%% Free variables
 % ========================================================================
 %%% Number of vHat directions to test
-nvHats = 100;
+n_vHats = 1000;
 
 %%% How fast the SC would be traveling over L2
 % dvLp_mps = 200; % Meters per second
-dvLp_mps = 350; % Meters per second
+% dvLp_mps = 400; % Meters per second
+dvLp_mps = 150; % Meters per second
 
 %%% "Final" time
 t_i = 4*pi;
@@ -55,24 +61,35 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
 %%% Initial position from lat/lon on surface (0-lon points toward primary)
-lat0 = 90;
-lon0 = 0;
+% lat0 = 90;
+% lon0 = 0;
+
+% lat0 = -5;
+% lon0 = -245;
+
+%%% Europa Plume, https://europa.nasa.gov/resources/31/source-region-for-possible-europa-plumes/
+lat0 = 20;
+lon0 = -90;
+
 [rSCR0_n] = latlon2SCR(lat0, lon0, secondary.R_n);
 
-r0_n = rSCR0_n + [1-secondary.MR, 0, 0];
 
-%%% Create matrix of initial velocity directions
-[vHatHem] = vHatHemisphere(nvHats,'-z');
+rf_n = rSCR0_n + [1-secondary.MR, 0, 0];
 
-v0s = [];
+%%% Create matrix of initial velocity directions (forward in time)
+[vHatHem] = vHatHemisphere(n_vHats,'-y');
+
+vfs = [];
 if onlyLowAngleTrajs == 1
     for kk = 1:size(vHatHem,1)
         [impactAngle_kk] = calcImpactAngle(rSCR0_n,vHatHem(kk,:),'degrees');
         
-        if impactAngle_kk < 5
-            v0s = [v0s; vHatHem(kk,:)];
+        if impactAngle_kk < impactAngleUpperLimit_deg
+            vfs = [vfs; vHatHem(kk,:)];
         end
     end
+elseif onlyLowAngleTrajs == 0
+    vfs = vHatHem;
 end
 
 % -------------------------------------------------
@@ -91,7 +108,7 @@ JC_scInitial = JC_Lp-dJC_Lp;
 
 %%% With JC0 defined, starting velocity is a function of position. So first
 %%% we must calculate the JC of the stationary starting position
-JC_initialPos = JacobiConstantCalculator(secondary.MR,r0_n,[0,0,0]);
+JC_initialPos = JacobiConstantCalculator(secondary.MR,rf_n,[0,0,0]);
 
 %%% Starting velocity is found from difference between s/c JC (JC_scDesired) and the
 %%% JC of the stationary starting position (JC_initialPos)
@@ -110,27 +127,27 @@ end
 %%% Setting time vector
 t_f = 0;
 n_dt = 1000;
-time0_n = linspace(t_i,t_f,n_dt);
+time0_bkwds_n = linspace(t_i,t_f,n_dt);
 
 %%% Choosing ode tolerance
-tol = 1e-12;
+tol = 2.22045e-14;
 
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
-% options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 % -------------------------------------------------
 % Propagating states
 % -------------------------------------------------
 %%% Preallocating
-trajs{size(v0s,1)} = [];
-
+trajs{size(vfs,1)} = [];
+L2_escapees_X0T = [];
 %%% Looping through conditions
-for kk = 1:size(v0s,1)
+for kk = 1:size(vfs,1)
     %%% Initial state
-    v0_n = v0s(kk,:).*v0Mag;
+    vf_n = vfs(kk,:).*v0Mag;
     
-    X0_n = [r0_n, v0_n]';
+    Xf_n = [rf_n, vf_n]';
     
     
     %%% Setting extra parameters
@@ -139,16 +156,52 @@ for kk = 1:size(v0s,1)
     extras.L1x = L123(1,1);
     extras.L2x = L123(2,1);
     
+    time_eventImpact_bkwds = [];
+    X_eventImpact_bkwds = [];
+    index_eventImpact = [];
     %%% Integrating
-%     [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-%                 time0_n, X0_n, options_ImpactEscape, extras);
-    [time_n, X_BCR_n] = ode113(@Int_CR3Bn, time0_n, X0_n, options, extras);
+    if useEvents == 1
+        [time_bkwds_n, X_BCR_bkwds_n, time_eventImpact_bkwds, X_eventImpact_bkwds, index_eventImpact] = ode113(@Int_CR3Bn,...
+                time0_bkwds_n, Xf_n, options_ImpactEscape, extras);
+    elseif useEvents == 0
+        [time_bkwds_n, X_BCR_bkwds_n] = ode113(@Int_CR3Bn, time0_bkwds_n, Xf_n, options, extras);
+    end
+    
+%     if X_BCR_bkwds_n(end,1) > 1.02
+%         kk
+%         X_eventImpact_bkwds
+%     end
+%     
+    if useEvents == 1
+        if isempty(X_eventImpact_bkwds) == 0
+            if X_eventImpact_bkwds(end,1) == L123(2,1)
+                L2_escapees_X0T = [L2_escapees_X0T; X_eventImpact_bkwds(end,:), time0_bkwds_n-time_eventImpact_bkwds(end)];
+            end
+        end
+    end
     
     %%% Storing
     if storePlot_FullTraj == 0
-        trajs{kk} = [X_BCR_n(1,:); X_BCR_n(end,:)];
+        trajs{kk} = [X_BCR_bkwds_n(1,:); X_BCR_bkwds_n(end,:)];
     elseif storePlot_FullTraj == 1
-        trajs{kk} = X_BCR_n;
+        trajs{kk} = X_BCR_bkwds_n;
+    end
+end
+
+if print_lowImpactL2Trajs == 1
+    if isempty(L2_escapees_X0T) == 0
+        if useEvents == 1
+            for kk = 1:size(L2_escapees_X0T,1)
+                fprintf('[%1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1.16f]\n', L2_escapees_X0T(kk,1:6))
+            end
+        end
+        
+        minIdx = find(L2_escapees_X0T(:,7) == min(L2_escapees_X0T(:,7)));
+        fprintf('\nMinimum-time trajectory: %1.6f\n', L2_escapees_X0T(minIdx,7))
+        fprintf('[%1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1.16f]\n\n', L2_escapees_X0T(minIdx,1:6))
+        maxIdx = find(L2_escapees_X0T(:,7) == max(L2_escapees_X0T(:,7)));
+        fprintf('\nMaximum-time trajectory: %1.6f\n', L2_escapees_X0T(maxIdx,7))
+        fprintf('[%1.16f, %1.16f, %1.16f, %1.16f, %1.16f, %1.16f]\n\n', L2_escapees_X0T(maxIdx,1:6))
     end
 end
 
@@ -199,7 +252,7 @@ toc
 figure; hold all
 for kk = 1:length(trajs)
 maxRad = max(rowNorm(trajs{kk}(:,1:3)-[1-secondary.MR,0,0]));
-plot(dot([0,0,1],v0s(kk,:)),maxRad,'b.','markersize',10)
+plot(dot([0,0,1],vfs(kk,:)),maxRad,'b.','markersize',10)
 end
 
 
@@ -209,14 +262,14 @@ for kk = 1:length(trajs)
 JCkk = JacobiConstantCalculator(secondary.MR,[trajs{kk}(end,1),trajs{kk}(end,2),trajs{kk}(end,3)],[trajs{kk}(end,4),trajs{kk}(end,5),trajs{kk}(end,6)]);
 plot(kk,abs(JCkk - JC_scInitial),'b.','markersize',10)
 end
-
-kk = 2;
-JCs = JacobiConstantCalculator(secondary.MR,[trajs{kk}(:,1),trajs{kk}(:,2),trajs{kk}(:,3)],[trajs{kk}(:,4),trajs{kk}(:,5),trajs{kk}(:,6)]);
-figure; 
-subplot(1,2,1); hold all
-plot((JCs-JC_scInitial),'.')
-subplot(1,2,2); hold all
-plot(percentchange(JCs),'.')
+% 
+% kk = 2;
+% JCs = JacobiConstantCalculator(secondary.MR,[trajs{kk}(:,1),trajs{kk}(:,2),trajs{kk}(:,3)],[trajs{kk}(:,4),trajs{kk}(:,5),trajs{kk}(:,6)]);
+% figure; 
+% subplot(1,2,1); hold all
+% plot((JCs-JC_scInitial),'.')
+% subplot(1,2,2); hold all
+% plot(percentchange(JCs),'.')
 
 
 

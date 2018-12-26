@@ -11,5 +11,5 @@ r2 = sqrt((X(1)+prms.u-1)^2 + X(2)^2 + X(3)^2);
 
 value = [r2 - prms.R2_n, X(1)-prms.L1x, prms.L2x-X(1)]; % When the surface is impacted
 isterminal = [1, 1, 1]; % stops the integration
-direction = [-1, -1, -1]; % negative direction only
+direction = [0, -1, -1]; % negative direction only
 end

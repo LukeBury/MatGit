@@ -1,5 +1,5 @@
 clear
-clc
+% clc
 % close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
@@ -19,62 +19,89 @@ colors = get_colors();
 %%% Testing
 % ========================================================================
 
-n = 10;
-data{n} = [];
-parfor ii = 1:n
-    data{ii}.d = 5 + ii;
-end
+primary = bodies.jupiter;
+secondary = bodies.europa;
 
-dataMatrix = zeros(n,1);
-for kk = 1:length(data)
-    dataMatrix(kk) = data{kk}.d;
-end
-dataMatrix
+L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
-% primary = bodies.jupiter;
-% secondary = bodies.europa;
-% 
-% L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
-% 
-% %%% Normalizing constants
-% rNorm = secondary.a;         % n <-> km
-% tNorm = 1/secondary.meanMot; % n <-> sec
-% vNorm = rNorm / tNorm;       % n <-> km/sec
-% 
-% % % % X0_n = [1.02046170, 0.00483566, -0.00102579, -0.01164610, -0.00122405, -0.00248909]; % Impact
-% % % % X0_n = [1.02046170, 0.00483566, -0.00102579, 0.01164610, -0.00122405, -0.00248909]; % L1 escape
-% % % % X0_n = [1.005, 0.00483566, -0.00102579, 0.01164610*10, -0.00122405, -0.00248909]; % L2 escape
-% % X0_n = [1.020461701526617, 0.000835866637402, 0.001140712619206, -0.002009572491451, 0.000126431584622, -0.001462926629679]';
-% X0_n = [1.020461701526617, 0.000835866637402, 0.001140712619206, -0.001665385408969, -0.000000000000000, -0.001849597877215]';
-% 
-% %%% Selecting time vector
-% t_i = 0; % sec
-% t_f = 4*pi;
+%%% Normalizing constants
+rNorm = secondary.a;         % n <-> km
+tNorm = 1/secondary.meanMot; % n <-> sec
+vNorm = rNorm / tNorm;       % n <-> km/sec
+
+
+% X10_n = [1.0039914454138370,0.0001592396213935,-0.0033791241752226,-0.0032103074961560,-0.0018534718970871,-0.0017851700446204]';
+% X20_n = [1.0039914454138370,0.0001592396213935,0.0033791241752226,-0.0032103074961560,-0.0018534718970871,0.0017851700446204]';
+
+%%% Guidance project (plume lander)
+% X0_n = [1.0204617015266166, -0.0054921659260262, -0.0099525155929432, -0.0111591144905944, -0.0104200955172558, 0.0145837924677663];
+
+% X0_n = [L123(2,1);200/rNorm;100/rNorm;-0.05/vNorm;0;0];
+X0_n = [L123(2,1)-10/rNorm, 0, 100/rNorm, -0.05/vNorm, 0, 0]';
+
+% X0_n = [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]';
+% % X0_n = [1.0204617015266166, -0.0033746033235804, -0.0008489988153575, -0.0045054678476047, -0.0001241712700907, 0.0079975455807223]';
+
+% X0_n = [1.003240635223722; -0.008571008175573; 0.000076440209320;...
+%          0.037863193809061; -0.020358083245688; -0.000118093958836];
+
+%%% Selecting time vector
+t_i = 0; % sec
+t_f = 0.45*pi;
 % dt = t_f/10000;
+n_dt = 5000;
+time0_n = linspace(t_i,t_f,n_dt);
+
 % time0_n = t_i:dt:t_f;
+
+%%% Choosing ode45 tolerance
+tol = 2.22045e-14;
+
+%%% Setting integrator options
+options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
+
+%%% Setting extra parameters
+extras.u = secondary.MR;
+extras.R2_n = secondary.R_n;
+extras.L1x = L123(1,1);
+extras.L2x = L123(2,1);
+
+
+[time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+            time0_n, X0_n, options_ImpactEscape, extras);
+
+
+figure; hold all
+plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'k','linewidth',1.5)
+PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+axis equal
+plot3(L123(2,1),0,0,'^','markersize',10,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
+% JCi = JacobiConstantCalculator(secondary.MR,X0_n(1:3)' ,X0_n(4:6)');
+% prms.R2_n = secondary.R_n;
+% plotCR3BP_YZNeck( JCi, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
+% plotCR3BP_Neck(secondary,L123,JCi,600,200,colors.std.black,1.5)
+
+
 % 
-% %%% Choosing ode45 tolerance
-% tol = 1e-13;
+% [1.0204617015266166, 0.0026812468357777, 0.0010690023640924, -0.0026871227161723, 0.0024963113105625, -0.0089938443489696]
+% [1.0204617015266166, -0.0033746033235804, -0.0008489988153575, -0.0045054678476047, -0.0001241712700907, 0.0079975455807223]
+% [1.0204617015266166, 0.0029381330033356, -0.0036486159040264, -0.0038068061314703, -0.0048407820024327, -0.0026631679204469]
+% [1.0204617015266166, 0.0043202225352191, -0.0029620079257463, -0.0041770753605775, -0.0006684432577319, -0.0041428554546694]
+% [1.0204617015266166, -0.0002277678447230, 0.0011355450058481, -0.0055157582478683, 0.0061400271708996, -0.0067721495916531]
+% [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]
+% [1.0204617015266166, 0.0042505071960823, -0.0031793312829726, -0.0046114822986271, -0.0031981059886912, 0.0005520847381389]
+% [1.0204617015266166, 0.0041406410090433, -0.0024729942820853, -0.0052894146713027, 0.0035882845760703, -0.0028040699160453]
+% [1.0204617015266166, 0.0019792908175074, -0.0031638054330467, -0.0034792550140028, -0.0070786320385199, 0.0027882742330260]
+% [1.0204617015266166, 0.0037268611190071, -0.0027315591537016, -0.0044152322480609, -0.0045935804270138, 0.0034435273355805]
+% [1.0204617015266166, 0.0048501216137022, -0.0029949808098484, -0.0043591889947298, 0.0011590732268976, 0.0011875460610230]
+% [1.0204617015266166, 0.0030457417473665, -0.0031842134979515, -0.0015045745723904, -0.0060724763545537, 0.0039775929042534]
+% [1.0204617015266166, 0.0044159970230717, -0.0030542829955597, -0.0026211692610628, -0.0024214607014376, 0.0042589142820104]
 % 
-% %%% Setting integrator options
-% options_Impact = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
-% 
-% %%% Setting extra parameters
-% extras.u = secondary.MR;
-% extras.R2_n = secondary.R_n;
-% extras.L1x = L123(1,1);
-% extras.L2x = L123(2,1);
-% 
-% [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-%             time0_n, X0_n, options_Impact, extras);
-%         
-% % r_SCR_n = X_BCR_n(:,1:3) - [1-secondary.MR, 0, 0];
-% %%% Creating SCR position
-% % rImpact_SCR_n = X_eventImpact(1,1:3) - [1-secondary.MR, 0, 0];
-% 
-% 
-% figure; hold all
-% plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-% plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'linewidth',1.5)
-% PlotBoi3('x','y','z',16)
-% axis equal
+% Minimum-time trajectory: 0.896763
+% [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]
+
+
+
+
+

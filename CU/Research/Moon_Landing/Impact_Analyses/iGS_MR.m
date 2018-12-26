@@ -7,7 +7,7 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 1;
+testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
 on_J21                 = 0;
@@ -45,6 +45,13 @@ addpath(genpath(moonFuncsPath))
 %%% Setup
 % ========================================================================
 % -------------------------------------------------
+% Mass ratios to loop through
+% -------------------------------------------------
+% MRs = linspace(1.9004e-07, 2.0894e-04, 7);
+MRs = logspace(log10(1.9004e-07),log10(2.0894e-04),7);
+
+for MR_i = MRs
+% -------------------------------------------------
 % Choose system
 % -------------------------------------------------
 %%% General data on solar system bodies
@@ -53,8 +60,8 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 %%% 3B system
-primary   = bodies.saturn;
-secondary = bodies.titan;
+primary   = bodies.jupiter;
+secondary = bodies.europa;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -64,7 +71,10 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 %%% Setting new variables because parfor is picky
 R1_n = primary.R/rNorm;
 R2_n = secondary.R_n;
-MR = secondary.MR;
+
+secondary.MR = MR_i;
+MR = MR_i;
+% MR = secondary.MR;
 secondaryName = secondary.name;
 J21 = primary.J2;
 J22 = 0;
@@ -87,10 +97,11 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
+dvLp_mps = 100;
 
 % for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
-for dvLp_mps = [407.3] % Titan
+% for dvLp_mps = [407.3] % Titan
 
 
 
@@ -205,7 +216,7 @@ if isequal(secondary.name,'titan') == 1
     y_neckRange = 60*secondary.R_n;
     z_neckRange = 30*secondary.R_n;
 else
-    y_neck_upper = fzero(f,[0.06 y_neckRange]);
+    y_neck_upper = fzero(f,[0.0001 y_neckRange]);
 end
 
 
@@ -344,8 +355,7 @@ figure; hold all
 plot(yzContourPoints4(1,:),yzContourPoints4(2,:),'k.')
 plot(r0s(:,2),r0s(:,3),'r.')
 axis equal
-989
-return
+
 % -------------------------------------------------
 % Predefining some things before parfor
 % -------------------------------------------------
@@ -599,40 +609,40 @@ end
 if testCaseOn == 0
     if on_J21 == 0
         %%% All impact data
-        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_data.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_data.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Low-impact-angle data
-        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Log file
-        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     elseif on_J21 == 1
         %%% All impact data
-        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_data.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_J21_data.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Low-impact-angle data
-        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_land.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_J21_land.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Log file
-        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_log.txt',...
-            computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_MR%1.1e_%1.0fmps_%1.0fkm_%1.0fv0s_J21_log.txt',...
+            computerTag,secondary.name(1:3),LpointMR,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     end
 elseif testCaseOn == 1
     if on_J21 == 0
         %%% All impact data
-        filename_allTraj     = fullfile(savepath,'testFile_data.txt');
+        filename_allTraj     = fullfile(savepath,sprintf('testFile_MR%1.1e_data.txt',MR));
         %%% Low-impact-angle data
-        filename_landingTraj = fullfile(savepath,'testFile_land.txt');
+        filename_landingTraj = fullfile(savepath,sprintf('testFile_MR%1.1e_land.txt',MR));
         %%% Log file
-        filename_runData     = fullfile(savepath,'testFile_log.txt');
+        filename_runData     = fullfile(savepath,sprintf('testFile_MR%1.1e_log.txt',MR));
     elseif on_J21 == 1
         %%% All impact data
-        filename_allTraj     = fullfile(savepath,'testFile_J21_data.txt');
+        filename_allTraj     = fullfile(savepath,sprintf('testFile_J21_MR%1.1e_data.txt',MR));
         %%% Low-impact-angle data
-        filename_landingTraj = fullfile(savepath,'testFile_J21_land.txt');
+        filename_landingTraj = fullfile(savepath,sprintf('testFile_J21_MR%1.1e_land.txt',MR));
         %%% Log file
-        filename_runData     = fullfile(savepath,'testFile_J21_log.txt');
+        filename_runData     = fullfile(savepath,sprintf('testFile_J21_MR%1.1e_log.txt',MR));
     end
 end
 
@@ -715,14 +725,15 @@ fprintf(f_runData,'y_neck_upper:%1.15f\n',y_neck_upper);
 fprintf(f_runData,'z_neck_upper:%1.15f\n',z_neck_upper);
 fprintf(f_runData,'maxLat:%1.2f\n',maxLat);
 fprintf(f_runData,'maxLowLat:%1.2f\n',maxLowLat);
+fprintf(f_runData,'MR:%1.4e\n',MR);
 
 %%% Close file
 fclose(f_runData);
 
 finalToc = toc(ticWhole);
 
-end % dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
-
+% end % dvLp_mps = [50, 100, 150, 200, 250, 300, 350]
+end % MR_i = MRs
 
 
 

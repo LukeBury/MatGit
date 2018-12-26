@@ -50,6 +50,7 @@ c_Rn   = 4;
 c_SR   = 5;
 c_Rn_n = 6;
 c_SR_n = 7;
+c_MR   = 8;
 % -----------------------------
 % Running Analysis
 % -----------------------------
@@ -72,6 +73,7 @@ for kk = 1:size(systems,1)
     %%% Putting info into cell array for ease
     systems{kk,c_Rn} = secondary.R_n;
     systems{kk,c_SR} = sizeRatio;
+    systems{kk,c_MR} = secondary.MR;
     
     figure(1)
     subplot(2,1,1); hold all
@@ -102,7 +104,7 @@ for kk = 1:size(systems,1)
     systems{kk,c_Rn_n} = systems{kk,c_Rn}/Rn_normalizer;
     systems{kk,c_SR_n} = systems{kk,c_SR}/SR_normalizer;
     
-    names{kk} = systems{kk,c_s}.name;
+    names{kk} = systems{kk,c_s}.title;
     
     figure(3); hold all
     
@@ -114,6 +116,7 @@ end
 
 Rn_ns = [systems{:,c_Rn_n}];
 SR_ns = [systems{:,c_SR_n}];
+MRs   = [systems{:,c_MR}];
 
 x = linspace(1,size(systems,1),size(systems,1));
 
@@ -127,26 +130,41 @@ fprintf('is apprximately -0.4, which indicates slight negative\n')
 fprintf('correlation\n')
 
 mat = [Rn_ns;SR_ns; x];
-mat = sortrows(mat',1)';
+mat_sort_Rn = sortrows(mat',1)';
+mat_sort_MR = sortrows([MRs; x]',1)';
 
 
 
-
+% -----------------------------
+%%% Plotting sorted by size ratio
+% -----------------------------
 figure; hold all
-p1 = plot(x,mat(1,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
-p2 = plot(x,mat(2,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.red);
-set(gca,'xticklabel',names(mat(3,:)),'xtick',x)
+p1 = plot(x,mat_sort_Rn(1,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
+p2 = plot(x,mat_sort_Rn(2,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.red);
+set(gca,'xticklabel',names(mat_sort_Rn(3,:)),'xtick',x)
 xtickangle(270);
 PlotBoi2('Moon','Normalized R$_n$ and Size Ratio',16,'LaTex')
 
-fit1 = polyfit(x,mat(1,:),1);
+fit1 = polyfit(x,mat_sort_Rn(1,:),1);
 
-fit2 = polyfit(x,mat(2,:),1);
+fit2 = polyfit(x,mat_sort_Rn(2,:),1);
 
 plot(x,fit1(2) + fit1(1)*x,'color',colors.std.blue);
 plot(x,fit2(2) + fit2(1)*x,'color',colors.std.red);
 
 legend([p1 p2], 'R_n','SR')
+
+
+% -----------------------------
+%%% Plotting sorted by mass ratio
+% -----------------------------
+figure; hold all
+p1 = plot(x,mat_sort_MR(1,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
+set(gca,'xticklabel',names(mat_sort_MR(2,:)),'xtick',x)
+xtickangle(270);
+PlotBoi2('Moon','Mass Ratio',16,'LaTex')
+setLogPlot()
+legend([p1], 'Mass Ratio')
 
 
 % %%% Setting 3B systems to loop through

@@ -2,7 +2,6 @@ clear
 clc
 close all
 tic
-% 200, 250, 300, 350
 
 
 % -------------------------------------------------
@@ -11,7 +10,7 @@ tic
 %%% Outputs path
 MatlabOutputsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
 
-for kk = 1:7
+for kk = 8:14
     if kk == 1
         %%% 
         logFile            = 'F.iGS_eurL2_SR0.01_100mps_50km_149v0s_log.txt';
@@ -55,54 +54,54 @@ for kk = 1:7
         lowImpactAngleFile = 'F.iGS_eurL2_SR0.19_100mps_50km_149v0s_land.txt';
     end
     
-%     if kk == 8
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 9
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 10
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 11
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 12
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 13
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
-%     
-%     if kk == 14
-%         %%% 
-%         logFile            = '';
-%         impactFile         = '';
-%         lowImpactAngleFile = '';
-%     end
+    if kk == 8
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.01_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.01_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.01_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 9
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.04_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.04_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.04_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 10
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.07_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.07_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.07_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 11
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.10_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.10_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.10_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 12
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.13_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.13_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.13_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 13
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.16_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.16_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.16_250mps_50km_149v0s_land.txt';
+    end
+    
+    if kk == 14
+        %%% 
+        logFile            = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_log.txt';
+        impactFile         = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_land.txt';
+    end
     
     %%% Test case
     if kk == 989
@@ -166,7 +165,7 @@ plot_initialConditions   = 0;
 plot_fullSystemContour   = 0;
 plot_sectionColors       = 0;
 
-plot_binImpactAngles     = 0;
+plot_binImpactAngles     = 1;
 plot_binNeckSections     = 0;
 plot_metaData            = 0;
 plot_latitudeV0AngleCorr = 0;

@@ -127,6 +127,7 @@ bodies.jupiter.mass = 1.89819e27; % kg
 bodies.jupiter.u = 1.268e8; % km^3 * s^-2
 bodies.jupiter.color = [235,214,173]./255;
 bodies.jupiter.img = imread([mbinPath,'/textures/jupiterSurfTex.jpg']);
+bodies.jupiter.a = 778.57e6; % km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html
 bodies.jupiter.R = 69911; % km
 bodies.jupiter.J2 = 0.01469562; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
@@ -193,6 +194,7 @@ bodies.saturn.mass = 5.683e26; % kg
 bodies.saturn.u = 3.794e7; % km^3 * s^-2
 bodies.saturn.color = [1,1,1]./255;
 bodies.saturn.img = imread([mbinPath,'/textures/saturnSurfTex.jpg']);
+bodies.saturn.a = 1433.53e6; % km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html
 bodies.saturn.R = 58232; % km
 bodies.saturn.J2 = 0.01629071; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
