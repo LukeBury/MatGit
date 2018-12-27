@@ -624,20 +624,22 @@ end
 % Plot showing the initial neck section color coding
 % -------------------------------------------------
 if plot_sectionColors == 1
+    yz4_indices = find(yzContourPoints4(2,:) > 0);
+    yz3_indices = find(yzContourPoints3(2,:) > 0);
+    yz2_indices = find(yzContourPoints2(2,:) > 0);
+    yz1_indices = find(yzContourPoints1(2,:) > 0);
+    
     figure; hold all
-    plot(yzContourPoints4(1,:), yzContourPoints4(2,:),'k','linewidth',3)
-    fill(yzContourPoints4(1,:),yzContourPoints4(2,:),binColors_NeckSections(4,:))
-    fill(yzContourPoints3(1,:),yzContourPoints3(2,:),binColors_NeckSections(3,:))
-    fill(yzContourPoints2(1,:),yzContourPoints2(2,:),binColors_NeckSections(2,:))
-    fill(yzContourPoints1(1,:),yzContourPoints1(2,:),binColors_NeckSections(1,:))
+    plot(yzContourPoints4(1,yz4_indices), yzContourPoints4(2,yz4_indices),'k','linewidth',3)
+    fill(yzContourPoints4(1,yz4_indices),yzContourPoints4(2,yz4_indices),binColors_NeckSections(4,:))
+    fill(yzContourPoints3(1,yz3_indices),yzContourPoints3(2,yz3_indices),binColors_NeckSections(3,:))
+    fill(yzContourPoints2(1,yz2_indices),yzContourPoints2(2,yz2_indices),binColors_NeckSections(2,:))
+    fill(yzContourPoints1(1,yz1_indices),yzContourPoints1(2,yz1_indices),binColors_NeckSections(1,:))
     
 
-%     for kk = binCount_NeckSections-1:-1:1
-%         plotBody2(bins_neckSections(kk+1),[0,0,0], binColors_NeckSections(kk,:), binColors_NeckSections(kk,:), 1)
-%     end
-
+    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
     axis equal
-    PlotBoi3('Y','Z','X',14)
+    
 end
 
 % -------------------------------------------------
@@ -652,7 +654,7 @@ if plot_binNeckSections_rad == 1
         end
     end
     title('Radial Neck Sections')
-    PlotBoi2('Longitude, deg','Latitude, deg',14)
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -680,7 +682,7 @@ if plot_binNeckSections_vert == 1
     % Binning data
     % -------------------
     %%% Number of desired vertical bins
-    n_vertBins = 5; 
+    n_vertBins = 15; 
     
     %%% Choosing color for bins of neck sections 
     binColors_vertNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_vertBins);
@@ -707,7 +709,7 @@ if plot_binNeckSections_vert == 1
     end
     
     % -------------------
-    % Plotting
+    % Plotting impact map
     % -------------------
     figure; hold all
     for kk = 1:n_vertBins
@@ -717,7 +719,7 @@ if plot_binNeckSections_vert == 1
         end
     end
     title('Vertical Neck Sections')
-    PlotBoi2('Longitude, deg','Latitude, deg',14)
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14, 'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -736,7 +738,21 @@ if plot_binNeckSections_vert == 1
     cbar1.Label.Position = [.2, 4.2, 0];
     colormap(binColors_vertNeckSections)
     
-    
+    % -------------------
+    % Plotting vertical neck sections
+    % -------------------
+    figure; hold all
+    vertIndices{n_vertBins} = [];
+    for kk = 1:n_vertBins
+        %%% Indices of yzContour points in the given vertical range
+        vertIndices{kk} = find(yzContourPoints4(2,:) >= bins_vertNeckSections(kk) & yzContourPoints4(2,:) <= bins_vertNeckSections(kk+1)+1e-4);
+        
+        %%% Filling vertical layer
+        fill(yzContourPoints4(1,vertIndices{kk}),yzContourPoints4(2,vertIndices{kk}),binColors_vertNeckSections(kk,:))
+    end
+    title('Sections in the neck')
+    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
+    axis equal
 end
 
 % -------------------------------------------------
@@ -747,7 +763,7 @@ if plot_binNeckSections_horz == 1
     % Binning data
     % -------------------
     %%% Number of desired horizontal bins
-    n_horzBins = 5; 
+    n_horzBins = 15; 
     
     %%% Choosing color for bins of neck sections 
     binColors_horzNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_horzBins);
@@ -784,7 +800,7 @@ if plot_binNeckSections_horz == 1
         end
     end
     title('Horizontal Neck Sections')
-    PlotBoi2('Longitude, deg','Latitude, deg',14)
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -802,6 +818,22 @@ if plot_binNeckSections_horz == 1
     cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
     cbar1.Label.Position = [.2, 4.2, 0];
     colormap(binColors_horzNeckSections)
+    
+    % -------------------
+    % Plotting horizontal neck sections
+    % -------------------
+    figure; hold all
+    horzIndices{n_horzBins} = [];
+    for kk = 1:n_vertBins
+        %%% Indices of yzContour points in the given horizontal range
+        horzIndices{kk} = find(yzContourPoints4(1,:) >= bins_horzNeckSections(kk) & yzContourPoints4(1,:) < bins_horzNeckSections(kk+1)+1e-4 & yzContourPoints4(2,:) > 0);
+        
+        %%% Filling vertical layer
+        fill([yzContourPoints4(1,horzIndices{kk}),bins_horzNeckSections(kk),bins_horzNeckSections(kk+1)],[yzContourPoints4(2,horzIndices{kk}),0,0],binColors_horzNeckSections(kk,:))
+    end
+    title('Sections in the neck')
+    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
+    axis equal
 end
 
 % -------------------------------------------------

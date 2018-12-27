@@ -7,7 +7,7 @@ ticWhole = tic;
 %%% Run Switches
 % ========================================================================
 %%% Testing?
-testCaseOn             = 1;
+testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
 on_J21                 = 0;
@@ -53,8 +53,8 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 %%% 3B system
-primary   = bodies.saturn;
-secondary = bodies.titan;
+primary   = bodies.jupiter;
+secondary = bodies.europa;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -88,9 +88,9 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
-% for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
+for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
-for dvLp_mps = [407.3] % Titan
+% for dvLp_mps = [407.3] % Titan
 
 
 
