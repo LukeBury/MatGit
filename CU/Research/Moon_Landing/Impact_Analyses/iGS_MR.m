@@ -97,7 +97,7 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 200; % Meters per second - Europa
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
-dvLp_mps = 100;
+dvLp_mps = 250;
 
 % for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
