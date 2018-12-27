@@ -205,7 +205,7 @@ if isequal(secondary.name,'titan') == 1
     y_neckRange = 60*secondary.R_n;
     z_neckRange = 30*secondary.R_n;
 else
-    y_neck_upper = fzero(f,[0.06 y_neckRange]);
+    y_neck_upper = fzero(f,[0 y_neckRange]);
 end
 
 
