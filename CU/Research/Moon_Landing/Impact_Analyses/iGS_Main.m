@@ -340,12 +340,6 @@ end
 n_v0s_per_r0 = size(vHats2,1);
 n_traj = n_r0s * n_v0s_per_r0;
 
-figure; hold all
-plot(yzContourPoints4(1,:),yzContourPoints4(2,:),'k.')
-plot(r0s(:,2),r0s(:,3),'r.')
-axis equal
-989
-return
 % -------------------------------------------------
 % Predefining some things before parfor
 % -------------------------------------------------
