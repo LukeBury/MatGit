@@ -10,7 +10,7 @@ ticWhole = tic;
 testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21                 = 0;
+on_J21                 = 1;
 
 
 %%% Set paths based on computer
@@ -603,13 +603,13 @@ if testCaseOn == 0
             computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     elseif on_J21 == 1
         %%% All impact data
-        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_data.txt',...
+        filename_allTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_J21_%1.0fmps_%1.0fkm_%1.0fv0s_data.txt',...
             computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Low-impact-angle data
-        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_land.txt',...
+        filename_landingTraj = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_J21_%1.0fmps_%1.0fkm_%1.0fv0s_land.txt',...
             computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
         %%% Log file
-        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_%1.0fmps_%1.0fkm_%1.0fv0s_J21_log.txt',...
+        filename_runData = fullfile(savepath, sprintf('%s.iGS_%sL%1.0f_J21_%1.0fmps_%1.0fkm_%1.0fv0s_log.txt',...
             computerTag,secondary.name(1:3),Lpoint,dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
     end
 elseif testCaseOn == 1
