@@ -10,7 +10,7 @@ ticWhole = tic;
 testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21                 = 1;
+on_J21                 = 0;
 
 
 %%% Set paths based on computer
@@ -654,7 +654,7 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%1d,%2.1f,%2.1f,%2.1f,%1.5f,%1.6f,%1.6f,%1.6f,%1.6f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.bin_impactAngles(jj),...
+                fprintf(f_allTraj,'%1d,%1d,%1d,%2.7f,%2.7f,%2.1f,%1.5f,%1.16f,%1.16f,%1.6f,%1.6f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.bin_impactAngles(jj),...
                     r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),...
                     r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3),r0Data{kk}.v0AzEls(jj,1:2));
                 if abs(maxLat) < abs(r0Data{kk}.latLons(jj,1))
@@ -663,7 +663,7 @@ for kk = 1:n_r0s
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1d,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.2f,%2.2f,%1.5f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,:),...
+                    fprintf(f_landingTraj,'%1d,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.7f,%2.7f,%1.5f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,:),...
                         r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.endTimes(jj));
                     if abs(maxLowLat) < abs(r0Data{kk}.latLons(jj,1))
                         maxLowLat = abs(r0Data{kk}.latLons(jj,1));
