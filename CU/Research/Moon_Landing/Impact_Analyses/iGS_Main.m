@@ -1,5 +1,5 @@
 clear
-clc
+% clc
 close all
 
 ticWhole = tic;
@@ -10,7 +10,7 @@ ticWhole = tic;
 testCaseOn             = 0;
 
 %%% Zonal harmonics (J21)
-on_J21                 = 1;
+on_J21                 = 0;
 
 
 %%% Set paths based on computer
@@ -88,9 +88,9 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
-for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
+% for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
-% for dvLp_mps = [407.3] % Titan
+for dvLp_mps = [58, 116, 174, 232, 290, 348, 406] % Titan
 
 
 
@@ -111,7 +111,7 @@ elseif isequal(secondary.name,'enceladus')
     n_v0s_per_r0_target = 145;
 elseif isequal(secondary.name,'titan')
     %%% Spacing of initial positions within 3D neck
-    r0GridSpacing_km = 50; % km
+    r0GridSpacing_km = 50*5; % km
     %%% Spacing between azimuths and elevations of v0s per r0
     n_v0s_per_r0_target = 145;
 end
@@ -204,9 +204,9 @@ z_neckRange = 15*secondary.R_n;
 if isequal(secondary.name,'titan') == 1
     y_neckRange = 60*secondary.R_n;
     z_neckRange = 30*secondary.R_n;
-else
-    y_neck_upper = fzero(f,[0 y_neckRange]);
 end
+    y_neck_upper = fzero(f,[0 y_neckRange]);
+
 
 
 %%% Clear variables
@@ -232,13 +232,12 @@ elseif on_J21 == 1
 end
 
 %%% Find the root of this function in the appropriate range
-if isequal(secondary.name,'titan') == 0
-    z_neck_upper = fzero(f,[0 z_neckRange]);
-end
+% % if isequal(secondary.name,'titan') == 0
+z_neck_upper = fzero(f,[0 z_neckRange]);
+% % end
 
 %%% Clear variables
 clear c u x f y
-
 
 % -------------------------------------------------
 % Create grid of starting locations based on y-z neck to find contour
