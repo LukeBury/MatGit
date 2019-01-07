@@ -88,9 +88,10 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
+for dvLp_mps = [300, 350] % Europa
 % for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
-for dvLp_mps = [58, 116, 174, 232, 290, 348, 406] % Titan
+% for dvLp_mps = [58, 116, 174, 232, 290, 348, 406] % Titan
 
 
 
@@ -358,6 +359,7 @@ options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'A
 r0Data = {};
 
 parfor ii = 1:n_r0s
+    
     ticLoop = tic;
     % -------------------------------------------------
     % Reducing broadcast variables
@@ -428,7 +430,8 @@ parfor ii = 1:n_r0s
     bin_neckSections_ii = zeros(n_v0s_per_r0,1);
     trajIDs_ii          = zeros(n_v0s_per_r0,1);
     v0AzEls_ii          = zeros(n_v0s_per_r0,2);
-        
+    maxLats_ii          = zeros(n_v0s_per_r0,1);
+
     %%% Running loop
     for vi = 1:n_v0s_per_r0
         % ---------------------------------------
@@ -440,6 +443,7 @@ parfor ii = 1:n_r0s
         impactAngle  = [];
         endTime      = [];
         v0AzEl       = [];
+        maxLat       = [];
         
         %%% Compute unique trajectory identification
         trajID = (ii-1)*n_v0s_per_r0 + vi;
@@ -484,7 +488,7 @@ parfor ii = 1:n_r0s
         % ---------------------------------------
         % Determining azimuth and elevation of v0
         % ---------------------------------------
-        [Az,El,Rad] = cart2sph(X0_n(4), X0_n(5), X0_n(6))
+        [Az,El,Rad] = cart2sph(X0_n(4), X0_n(5), X0_n(6));
         v0AzEl = [Az, El];
         
         % ---------------------------------------
@@ -498,9 +502,12 @@ parfor ii = 1:n_r0s
             rImpact_SCR = X_eventImpact(1,1:3) - [1-MR, 0, 0];
 
             %%% Finding lat/lon of impact site
-            [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
-            impactLatLon = [lat, lon];
-
+%             [lat_deg, lon_deg] = surfCR3BP2latlon(rImpact_SCR, 'secondary', MR)
+            [lat_deg, lon_deg] = BCR2latlon(X_eventImpact(1,1:3), 'secondary', MR)
+%             [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
+            impactLatLon = [lat_deg, lon_deg];
+            
+            
             % --------------------------
             % Impact speed
             % --------------------------
@@ -521,16 +528,33 @@ parfor ii = 1:n_r0s
             
             %%% Storing endTime
             endTime = time_n(end);
+            
+            % --------------------------
+            % Maximum latitude during trajectory
+            % --------------------------
+            maxLat = 0;
+            for kk = 1:size(X_BCR_n,1)
+%                 r_kk_SCR = X_BCR_n(kk,1:3) - [1-MR, 0, 0];
+%                 [lat_kk, lon_kk] = ECEF2latlon(r_kk_SCR,'degrees','stupidMoon');
+                [lat_kk_deg, lon_kk_deg] = BCR2latlon(X_BCR_n(kk,1:3), 'secondary', MR);
+                if abs(lat_kk_deg) > maxLat
+                    maxLat = abs(lat_kk_deg);
+                end
+            end
+            
+            
         elseif impact1_escape2_orbit3 == 2 % escape
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN;     
             endTime      = NaN;
+            maxLat       = NaN;
         elseif impact1_escape2_orbit3 == 3 % orbit
             impactLatLon = [NaN, NaN];
             impactSpeed  = NaN;
             impactAngle  = NaN; 
             endTime      = NaN;
+            maxLat       = NaN;
         end
             
         % =======================================
@@ -543,6 +567,7 @@ parfor ii = 1:n_r0s
         impactAngles_ii(vi) = impactAngle;
         endTimes_ii(vi)     = endTime;
         v0AzEls_ii(vi,:)    = v0AzEl;
+        maxLats_ii(vi)      = maxLat;
 
         % ---------------------------------------
         % Assigning impact-angle bin
@@ -581,6 +606,7 @@ parfor ii = 1:n_r0s
     r0Data{ii}.bin_neckSections = bin_neckSections_ii;
     r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
     r0Data{ii}.v0AzEls          = v0AzEls_ii; 
+    r0Data{ii}.maxLats          = maxLats_ii;
     
 end
 
@@ -638,10 +664,10 @@ end
 
 %%% Opening files and writing header
 f_allTraj = fopen(filename_allTraj, 'wt');
-fprintf(f_allTraj,'trajID,bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime,y0_n,z0_n,v0_Azimuth,v0_Elevation\n');  % header
+fprintf(f_allTraj,'trajID,bin_impactAngle,bin_neckSection,latitude,longitude,impactAngle,endTime,y0_n,z0_n,v0_Azimuth,v0_Elevation,maxLatitude\n');  % header
 
 f_landingTraj = fopen(filename_landingTraj, 'wt');
-fprintf(f_landingTraj,'trajID,x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime\n');  % header
+fprintf(f_landingTraj,'trajID,x0_n,y0_n,z0_n,dx0_n,dy0_n,dz0_n,bin_neckSection,latitude,longitude,endTime,maxLatitude\n');  % header
 
 %%% Writing data (and finding maximum latitudes)
 maxLat    = 0;
@@ -653,17 +679,19 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%1d,%1d,%2.7f,%2.7f,%2.1f,%1.5f,%1.16f,%1.16f,%1.6f,%1.6f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.bin_impactAngles(jj),...
+                fprintf(f_allTraj,'%1d,%1d,%1d,%2.7f,%2.7f,%2.1f,%1.5f,%1.16f,%1.16f,%1.6f,%1.6f,%2.7f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.bin_impactAngles(jj),...
                     r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),...
-                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3),r0Data{kk}.v0AzEls(jj,1:2));
+                    r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:3),r0Data{kk}.v0AzEls(jj,1:2),...
+                    r0Data{kk}.maxLats(jj));
                 if abs(maxLat) < abs(r0Data{kk}.latLons(jj,1))
                     maxLat = abs(r0Data{kk}.latLons(jj,1));
                 end
                 %%% If this was a low-impact-angle trajectory
                 if r0Data{kk}.bin_impactAngles(jj) == 1
                     lowImpactAngleCounter = lowImpactAngleCounter + 1;
-                    fprintf(f_landingTraj,'%1d,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.7f,%2.7f,%1.5f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,:),...
-                        r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.endTimes(jj));
+                    fprintf(f_landingTraj,'%1d,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1d,%2.7f,%2.7f,%1.5f,%2.7f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,:),...
+                        r0Data{kk}.bin_neckSections(jj),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2),r0Data{kk}.endTimes(jj),...
+                        r0Data{kk}.maxLats(jj));
                     if abs(maxLowLat) < abs(r0Data{kk}.latLons(jj,1))
                         maxLowLat = abs(r0Data{kk}.latLons(jj,1));
                     end
