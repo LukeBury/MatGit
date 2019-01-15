@@ -60,8 +60,8 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 %%% 3B system
-primary   = bodies.jupiter;
-secondary = bodies.europa;
+primary   = bodies.saturn;
+secondary = bodies.enceladus;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
