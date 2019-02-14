@@ -2,13 +2,12 @@ clear
 clc
 close all
 tic
-% 200, 250, 300, 350
 
 
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = 4
+for kk = [1:7]
     if kk == 1
         %%% 50 mps
         logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_log.txt';
@@ -53,52 +52,52 @@ for kk = 4
     end
     
     if kk == 8
-        %%% 50 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_land.txt';
+        %%% 50 mps - ZH                                                                      
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_land.txt';
     end
     
     if kk == 9
         %%% 100 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_land.txt';
     end
     
     if kk == 10
         %%% 150 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_land.txt';
     end
     
     if kk == 11
         %%% 200 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_land.txt';
     end
     
     if kk == 12
         %%% 250 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_land.txt';
     end
     
     if kk == 13
         %%% 300 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_land.txt';
     end
     
     if kk == 14
         %%% 350 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_land.txt';
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_land.txt';
     end
     
     
@@ -215,19 +214,23 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath,on_J21)
 % -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
-plot_fullLowTrajectories = 0;
-plot_LowTrajectories_r0  = 0;
-plot_initialConditions   = 0;
-plot_fullSystemContour   = 0;
-plot_sectionColors       = 1;
-plot_allTrajectories     = 0; % Careful now!!
+on_symmetricImpactResults = 0;
 
-plot_binImpactAngles     = 0;
-plot_binNeckSections_rad = 1;
-plot_binNeckSections_vert= 1;
-plot_binNeckSections_horz= 1;
-plot_metaData            = 0;
-plot_latitudeV0AngleCorr = 0;
+plot_fullLowTrajectories  = 0;
+plot_lowTrajectories_r0   = 0;
+plot_allTrajectories_r0   = 0;
+plot_fullSystemContour    = 0;
+plot_sectionColors        = 0;
+plot_allTrajectories      = 0; % Careful now!!
+
+plot_binImpactAngles      = 0;
+plot_binNeckSections_rad  = 0;
+plot_binNeckSections_vert = 0;
+plot_binNeckSections_horz = 0;
+plot_metaData             = 0;
+plot_latitudeV0AngleCorr  = 0;
+plot_binTOF               = 1;
+calc_maxLatitudeAnalysis  = 0;
 
 % ========================================================================
 %%% Setting data
@@ -325,16 +328,18 @@ end
 impactData = dlmread(impactFile,',',1,0);
 nImpactTraj = size(impactData,1);
 %%% set column specifiers
-c_impactBin = 2;
-c_neckBin   = 3;
-c_latitude  = 4;
-c_longitude = 5;
-c_impactAng = 6;
-c_endTime   = 7;
-c_y0_n      = 8;
-c_z0_n      = 9;
-c_v0_az     = 10;
-c_v0_el     = 11;
+c_full_impactBin       = 2;
+c_full_neckBin         = 3;
+c_full_impactLatitude  = 4;
+c_full_impactLongitude = 5;
+c_full_impactAng       = 6;
+c_full_endTime         = 7;
+c_full_y0_n            = 8;
+c_full_z0_n            = 9;
+c_full_v0_az           = 10;
+c_full_v0_el           = 11;
+c_full_maxLat          = 12;
+
 
 %%% Bin counts
 binCount_ImpactAngles = length(bins_impactAngles) - 1;
@@ -347,26 +352,26 @@ binData_neckSections(length(bins_neckSectionScalars)).latLons = [];
 %%% Store impact angle bins
 for kk = 1:binCount_ImpactAngles
     %%% Indices of all impact trajectories that belong to the current bin
-    currentBinIndices = find(impactData(:,c_impactBin)==kk);
+    currentBinIndices = find(impactData(:,c_full_impactBin)==kk);
     
     %%% Grabbing those trajectories and storing their impact lat/lon
-    binData_impactAngles(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
+    binData_impactAngles(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
 end
 
 %%% Store neck section bins
 for kk = 1:binCount_NeckSections
     %%% Indices of all impact trajectories that belong to the current bin
-    currentBinIndices = find(impactData(:,c_neckBin)==kk);
+    currentBinIndices = find(impactData(:,c_full_neckBin)==kk);
     
     %%% Grabbing those trajectories and storing their impact lat/lon
-    binData_neckSections(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
+    binData_neckSections(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
 end
 
 if plot_allTrajectories == 1
     allTrajs_r = [];
     for kk = 1:size(impactData,1)
-        v0_n = azEl_2_Vec( [1; 0; 0], impactData(kk,c_v0_az)*180/pi, impactData(c_v0_el)*180/pi );
-        r0_kk = [L123(2,1); impactData(kk,c_y0_n); impactData(kk,c_z0_n)];
+        v0_n = azEl_2_Vec( [1; 0; 0], impactData(kk,c_full_v0_az)*180/pi, impactData(c_full_v0_el)*180/pi );
+        r0_kk = [L123(2,1); impactData(kk,c_full_y0_n); impactData(kk,c_full_z0_n)];
         if on_J21 == 0
             JC_r0 = JacobiConstantCalculator(secondary.MR,r0_kk(1:3)' ,[0, 0, 0]);
         elseif on_J21 == 1
@@ -374,7 +379,7 @@ if plot_allTrajectories == 1
         end
         v0_n = v0_n .* sqrt(JC_r0 - JC_scInitial);
         X0_kk = [r0_kk; v0_n];
-        endTime_kk = impactData(kk,c_endTime);
+        endTime_kk = impactData(kk,c_full_endTime);
         %%% Setting time vector
         t_i = 0; % sec
         t_f = endTime_kk; % Long bc events are watching for impact or escape
@@ -426,7 +431,7 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
     % -------------------------------------------------
     % Propagate low-impact-angle trajectories
     % -------------------------------------------------
-    if plot_fullLowTrajectories == 1 || plot_LowTrajectories_r0 == 1
+    if plot_fullLowTrajectories == 1
     %%% Preallocating
     lowTrajs{nLowImpactTraj} = [];
 
@@ -475,18 +480,10 @@ if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
             plot3(lowTrajs{kk}(:,1),lowTrajs{kk}(:,2),lowTrajs{kk}(:,3),'b')
         end
     end
-    
+    end % plot_fullLowTrajectories == 1 
     %%% Plotting initial positions of low-landing-angle trajectories
-    if plot_LowTrajectories_r0 == 1
-        figure; hold all
-        plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
-        PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
-        axis equal
-        for kk = 1:length(lowTrajs)
-            plot3(lowTrajs{kk}(1,1),lowTrajs{kk}(1,2),lowTrajs{kk}(1,3),'b.','markersize',16)
-        end
-    end
-    end % plot_fullLowTrajectories == 1 || plot_LowTrajectories_r0 == 1
+
+    
 end % size(lowImpactMat) ~= [1,1]
 % ========================================================================
 %%% Determining necessary data for plotting
@@ -524,56 +521,82 @@ yzContourPoints1 = yzContourPoints4.*bins_neckSectionScalars(1);
 
 
 
-%%% Choosing color for bins of neck sections 
-binColors_NeckSections = [colors.sch.d4_1(2,:);colors.sch.d4_1(1,:);...
-                         colors.sch.d4_1(4,:);colors.sch.d4_1(3,:)];
+
 
 % ========================================================================
 %%% Plotting Data
 % ========================================================================
+% -------------------------------------------------
+% Initial conditions in y-z plane of low-angle impactors along with bounding contours
+% -------------------------------------------------
+if plot_lowTrajectories_r0 == 1
+    figure; hold all
+%     plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
+    PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+    axis equal
+    if isequal(lowImpactMat,0) == 0
+        lowTrajX0s = lowImpactMat(:,2:7);
+        plot3(lowTrajX0s(:,1),lowTrajX0s(:,2),lowTrajX0s(:,3),'b.','markersize',6)
+        plot3(lowTrajX0s(:,1),lowTrajX0s(:,2),-lowTrajX0s(:,3),'b.','markersize',6)
+    end
+%     yz4_indices = find(yzContourPoints4(2,:) > 0);
+%     plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,yz4_indices), yzContourPoints4(2,yz4_indices),'k','linewidth',3)
+    plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,:),yzContourPoints4(2,:),'k','linewidth',3)
+    scale = 1.1;
+    ylim([-scale*max(abs(yzContourPoints4(1,:))) scale*max(abs(yzContourPoints4(1,:)))]);
+    zlim([-scale*max(abs(yzContourPoints4(2,:))) scale*max(abs(yzContourPoints4(2,:)))]);
+    view(90,0)
+end
 
 % -------------------------------------------------
 % Initial conditions in y-z plane along with bounding contours
 % -------------------------------------------------
-if plot_initialConditions == 1
-    %%% Creating ZV contours
-    % Contour bounds
-    xCont_min = L123(1,1)-2*secondary.R_n;
-    xCont_max = L123(2,1)+2*secondary.R_n;
-    yCont_min = -15*secondary.R_n;
-    yCont_max = 15*secondary.R_n;
-
-    % Creating x-y grid
-    xs = linspace(xCont_min,xCont_max,600);
-    ys = linspace(yCont_min,yCont_max,200);
-    [X_xy, Y_xy] = meshgrid(xs,ys);
-    clear xs ys zs
-
-    % Calculating JCs across x-y grid
-    JCs_xy = zeros(size(X_xy));
-    for xk = 1:size(X_xy,1)
-        for yk = 1:size(X_xy,2)
-            %%% Zero-Velocity Curve
-            if on_J21 == 0
-                zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0], [0, 0, 0]);
-            elseif on_J21 == 1
-                zv = JacobiConstantCalculator_J2(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0], [0, 0, 0], R1_n, R2_n, J21, J22);
-            end
-
-            JCs_xy(xk,yk) = zv;
-        end
-    end
+if plot_allTrajectories_r0 == 1
+%     %%% Creating ZV contours
+%     % Contour bounds
+%     xCont_min = L123(1,1)-2*secondary.R_n;
+%     xCont_max = L123(2,1)+2*secondary.R_n;
+%     yCont_min = -15*secondary.R_n;
+%     yCont_max = 15*secondary.R_n;
+% 
+%     % Creating x-y grid
+%     xs = linspace(xCont_min,xCont_max,600);
+%     ys = linspace(yCont_min,yCont_max,200);
+%     [X_xy, Y_xy] = meshgrid(xs,ys);
+%     clear xs ys zs
+% 
+%     % Calculating JCs across x-y grid
+%     JCs_xy = zeros(size(X_xy));
+%     for xk = 1:size(X_xy,1)
+%         for yk = 1:size(X_xy,2)
+%             %%% Zero-Velocity Curve
+%             if on_J21 == 0
+%                 zv = JacobiConstantCalculator(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0], [0, 0, 0]);
+%             elseif on_J21 == 1
+%                 zv = JacobiConstantCalculator_J2(secondary.MR,[X_xy(xk,yk), Y_xy(xk,yk), 0], [0, 0, 0], R1_n, R2_n, J21, J22);
+%             end
+% 
+%             JCs_xy(xk,yk) = zv;
+%         end
+%     end
 
     figure; hold all
+%     yz4_indices = find(yzContourPoints4(2,:) > 0);
+%     plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,yz4_indices), yzContourPoints4(2,yz4_indices),'k','linewidth',3)
     plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,:),yzContourPoints4(2,:),'k','linewidth',3)
-    plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-    [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-        'color',colors.std.black,'linewidth',3);
-    plot3(ones(size(impactData,1),1).*L123(2,1),impactData(:,c_y0_n),impactData(:,c_z0_n),'b.')
-    PlotBoi3('x$_n$','y$_n$','z$_n$',14,'LaTex')
-    view(-35,24)
-    camva(9)
+%     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+%     [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
+%         'color',colors.std.black,'linewidth',3);
+    plot3(ones(size(impactData,1),1).*L123(2,1),impactData(:,c_full_y0_n),impactData(:,c_full_z0_n),'b.','markersize',6)
+    plot3(ones(size(impactData,1),1).*L123(2,1),impactData(:,c_full_y0_n),-impactData(:,c_full_z0_n),'b.','markersize',6)
+    PlotBoi3('x$_n$','y$_n$','z$_n$',16,'LaTex')
+%     view(-35,24)
+%     camva(9)
     axis equal
+    scale = 1.1;
+    ylim([-scale*max(abs(yzContourPoints4(1,:))) scale*max(abs(yzContourPoints4(1,:)))]);
+    zlim([-scale*max(abs(yzContourPoints4(2,:))) scale*max(abs(yzContourPoints4(2,:)))]);
+    view(90,0)
 end
 
 % -------------------------------------------------
@@ -614,47 +637,34 @@ if plot_fullSystemContour == 1
     [xyContourPoints,href] = contourf(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
         'color',colors.std.black,'linewidth',1.5);
     colormap(colors.sch.r6(6,:))
-    PlotBoi3('X','Y','Z',14)
+    PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
     view(0,90)
     camva(9)
     axis equal
 end
 
 % -------------------------------------------------
-% Plot showing the initial neck section color coding
-% -------------------------------------------------
-if plot_sectionColors == 1
-    yz4_indices = find(yzContourPoints4(2,:) > 0);
-    yz3_indices = find(yzContourPoints3(2,:) > 0);
-    yz2_indices = find(yzContourPoints2(2,:) > 0);
-    yz1_indices = find(yzContourPoints1(2,:) > 0);
-    
-    figure; hold all
-    plot(yzContourPoints4(1,yz4_indices), yzContourPoints4(2,yz4_indices),'k','linewidth',3)
-    fill(yzContourPoints4(1,yz4_indices),yzContourPoints4(2,yz4_indices),binColors_NeckSections(4,:))
-    fill(yzContourPoints3(1,yz3_indices),yzContourPoints3(2,yz3_indices),binColors_NeckSections(3,:))
-    fill(yzContourPoints2(1,yz2_indices),yzContourPoints2(2,yz2_indices),binColors_NeckSections(2,:))
-    fill(yzContourPoints1(1,yz1_indices),yzContourPoints1(2,yz1_indices),binColors_NeckSections(1,:))
-    
-
-    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
-    axis equal
-    
-end
-
-% -------------------------------------------------
 % Lat/Lon plot colored by initial neck section (radial)
 % -------------------------------------------------
 if plot_binNeckSections_rad == 1
+    %%% Choosing color for bins of neck sections 
+%     binColors_NeckSections = [colors.sch.d4_1(2,:);colors.sch.d4_1(1,:);...
+%                              colors.sch.d4_1(4,:);colors.sch.d4_1(3,:)];
+                         
+    binColors_NeckSections = colorScale([colors.std.mag;colors.std.cyan],4);
+                     
     figure; hold all
     for kk = 1:4
         if isempty(binData_neckSections(kk).latLons) == 0
             plot(binData_neckSections(kk).latLons(:,2),binData_neckSections(kk).latLons(:,1),...
                 '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_neckSections(kk).latLons(:,2),-binData_neckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            end
         end
     end
-    title('Radial Neck Sections')
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -672,6 +682,28 @@ if plot_binNeckSections_rad == 1
     cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
     cbar1.Label.Position = [.2, 4.2, 0];
     colormap(binColors_NeckSections)
+    
+    % -------------------------------------------------
+    % Plot showing the initial neck section color coding
+    % -------------------------------------------------
+    if plot_sectionColors == 1
+%         yz4_indices = find(yzContourPoints4(2,:) > 0);
+%         yz3_indices = find(yzContourPoints3(2,:) > 0);
+%         yz2_indices = find(yzContourPoints2(2,:) > 0);
+%         yz1_indices = find(yzContourPoints1(2,:) > 0);
+
+        figure; hold all
+        plot(yzContourPoints4(1,:), yzContourPoints4(2,:),'k','linewidth',3)
+        fill(yzContourPoints4(1,:),yzContourPoints4(2,:),binColors_NeckSections(4,:))
+        fill(yzContourPoints3(1,:),yzContourPoints3(2,:),binColors_NeckSections(3,:))
+        fill(yzContourPoints2(1,:),yzContourPoints2(2,:),binColors_NeckSections(2,:))
+        fill(yzContourPoints1(1,:),yzContourPoints1(2,:),binColors_NeckSections(1,:))
+        plot([-max(abs(yzContourPoints4(1,:))) max(abs(yzContourPoints4(1,:)))],[0 0],'k','linewidth',1)
+
+        PlotBoi2('$y_n$','$z_n$',16,'LaTex')
+        axis equal
+
+    end
 end
 % -------------------------------------------------
 % Lat/Lon plot colored by initial neck section (vertical)
@@ -682,7 +714,7 @@ if plot_binNeckSections_vert == 1
     % Binning data
     % -------------------
     %%% Number of desired vertical bins
-    n_vertBins = 15; 
+    n_vertBins = 4; 
     
     %%% Choosing color for bins of neck sections 
     binColors_vertNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_vertBins);
@@ -694,7 +726,7 @@ if plot_binNeckSections_vert == 1
     vert_max = max(abs(yzContourPoints4(2,:)));
     
     %%% Assign bin values
-    bins_vertNeckSections = linspace(vert_min, vert_max, n_vertBins+1);
+    bins_vertNeckSections = linspace(0, vert_max, n_vertBins+1);
     
     %%% Preallocate bin data structures
     binData_vertNeckSections(n_vertBins).latLons = [];
@@ -702,10 +734,10 @@ if plot_binNeckSections_vert == 1
     %%% Loop through each bin and store appropriate data
     for kk = 1:n_vertBins
         %%% Indices of all impact trajectories that belong to the current bin
-        currentBinIndices = find( impactData(:,c_z0_n) >= bins_vertNeckSections(kk) &  impactData(:,c_z0_n) < bins_vertNeckSections(kk+1));
+        currentBinIndices = find( impactData(:,c_full_z0_n) >= bins_vertNeckSections(kk) &  impactData(:,c_full_z0_n) < bins_vertNeckSections(kk+1));
         
         %%% Grabbing those trajectories and storing their impact lat/lon
-        binData_vertNeckSections(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
+        binData_vertNeckSections(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
     end
     
     % -------------------
@@ -716,10 +748,13 @@ if plot_binNeckSections_vert == 1
         if isempty(binData_vertNeckSections(kk).latLons) == 0
             plot(binData_vertNeckSections(kk).latLons(:,2),binData_vertNeckSections(kk).latLons(:,1),...
                 '.','markersize',15,'color',binColors_vertNeckSections(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_vertNeckSections(kk).latLons(:,2),-binData_vertNeckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_vertNeckSections(kk,:))
+            end
         end
     end
-    title('Vertical Neck Sections')
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14, 'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16, 'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -741,18 +776,26 @@ if plot_binNeckSections_vert == 1
     % -------------------
     % Plotting vertical neck sections
     % -------------------
-    figure; hold all
-    vertIndices{n_vertBins} = [];
-    for kk = 1:n_vertBins
-        %%% Indices of yzContour points in the given vertical range
-        vertIndices{kk} = find(yzContourPoints4(2,:) >= bins_vertNeckSections(kk) & yzContourPoints4(2,:) <= bins_vertNeckSections(kk+1)+1e-4);
-        
-        %%% Filling vertical layer
-        fill(yzContourPoints4(1,vertIndices{kk}),yzContourPoints4(2,vertIndices{kk}),binColors_vertNeckSections(kk,:))
+    if plot_sectionColors == 1
+        figure; hold all
+        vertIndices{n_vertBins} = [];
+%         yz4_indices = find(yzContourPoints4(2,:) > 0);
+        plot(yzContourPoints4(1,:), yzContourPoints4(2,:),'k','linewidth',3)
+        for kk = 1:n_vertBins
+            %%% Indices of yzContour points in the given vertical range
+            vertIndices{kk} = find(yzContourPoints4(2,:) >= bins_vertNeckSections(kk) & yzContourPoints4(2,:) <= bins_vertNeckSections(kk+1)+1e-4);
+            %%% Filling vertical layer
+            yFill = yzContourPoints4(1,vertIndices{kk});
+            zFill_pos = yzContourPoints4(2,vertIndices{kk});
+            zFill_neg = -yzContourPoints4(2,vertIndices{kk});
+            
+            fill(yFill, zFill_pos, binColors_vertNeckSections(kk,:))
+            fill(yFill, zFill_neg, binColors_vertNeckSections(kk,:))
+            plot([-y_neck_upper y_neck_upper],[0,0],'k','linewidth',1)
+        end
+        PlotBoi2('$y_n$','$z_n$',16,'LaTex')
+        axis equal
     end
-    title('Sections in the neck')
-    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
-    axis equal
 end
 
 % -------------------------------------------------
@@ -763,7 +806,7 @@ if plot_binNeckSections_horz == 1
     % Binning data
     % -------------------
     %%% Number of desired horizontal bins
-    n_horzBins = 15; 
+    n_horzBins = 4; 
     
     %%% Choosing color for bins of neck sections 
     binColors_horzNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_horzBins);
@@ -783,10 +826,10 @@ if plot_binNeckSections_horz == 1
     %%% Loop through each bin and store appropriate data
     for kk = 1:n_horzBins
         %%% Indices of all impact trajectories that belong to the current bin
-        currentBinIndices = find( impactData(:,c_y0_n) >= bins_horzNeckSections(kk) &  impactData(:,c_y0_n) < bins_horzNeckSections(kk+1));
+        currentBinIndices = find( impactData(:,c_full_y0_n) >= bins_horzNeckSections(kk) &  impactData(:,c_full_y0_n) < bins_horzNeckSections(kk+1));
         
         %%% Grabbing those trajectories and storing their impact lat/lon
-        binData_horzNeckSections(kk).latLons = impactData(currentBinIndices,[c_latitude,c_longitude]);
+        binData_horzNeckSections(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
     end
 %     
     % -------------------
@@ -797,10 +840,13 @@ if plot_binNeckSections_horz == 1
         if isempty(binData_horzNeckSections(kk).latLons) == 0
             plot(binData_horzNeckSections(kk).latLons(:,2),binData_horzNeckSections(kk).latLons(:,1),...
                 '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_horzNeckSections(kk).latLons(:,2),-binData_horzNeckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+            end
         end
     end
-    title('Horizontal Neck Sections')
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
 
@@ -819,21 +865,91 @@ if plot_binNeckSections_horz == 1
     cbar1.Label.Position = [.2, 4.2, 0];
     colormap(binColors_horzNeckSections)
     
+%     % -------------------
+%     % Plotting the layers in two halves
+%     % -------------------
+%     if rem(n_horzBins,2) == 0
+%         figure; hold all
+%         for kk = (n_horzBins/2):-1:1
+%             if isempty(binData_horzNeckSections(kk).latLons) == 0
+%                 plot(binData_horzNeckSections(kk).latLons(:,2),binData_horzNeckSections(kk).latLons(:,1),...
+%                     '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+%                 if on_symmetricImpactResults == 1
+%                     plot(binData_horzNeckSections(kk).latLons(:,2),-binData_horzNeckSections(kk).latLons(:,1),...
+%                     '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+%                 end
+%             end
+%         end
+%         PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
+%         xlim([-180 180])
+%         ylim([-90 90])
+% 
+%         %%% Colorbar for whole figure
+%         % a = gcf;
+%         % cbar = colorbar('Position',a.Position);
+%         cbar1 = colorbar;
+%         caxis([0 size(binColors_horzNeckSections,1)]);
+%         cbar1.FontName     = 'Arial';
+%         cbar1.FontSize     = 10;
+%         cbar1.Ticks        = [0.5, 1.5, 2.5, 3.5,4.5];
+%         % cbar1.TickLabels = num2cell(bins_neckSectionScalars(1:end-1).*rNorm);
+%         cbar1.TickLabels = num2cell([1 2 3 4 5]);
+%         % cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
+%         cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+%         cbar1.Label.Position = [.2, 4.2, 0];
+%         colormap(binColors_horzNeckSections)
+%         
+%         figure; hold all
+%         for kk = (n_horzBins/2)+1:n_horzBins
+%             if isempty(binData_horzNeckSections(kk).latLons) == 0
+%                 plot(binData_horzNeckSections(kk).latLons(:,2),binData_horzNeckSections(kk).latLons(:,1),...
+%                     '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+%                 if on_symmetricImpactResults == 1
+%                     plot(binData_horzNeckSections(kk).latLons(:,2),-binData_horzNeckSections(kk).latLons(:,1),...
+%                     '.','markersize',15,'color',binColors_horzNeckSections(kk,:))
+%                 end
+%             end
+%         end
+%         PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
+%         xlim([-180 180])
+%         ylim([-90 90])
+% 
+%         %%% Colorbar for whole figure
+%         % a = gcf;
+%         % cbar = colorbar('Position',a.Position);
+%         cbar1 = colorbar;
+%         caxis([0 size(binColors_horzNeckSections,1)]);
+%         cbar1.FontName     = 'Arial';
+%         cbar1.FontSize     = 10;
+%         cbar1.Ticks        = [0.5, 1.5, 2.5, 3.5,4.5, 5.5, 6.5, 7.5];
+%         % cbar1.TickLabels = num2cell(bins_neckSectionScalars(1:end-1).*rNorm);
+%         cbar1.TickLabels = num2cell([1 2 3 4 5 6 7 8]);
+%         % cbar1.Label.String = {sprintf('|r_0| from L_%1.0f, km',Lpoint)};
+%         cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+%         cbar1.Label.Position = [.2, 4.2, 0];
+%         colormap(binColors_horzNeckSections)
+%     end
+    
     % -------------------
     % Plotting horizontal neck sections
     % -------------------
-    figure; hold all
-    horzIndices{n_horzBins} = [];
-    for kk = 1:n_vertBins
-        %%% Indices of yzContour points in the given horizontal range
-        horzIndices{kk} = find(yzContourPoints4(1,:) >= bins_horzNeckSections(kk) & yzContourPoints4(1,:) < bins_horzNeckSections(kk+1)+1e-4 & yzContourPoints4(2,:) > 0);
-        
-        %%% Filling vertical layer
-        fill([yzContourPoints4(1,horzIndices{kk}),bins_horzNeckSections(kk),bins_horzNeckSections(kk+1)],[yzContourPoints4(2,horzIndices{kk}),0,0],binColors_horzNeckSections(kk,:))
+    if plot_sectionColors == 1
+        figure; hold all
+        horzIndices{n_horzBins} = [];
+%         yz4_indices = find(yzContourPoints4(2,:) > 0);
+        plot(yzContourPoints4(1,:), yzContourPoints4(2,:),'k','linewidth',3)
+        for kk = 1:n_horzBins
+            %%% Indices of yzContour points in the given horizontal range
+            horzIndices{kk} = find(yzContourPoints4(1,:) >= bins_horzNeckSections(kk) & yzContourPoints4(1,:) < bins_horzNeckSections(kk+1)+1e-4 & yzContourPoints4(2,:) > 0);
+
+            %%% Filling horizontal layer
+            fill([yzContourPoints4(1,horzIndices{kk}),bins_horzNeckSections(kk),bins_horzNeckSections(kk+1)],[yzContourPoints4(2,horzIndices{kk}),0,0],binColors_horzNeckSections(kk,:))
+            fill([yzContourPoints4(1,horzIndices{kk}),bins_horzNeckSections(kk),bins_horzNeckSections(kk+1)],-[yzContourPoints4(2,horzIndices{kk}),0,0],binColors_horzNeckSections(kk,:))
+            plot([-y_neck_upper y_neck_upper],[0,0],'k','linewidth',1)
+        end
+        PlotBoi2('$y_n$','$z_n$',16,'LaTex')
+        axis equal
     end
-    title('Sections in the neck')
-    PlotBoi2('$y_n$','$z_n$',16,'LaTex')
-    axis equal
 end
 
 % -------------------------------------------------
@@ -847,12 +963,24 @@ if plot_binImpactAngles == 1
                      
     figure; hold all
     for kk = binCount_ImpactAngles:-1:1
-    if isempty(binData_impactAngles(kk).latLons) == 0
-    plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-    '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+%         if isempty(binData_impactAngles(kk).latLons) == 0
+%             plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+%             '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+%             if on_symmetricImpactResults == 1
+%                 plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
+%                 '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+%             end
+%         end
+        if isempty(binData_impactAngles(kk).latLons) == 0
+            plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+            '.','markersize',15,'color',colors.std.black)
+            if on_symmetricImpactResults == 1
+                plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
+                '.','markersize',15,'color',colors.std.black)
+            end
+        end
     end
-    end
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
     %%% Colorbar for whole figure
@@ -883,12 +1011,12 @@ if plot_metaData == 1
         color1 = colors.std.red;
         color2 = colors.std.black;
     elseif on_J21 == 1
-        color1 = colors.std.blue;
-        color2 = colors.std.grn;
+        color1 = colors.std.red;
+        color2 = colors.std.black;
     end
     figure(20); hold all
     plot(dvLp_mps,nLowImpactTraj,'x','linewidth',2,'markersize',10,'color',color1)
-    PlotBoi2('L2 flyover speed, $mps$','Number of low-impact-angle landings',14,'LaTex')
+    PlotBoi2('L2 flyover speed, $mps$','Number of low-impact-angle landings',16,'LaTex')
     if on_J21 == 0
         legend('nominal')
     elseif on_J21 == 1
@@ -897,7 +1025,7 @@ if plot_metaData == 1
 
     figure(21); hold all
     plot(dvLp_mps,nLowImpactTraj/nImpactTraj*100,'x','linewidth',2,'markersize',10,'color',color1)
-    PlotBoi2('L2 flyover speed, $mps$','\% of all impacts that were low-angle',14,'LaTex')
+    PlotBoi2('L2 flyover speed, $mps$','\% of all impacts that were low-angle',16,'LaTex')
     if on_J21 == 0
         legend('nominal')
     elseif on_J21 == 1
@@ -906,7 +1034,7 @@ if plot_metaData == 1
 
     figure(22); hold all
     plot(dvLp_mps,nImpactTraj/nTraj*100,'x','linewidth',2,'markersize',10,'color',color1)
-    PlotBoi2('L2 flyover speed, $mps$','\% of all trajectories that impacted',14,'LaTex')
+    PlotBoi2('L2 flyover speed, $mps$','\% of all trajectories that impacted',16,'LaTex')
     if on_J21 == 0
         legend('nominal')
     elseif on_J21 == 1
@@ -915,13 +1043,13 @@ if plot_metaData == 1
 
     figure(23); hold all
     p1 = plot(dvLp_mps,maxLat,'x','linewidth',2,'markersize',10,'color',color1);
-    p2 = plot(dvLp_mps,maxLowLat,'x','linewidth',2,'markersize',10,'color',color1);
+    p2 = plot(dvLp_mps,maxLowLat,'x','linewidth',2,'markersize',10,'color',color2);
     % legend([p1 p2],'MaxLat','MaxLowLat')
-    PlotBoi2('L2 flyover speed, $mps$','Max Latitudes',14,'LaTex')
+    PlotBoi2('L2 flyover speed, $mps$','Max Latitudes',16,'LaTex')
     if on_J21 == 0
-        legend([p1 p2],'nominal - MaxLat','nominal - MaxLowLat')
+        legend([p1 p2],'Max Overall Latitude','Max Low-Angle Latitude')
     elseif on_J21 == 1
-        legend([p1 p2],'J21 - MaxLat','J21 - MaxLowLat')
+        legend([p1 p2],'Max Overall Latitude (J2)','Max Low-Angle Latitude (J2)')
     end
 
 end % plot_metaData
@@ -950,9 +1078,117 @@ if plot_latitudeV0AngleCorr == 1
     %%% Plotting
     figure; hold all
     plot(v0_YZ_angles_deg,abs(lowImpactMat(:,col_lat)),'.','markersize',10,'color',colors.std.blue)
-    PlotBoi2('Angle between v0 and impact latitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Angle between v0 and impact latitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
 
 end
+
+
+% ========================================================================
+%%% Impact map binned by time of flight
+% ========================================================================
+if plot_binTOF == 1
+%     %%% set column specifiers
+%     c_impactBin = 2;
+%     c_neckBin   = 3;
+%     c_latitude  = 4;
+%     c_longitude = 5;
+%     c_impactAng = 6;
+%     c_endTime   = 7;
+%     c_y0_n      = 8;
+%     c_z0_n      = 9;
+%     c_v0_az     = 10;
+%     c_v0_el     = 11;
+
+%%% Finding bounds on impact time and creating bins
+% minTime = min(impactData(:,c_endTime));
+% maxTime = max(impactData(:,c_endTime));
+% % minTime = 0;
+% % maxTime = 2*pi;
+% % binCount_endTime = 4;
+% % bins_endTimes = linspace(minTime, maxTime, binCount_endTime + 1);
+bins_endTimes = [0 pi/2 pi 3*pi/2 2*pi 4*pi];
+binCount_endTime = length(bins_endTimes)-1;
+
+binnedEndTimes = discretize(impactData(:,c_full_endTime), bins_endTimes);
+
+binData_endTimes(binCount_endTime).latLons = [];
+
+for kk = 1:binCount_endTime
+    currentBinIndices = find(binnedEndTimes == kk);
+    
+    binData_endTimes(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
+end
+
+binColors_endTimes = colorScale([colors.std.mag;colors.std.cyan],binCount_endTime);
+
+    figure; hold all
+    for kk = binCount_endTime:-1:1
+        if isempty(binData_endTimes(kk).latLons) == 0
+            plot(binData_endTimes(kk).latLons(:,2),binData_endTimes(kk).latLons(:,1),...
+            '.','markersize',15,'color',binColors_endTimes(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_endTimes(kk).latLons(:,2),-binData_endTimes(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_endTimes(kk,:))
+            end
+        end
+    end
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
+    xlim([-180 180])
+    ylim([-90 90])    
+    
+    cbar2 = colorbar;
+    caxis([0, 4*pi]);
+    cbar2.FontName     = 'Arial';
+    cbar2.FontSize     = 10;
+    cbar2.Ticks        = [0 pi/2 pi 3*pi/2 2*pi 4*pi];
+    cbar2.TickLabels = {'0','\pi/2','\pi','3\pi/2','2\pi','4\pi'};
+    cbar2.Label.String = {'Impact Time'};
+    cbar2.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+    cbar2.Label.Position = [.2, 95, 0];
+    binColors_endTimes_spaced = [...
+        binColors_endTimes(1,:);...
+        binColors_endTimes(2,:);...
+        binColors_endTimes(3,:);...
+        binColors_endTimes(4,:);...
+        repmat(binColors_endTimes(5,:),4,1)];
+    colormap(binColors_endTimes_spaced)
+    
+%         cbar2 = colorbar;
+%     caxis([0, 90]);
+%     cbar2.FontName     = 'Arial';
+%     cbar2.FontSize     = 10;
+%     cbar2.Ticks        = [bins_impactAngles(1:end-1), 90];
+%     cbar2.TickLabels = num2cell([bins_impactAngles(1:end-1), 90]);
+%     cbar2.Label.String = {'Impact Angle °'};
+%     cbar2.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+%     cbar2.Label.Position = [.2, 95, 0];
+%     binColors_ImpactAngles_spaced = [...
+%         repmat(binColors_ImpactAngles(1,:),1,1);...
+%         repmat(binColors_ImpactAngles(2,:),3,1);...
+%         repmat(binColors_ImpactAngles(3,:),4,1);...
+%         repmat(binColors_ImpactAngles(4,:),4,1);...
+%         repmat(binColors_ImpactAngles(5,:),6,1)];
+%     colormap(binColors_ImpactAngles_spaced)
+    
+    figure; hold all
+    histogram(impactData(:,c_full_endTime),50,'facecolor','b','facealpha',0.7)
+    PlotBoi2('Impact Time (normalized)','Frequency',16,'LaTex')
+    xticks([0, pi, 2*pi, 3*pi, 4*pi])
+    xticklabels({'0','\pi','2\pi','3\pi','4\pi'})
+    xlim([0 4*pi])
+end
+
+if calc_maxLatitudeAnalysis == 1
+    latitudeDifferences = abs(impactData(:,c_full_impactLatitude)) - abs(impactData(:,c_full_maxLat));
+    maxImpactMinusMaxLat = max(abs(impactData(:,c_full_impactLatitude))) - max(abs(impactData(:,c_full_maxLat)))
+    max(latitudeDifferences);
+    min(latitudeDifferences);
+    
+    figure; hold all
+    histogram(latitudeDifferences,50,'facecolor','b','facealpha',0.7)
+    PlotBoi2('$\Delta$ Latitude, $^\circ$','Frequency',16,'LaTex')
+end
+
 
 
 end

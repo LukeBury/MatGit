@@ -10,7 +10,7 @@ tic
 %%% Outputs path
 MatlabOutputsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
 
-for kk = 8:14
+for kk = [7]
     if kk == 1
         %%% 
         logFile            = 'F.iGS_eurL2_SR0.01_100mps_50km_149v0s_log.txt';
@@ -101,6 +101,7 @@ for kk = 8:14
         logFile            = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_log.txt';
         impactFile         = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_data.txt';
         lowImpactAngleFile = 'F.iGS_eurL2_SR0.19_250mps_50km_149v0s_land.txt';
+
     end
     
     %%% Test case
@@ -159,13 +160,16 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath)
 % -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
+on_symmetricImpactResults = 1;
+
 plot_fullLowTrajectories = 0;
+plot_allTrajectories     = 1;
 plot_LowTrajectories_r0  = 0;
 plot_initialConditions   = 0;
 plot_fullSystemContour   = 0;
 plot_sectionColors       = 0;
 
-plot_binImpactAngles     = 1;
+plot_binImpactAngles     = 0;
 plot_binNeckSections     = 0;
 plot_metaData            = 0;
 plot_latitudeV0AngleCorr = 0;
@@ -523,6 +527,10 @@ if plot_binNeckSections == 1
         if isempty(binData_neckSections(kk).latLons) == 0
             plot(binData_neckSections(kk).latLons(:,2),binData_neckSections(kk).latLons(:,1),...
                 '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_neckSections(kk).latLons(:,2),-binData_neckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            end
         end
     end
     title(sprintf('Size Ratio: %1.6f',SR));
@@ -552,13 +560,17 @@ end
 if plot_binImpactAngles == 1
     figure; hold all
     for kk = binCount_ImpactAngles:-1:1
-    if isempty(binData_impactAngles(kk).latLons) == 0
-    plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-    '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
-    end
+        if isempty(binData_impactAngles(kk).latLons) == 0
+            plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+            '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
+            '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+            end
+        end
     end
     title(sprintf('Size Ratio: %1.6f',SR));
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
     %%% Colorbar for whole figure

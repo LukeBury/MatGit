@@ -54,9 +54,16 @@ for sys_i = systems
     L1 = L123(1,:);
     L2 = L123(2,:);
     
+    %%% Normalizing constants
+    rNorm = sys.secondary.a;         % n <-> km
+    tNorm = 1/sys.secondary.meanMot; % n <-> sec
+    vNorm = rNorm / tNorm;       % n <-> km/sec
+    
     %%% Jacobi constant of Lagrange points
+%     [JC_L1] = JacobiConstantCalculator(sys.secondary.MR,L1,[0,0,0]) - (1/vNorm)^2;
+%     [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]) - (1/vNorm)^2;
     [JC_L1] = JacobiConstantCalculator(sys.secondary.MR,L1,[0,0,0]);
-    [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]);
+    [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]); 
     
     %%% Jacobi constant of surface points
 %     [JC_sPX] = JacobiConstantCalculator(sys.secondary.MR,[1-sys.secondary.MR+sys.secondary.R_n,0,0],[0,0,0]);

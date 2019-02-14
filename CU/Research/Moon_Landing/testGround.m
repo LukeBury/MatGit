@@ -1,5 +1,5 @@
 clear
-% clc
+clc
 % close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
@@ -18,6 +18,60 @@ colors = get_colors();
 % ========================================================================
 %%% Testing
 % ========================================================================
+% JD_departure = 2460545;
+% JD_arrival   = 2460919;
+% transferTime_sec = (JD_arrival - JD_departure)*86400;
+% 
+% [L_rad, a, e, i_rad, Omega_rad, Pi_rad, w_rad, M_rad, ta_rad] = ...
+%     getPlanetElements_Meeus(JD_departure, 'Earth', 'radians');
+% [r_departure, v_departure] = OE2ECI(a, e, i_rad, Omega_rad, w_rad, ta_rad, bodies.sun.u);
+% 
+% %%% Find Jupiter position at arrival time
+% [L_rad, a, e, i_rad, Omega_rad, Pi_rad, w_rad, M_rad, ta_rad] = ...
+%     getPlanetElements_Meeus(JD_arrival, 'Venus', 'radians');
+% [r_arrival, v_arrival] = OE2ECI(a, e, i_rad, Omega_rad, w_rad, ta_rad, bodies.sun.u);
+% 
+% % r_departure
+% % r_arrival
+% 
+% nOrbits = 1;
+% [V1, V2,exitflag] = lambertSolver(r_departure, r_arrival, transferTime_sec, nOrbits, 0, bodies.sun.u);
+% 
+% transferType = 3;
+% [v1,v2] = lambertTargeting(r_departure, r_arrival, transferTime_sec, transferType, 1, bodies.sun.u, 0);
+% 
+% %%% Creating time vector
+% t0 = 0;             % sec
+% tf = transferTime_sec; % sec
+% time = linspace(t0,tf,10000);
+% 
+% 
+% %%% Choosing ode tolerance
+% tol = 2.22045e-14;
+% 
+% %%% Setting integrator options
+% options = odeset('RelTol',tol,'AbsTol',tol);
+% 
+% 
+% [time, X_Earth] = ode113(@Int_2BI,time, [r_departure; v_departure], options, bodies.sun.u);
+% [time, X_Venus] = ode113(@Int_2BI,time, [r_arrival; v_arrival], options, bodies.sun.u);
+% 
+% [time_sc, X_sc] = ode113(@Int_2BI,time, [r_departure; V1], options, bodies.sun.u);
+% 
+% [time_sc, X_sc_m] = ode113(@Int_2BI,time, [r_departure; v1], options, bodies.sun.u);
+% 
+% figure; hold all
+% p1 = plot3(X_Earth(:,1),X_Earth(:,2),X_Earth(:,3),'color',colors.std.blue,'linewidth',2);
+% plot3(X_Earth(1,1),X_Earth(1,2),X_Earth(1,3),'ro','linewidth',2)
+% p2 = plot3(X_Venus(:,1),X_Venus(:,2),X_Venus(:,3),'color',colors.std.orange,'linewidth',2);
+% plot3(X_Venus(1,1),X_Venus(1,2),X_Venus(1,3),'go','linewidth',2)
+% p3 = plot3(X_sc(:,1),X_sc(:,2),X_sc(:,3),'--k','linewidth',2);
+% p4 = plot3(X_sc_m(:,1),X_sc_m(:,2),X_sc_m(:,3),'--c','linewidth',2);
+% PlotBoi3('x','y','z',15)
+% axis equal
+% legend([p1 p2 p3 p4],{'Earth','Venus','Old Lambert','My Lambert'})
+
+
 
 primary = bodies.jupiter;
 secondary = bodies.europa;
@@ -29,79 +83,27 @@ rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
 
-
-% X10_n = [1.0039914454138370,0.0001592396213935,-0.0033791241752226,-0.0032103074961560,-0.0018534718970871,-0.0017851700446204]';
-% X20_n = [1.0039914454138370,0.0001592396213935,0.0033791241752226,-0.0032103074961560,-0.0018534718970871,0.0017851700446204]';
-
-%%% Guidance project (plume lander)
-% X0_n = [1.0204617015266166, -0.0054921659260262, -0.0099525155929432, -0.0111591144905944, -0.0104200955172558, 0.0145837924677663];
-
-% X0_n = [L123(2,1);200/rNorm;100/rNorm;-0.05/vNorm;0;0];
-X0_n = [L123(2,1)-10/rNorm, 0, 100/rNorm, -0.05/vNorm, 0, 0]';
-
-% X0_n = [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]';
-% % X0_n = [1.0204617015266166, -0.0033746033235804, -0.0008489988153575, -0.0045054678476047, -0.0001241712700907, 0.0079975455807223]';
-
-% X0_n = [1.003240635223722; -0.008571008175573; 0.000076440209320;...
-%          0.037863193809061; -0.020358083245688; -0.000118093958836];
-
-%%% Selecting time vector
 t_i = 0; % sec
-t_f = 0.45*pi;
-% dt = t_f/10000;
-n_dt = 5000;
+t_f = 2*pi; % Long bc events are watching for impact or escape
+n_dt = 10000;
 time0_n = linspace(t_i,t_f,n_dt);
 
-% time0_n = t_i:dt:t_f;
-
-%%% Choosing ode45 tolerance
-tol = 2.22045e-14;
+%%% Choosing ode tolerance
+tol = 1e-13;
 
 %%% Setting integrator options
 options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
-%%% Setting extra parameters
-extras.u = secondary.MR;
-extras.R2_n = secondary.R_n;
-extras.L1x = L123(1,1);
-extras.L2x = L123(2,1);
+%%% Setting necessary parameters for integration
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
+prms.L1x = L123(1,1);
+prms.L2x = L123(2,1);
 
+X0 = [1.0204617015266166,-0.0019044572356119,0.0004487022956654,-0.0037906475679599,-0.0021885313937646,0.0134712140823612]';
 
-[time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-            time0_n, X0_n, options_ImpactEscape, extras);
+[time_n, X_BCR_n, ~, ~, ~] = ode113(@Int_CR3Bn, time0_n, X0, options_ImpactEscape, prms);
 
-
-figure; hold all
-plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'k','linewidth',1.5)
-PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
-axis equal
-plot3(L123(2,1),0,0,'^','markersize',10,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
-% JCi = JacobiConstantCalculator(secondary.MR,X0_n(1:3)' ,X0_n(4:6)');
-% prms.R2_n = secondary.R_n;
-% plotCR3BP_YZNeck( JCi, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
-% plotCR3BP_Neck(secondary,L123,JCi,600,200,colors.std.black,1.5)
-
-
-% 
-% [1.0204617015266166, 0.0026812468357777, 0.0010690023640924, -0.0026871227161723, 0.0024963113105625, -0.0089938443489696]
-% [1.0204617015266166, -0.0033746033235804, -0.0008489988153575, -0.0045054678476047, -0.0001241712700907, 0.0079975455807223]
-% [1.0204617015266166, 0.0029381330033356, -0.0036486159040264, -0.0038068061314703, -0.0048407820024327, -0.0026631679204469]
-% [1.0204617015266166, 0.0043202225352191, -0.0029620079257463, -0.0041770753605775, -0.0006684432577319, -0.0041428554546694]
-% [1.0204617015266166, -0.0002277678447230, 0.0011355450058481, -0.0055157582478683, 0.0061400271708996, -0.0067721495916531]
-% [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]
-% [1.0204617015266166, 0.0042505071960823, -0.0031793312829726, -0.0046114822986271, -0.0031981059886912, 0.0005520847381389]
-% [1.0204617015266166, 0.0041406410090433, -0.0024729942820853, -0.0052894146713027, 0.0035882845760703, -0.0028040699160453]
-% [1.0204617015266166, 0.0019792908175074, -0.0031638054330467, -0.0034792550140028, -0.0070786320385199, 0.0027882742330260]
-% [1.0204617015266166, 0.0037268611190071, -0.0027315591537016, -0.0044152322480609, -0.0045935804270138, 0.0034435273355805]
-% [1.0204617015266166, 0.0048501216137022, -0.0029949808098484, -0.0043591889947298, 0.0011590732268976, 0.0011875460610230]
-% [1.0204617015266166, 0.0030457417473665, -0.0031842134979515, -0.0015045745723904, -0.0060724763545537, 0.0039775929042534]
-% [1.0204617015266166, 0.0044159970230717, -0.0030542829955597, -0.0026211692610628, -0.0024214607014376, 0.0042589142820104]
-% 
-% Minimum-time trajectory: 0.896763
-% [1.0204617015266166, 0.0023309601682839, -0.0034514101589022, -0.0045057561941408, -0.0061368065713195, 0.0008999679154899]
-
-
-
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
 
 

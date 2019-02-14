@@ -9,20 +9,15 @@ function [dX] = Int_2BI(t,X,u)
 %%% Preallocate state output
 dX = zeros(6,1);
 
-%%% Unpack the state vector
-x = X(1); y = X(2); z = X(3); % Position
-dx = X(4); dy = X(5); dz = X(6); % Velocity
+%%% Distances from primary body to spacecraft
+r = [X(1); X(2); X(3)]; % km
+r_mag = norm(r);
 
-%%% Distances from body to spacecraft
-r = sqrt(x^2 + y^2 + z^2);
-
-%%% Equations of Motion
-ddx = x*(-u/r^3);
-ddy = y*(-u/r^3);
-ddz = z*(-u/r^3);
+%%% 2B accelerations
+a_2B = r * (-u / (r_mag^3));
 
 %%% Output the derivative of the state
-dX(1:3) = [dx; dy; dz]; % km/s
-dX(4:6) = [ddx; ddy; ddz]; % km/s^2
+dX(1:3) = [X(4); X(5); X(6)];    % km/s
+dX(4:6) = [a_2B(1); a_2B(2); a_2B(3)]; % km/s^2
 
 end

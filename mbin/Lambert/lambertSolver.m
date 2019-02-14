@@ -351,7 +351,7 @@ function [V1, V2,exitflag] = lambertSolver(r1vec,r2vec,tf,m,GRADE,muC)
         eta2 = -2*a*sinh(psi)^2/s;
         eta  = sqrt(eta2);
     end
-
+    
     % unit of the normalized normal vector
     ih = longway * nrmunit;
 

@@ -54,6 +54,7 @@ colors.std.maglt      = [229 194 237]./255;
 colors.std.ylw        = [247 202   0]./255;
 colors.std.black      = [0 0 0]./255;
 colors.std.cyan       = [0 255 255]./255;
+colors.std.white      = [255 255 255]./255;
 
 %==========================================================================
 %% Color Schemes

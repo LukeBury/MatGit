@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath('../../bin')
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 
 % ------------------------------------------------------------------------
@@ -15,11 +16,11 @@ devOn = 1; % Turn on deviation from ref trajectory
 J3On = 0; % Turn on J3 for truth trajectory
 
 %%% Filter on?
-runCKF = 0;
+runCKF = 1;
 runEKF = 0;
 
 %%% Filter Results
-BatchPlots = 1;
+BatchPlots = 0;
 CKFPlots = 0;
 EKFPlots = 0;
 

@@ -5,6 +5,8 @@ xCont_min = L123(1,1)-2*secondary.R_n;
 xCont_max = L123(2,1)+2*secondary.R_n;
 yCont_min = -9*secondary.R_n;
 yCont_max = 9*secondary.R_n;
+% yCont_min = -5.5*secondary.R_n;
+% yCont_max = 5.5*secondary.R_n;
 
 % Creating x-y grid
 xs = linspace(xCont_min,xCont_max,xRes); % 600

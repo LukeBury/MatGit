@@ -4,8 +4,8 @@ function [bodies] = getBodyData(mbinPath)
 % ------------------------------------------------------------------------
 %%% Gravitational constant
 % ------------------------------------------------------------------------
-G = 6.6726e-20; % km^3 * kg^?1 * s^?2
-
+G  = 6.6726e-20; % km^3 * kg^?1 * s^?2
+AU_km = 1.495978707e8; % km
 % ------------------------------------------------------------------------
 %%% Sun System
 % ------------------------------------------------------------------------
@@ -13,7 +13,7 @@ G = 6.6726e-20; % km^3 * kg^?1 * s^?2
 bodies.sun.name = 'sun';
 bodies.sun.title = 'Sun';
 bodies.sun.mass = 1.9891e30; % kg
-bodies.sun.u = 1.32712428e11; % km^3 * s^-2
+bodies.sun.u = 1.32712440018e11; % km^3 * s^-2
 bodies.sun.color = [1,1,1]./255;
 bodies.sun.R = 695700; % km
 bodies.sun.J2 = 2e-6;
@@ -88,7 +88,9 @@ bodies.mars.color = [224, 112, 99]./255;
 bodies.mars.img = imread([mbinPath,'/textures/marsSurfTex.jpg']);
 bodies.mars.mass = 6.39e23; % kg
 bodies.mars.u = 4.305e4; % km^3 * s^-2
+bodies.mars.a = 227939186; % km
 bodies.mars.R = 3390; % km
+bodies.mars.meanMot = 2*pi/(686.980 * 86400);
 bodies.mars.J2 = 0.00196045;
 bodies.mars.J3 = 0.000036;
 

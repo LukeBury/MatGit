@@ -8,98 +8,95 @@ tic
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = 1:7
+for kk = 8:14
     
     if kk == 1
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR1.9e-07_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR1.9e-07_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR1.9e-07_land.txt';
+        %%% 1.9e-07
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_50mps_50km_149v0s_land.txt';
     end
     if kk == 2
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.1e-07_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.1e-07_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.1e-07_land.txt';
+        %%% 6.1e-07
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_50mps_50km_149v0s_land.txt';
     end
     if kk == 3
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-06_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-06_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-06_land.txt';
+        %%% 2.0e-06
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_50mps_50km_149v0s_land.txt';
     end
     if kk == 4
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.3e-06_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.3e-06_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.3e-06_land.txt';
+        %%% 6.3e-06
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_50mps_50km_149v0s_land.txt';
     end
     if kk == 5
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-05_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-05_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.0e-05_land.txt';
+        %%% 2.0e-05
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_50mps_50km_149v0s_land.txt';
     end
     if kk == 6
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.5e-05_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.5e-05_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR6.5e-05_land.txt';
+        %%% 6.5e-05
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_50mps_50km_149v0s_land.txt';
     end
     if kk == 7
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.1e-04_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.1e-04_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/testFile_MR2.1e-04_land.txt';
+        %%% 2.1e-04
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_50mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_50mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_50mps_50km_149v0s_land.txt';
     end
     
+    
+    
+
     if kk == 8
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_J21_land.txt';
+        %%% 1.9e-07
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR1.9e-07_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 9
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_J21_land.txt';
+        %%% 6.1e-07
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.1e-07_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 10
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_J21_land.txt';
+        %%% 2.0e-06
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-06_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 11
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_J21_land.txt';
+        %%% 6.3e-06
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.3e-06_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 12
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_J21_land.txt';
+        %%% 2.0e-05
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.0e-05_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 13
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_J21_land.txt';
+        %%% 6.5e-05
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR6.5e-05_100mps_50km_149v0s_land.txt';
     end
-    
     if kk == 14
-        %%% 
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_J21_land.txt';
+        %%% 2.1e-04
+        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_100mps_50km_149v0s_log.txt';
+        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_100mps_50km_149v0s_data.txt';
+        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_MR2.1e-04_100mps_50km_149v0s_land.txt';
     end
     
     
@@ -167,6 +164,8 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath,on_J21)
 % -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
+on_symmetricImpactResults = 1;
+
 plot_fullLowTrajectories = 0;
 plot_LowTrajectories_r0  = 0;
 plot_initialConditions   = 1;
@@ -609,6 +608,10 @@ if plot_binNeckSections == 1
         if isempty(binData_neckSections(kk).latLons) == 0
             plot(binData_neckSections(kk).latLons(:,2),binData_neckSections(kk).latLons(:,1),...
                 '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_neckSections(kk).latLons(:,2),-binData_neckSections(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_NeckSections(kk,:))
+            end
         end
     end
     title('Neck Sections')
@@ -638,12 +641,16 @@ end
 if plot_binImpactAngles == 1
     figure; hold all
     for kk = binCount_ImpactAngles:-1:1
-    if isempty(binData_impactAngles(kk).latLons) == 0
-    plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-    '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+        if isempty(binData_impactAngles(kk).latLons) == 0
+            plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+            '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+            if on_symmetricImpactResults == 1
+                plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
+                '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
+            end
+        end
     end
-    end
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',14,'LaTex')
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
     %%% Colorbar for whole figure

@@ -1,7 +1,7 @@
 function [lat, lon] = surfCR3BP2latlon(r_BCR, body, MR)
 %%% Given position vector, returns latitdue and longitude in RADIANS
 %%% Inputs
-%         (1) r    - [3x1] body-centered-rotating position coordinates for s/c
+%         (1) r    - [3x1] Barycentric position coordinates for s/c
 %         (2) body - 'primary' or 'secondary'
 %         (3) MR   - mass ratio of 3-body system
 %%% Outputs

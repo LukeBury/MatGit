@@ -33,6 +33,6 @@ p_SEZ = R2 * R3 * p_ECEF;
 % Calculating azimuth, elevation, and range
 p = norm(p_ECEF); % range, km
 el = atan2(p_SEZ(3), sqrt(p_SEZ(1)^2 + p_SEZ(2)^2)); % rads
-warning('Double check this elevation equation sometime')
+% warning('Double check this elevation equation sometime')
 az = atan2(p_SEZ(2),-p_SEZ(1)); % rads
 end

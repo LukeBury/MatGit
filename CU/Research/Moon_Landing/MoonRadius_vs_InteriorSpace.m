@@ -132,11 +132,11 @@ fprintf('correlation\n')
 mat = [Rn_ns;SR_ns; x];
 mat_sort_Rn = sortrows(mat',1)';
 mat_sort_MR = sortrows([MRs; x]',1)';
-
+mat_SR_sort_MR = sortrows([MRs; x; SRs]',1)';
 
 
 % -----------------------------
-%%% Plotting sorted by size ratio
+%%% Plotting SR and MR
 % -----------------------------
 figure; hold all
 p1 = plot(x,mat_sort_Rn(1,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
@@ -156,15 +156,23 @@ legend([p1 p2], 'R_n','SR')
 
 
 % -----------------------------
-%%% Plotting sorted by mass ratio
+%%% Plotting MR sorted by MR
 % -----------------------------
 figure; hold all
 p1 = plot(x,mat_sort_MR(1,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
 set(gca,'xticklabel',names(mat_sort_MR(2,:)),'xtick',x)
 xtickangle(270);
-PlotBoi2('Moon','Mass Ratio',16,'LaTex')
+PlotBoi2('','Mass Ratio',18,'LaTex')
 setLogPlot()
-legend([p1], 'Mass Ratio')
+
+% -----------------------------
+%%% Plotting SR sorted by MR
+% -----------------------------
+figure; hold all
+p1 = plot(x,mat_SR_sort_MR(3,:), 'o', 'markersize',10, 'markeredgecolor', colors.std.black, 'markerfacecolor', colors.std.blue);
+set(gca,'xticklabel',names(mat_SR_sort_MR(2,:)),'xtick',x)
+xtickangle(270);
+PlotBoi2('','Size Ratio',18,'LaTex')
 
 
 % %%% Setting 3B systems to loop through
