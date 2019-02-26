@@ -1,6 +1,6 @@
 clear
-clc
-% close all
+% clc
+close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
@@ -84,7 +84,7 @@ tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
 
 t_i = 0; % sec
-t_f = 2*pi; % Long bc events are watching for impact or escape
+t_f = 4*pi; % Long bc events are watching for impact or escape
 n_dt = 10000;
 time0_n = linspace(t_i,t_f,n_dt);
 
@@ -92,7 +92,7 @@ time0_n = linspace(t_i,t_f,n_dt);
 tol = 1e-13;
 
 %%% Setting integrator options
-options_ImpactEscape = odeset('Events',@event_ImpactEscape_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options = odeset('Event',@event_ImpactEscape_CR3Bn, 'RelTol',tol,'AbsTol',tol);
 
 %%% Setting necessary parameters for integration
 prms.u = secondary.MR;
@@ -100,10 +100,21 @@ prms.R2_n = secondary.R_n;
 prms.L1x = L123(1,1);
 prms.L2x = L123(2,1);
 
-X0 = [1.0204617015266166,-0.0019044572356119,0.0004487022956654,-0.0037906475679599,-0.0021885313937646,0.0134712140823612]';
+% X0 = [1.0204617015266166;-0.0012084061620286;0.0000000000000000;-0.0028596241729016;0.0009291482175995;0.0000000000000000]';
+X0 = [1.0204617015266166,-0.0019850725823437,0.0000000000000000,-0.0010976413130697,-0.0030157447223195,0.0098771743854318];
+% X0 = [1.020461701526617; 0.000037454199667; 0.000074923811876; -0.010853703861100; 0.001140770244121; 0]';
 
-[time_n, X_BCR_n, ~, ~, ~] = ode113(@Int_CR3Bn, time0_n, X0, options_ImpactEscape, prms);
+[time_n, X_BCR_n] = ode113(@Int_CR3Bn, time0_n, X0, options, prms);
 
+figure; hold all
 plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
-
+[JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0(1:3),X0(4:6));
+plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
+plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
+plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
+% plotBody2(secondary.R_n,[1-secondary.MR,0,0],colors.std.blue,colors.std.black,1,0)
+plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+view(0,90)
+axis equal
+PlotBoi2('$X_n$','$Y_n$',18,'LaTex')
 

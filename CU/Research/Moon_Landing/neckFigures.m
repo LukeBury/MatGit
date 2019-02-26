@@ -27,8 +27,8 @@ colors = get_colors();
 %%% Setting up system
 % ========================================================================
 
-primary = bodies.jupiter;
-secondary = bodies.europa;
+primary = bodies.mars;
+secondary = bodies.deimos;
 
 L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
@@ -53,7 +53,11 @@ JC_scInitial = JC_Lp-dJC_Lp;
 
 %%% Near Secondary
 figure; hold all
-plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+if isfield(secondary,'img') == 1
+    plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+else
+    plotBody3(secondary.R_n,[1-secondary.MR,0,0],secondary.color,1)
+end
 PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
 axis equal
 plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);

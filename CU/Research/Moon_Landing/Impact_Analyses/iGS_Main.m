@@ -88,7 +88,7 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
-for dvLp_mps = [300, 350] % Europa
+for dvLp_mps = [150] % Europa
 % for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
 % for dvLp_mps = [13, 26, 39, 52, 65, 78, 91] % Enceladus
 % for dvLp_mps = [58, 116, 174, 232, 290, 348, 406] % Titan
@@ -483,6 +483,15 @@ parfor ii = 1:n_r0s
             end
         elseif isempty(X_eventImpact) == 1 % No event yet, still in orbit
             impact1_escape2_orbit3 = 3;
+        end
+        
+        if impact1_escape2_orbit3 == 2
+            if X_eventImpact(1) <= prms.L1x
+                format long
+                time_n(end)
+                X0_n
+                fprintf('ttt')
+            end
         end
         
         % ---------------------------------------
