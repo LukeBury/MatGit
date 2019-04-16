@@ -1,6 +1,11 @@
 function [ JD ] = calendar2julian(yr, mo, d, h, min, s)
 %%% Description
 %       Converts Calendar date to Julian date 
+%
+%      *************************************
+%       NOTE: NOT EQUIPPED FOR LEAP SECONDS
+%      *************************************
+%
 % --------------------------------------------------------------
 %%% Inputs
 %       yr  - year 
@@ -29,7 +34,7 @@ JD = floor(365.25*(yr + 4716)) + floor(30.6001*(mo+1)) + d + B - 1524.5 + C;
 %%% This one also works
 % JD = 367*yr - floor((7*(yr + floor((mo + 9)/12)))/4) + floor(275*mo/9) + d + 1721013.5 + ((((s/60) + min)/60 + h) / 24);
 
-warning('Not equipped for leap seconds')
+% warning('Not equipped for leap seconds')
 end
 
 

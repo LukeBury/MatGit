@@ -4,7 +4,7 @@ function [ colorMatrix ] = colorScale(colors,n )
 %   colors useful for showing progression in plots
 %
 %%% Inputs
-%   1) colors [2x3], two rows, each a rgb color code
+%   1) colors [2x3], two rows, each an rgb color code
 %   2) n [1x1], desired number of color steps for output
 %
 %%% Outputs

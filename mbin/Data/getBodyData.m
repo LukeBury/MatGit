@@ -1,5 +1,4 @@
 function [bodies] = getBodyData(mbinPath)
-
 % Values from Wikipedia and Vallado and MONTE and NAIF ... Questionable at worst
 % ------------------------------------------------------------------------
 %%% Gravitational constant
@@ -44,6 +43,7 @@ bodies.venus.a = 108208000; % km
 bodies.venus.color = [1,1,1]./255;
 bodies.venus.R = 6052; % km
 bodies.venus.meanMot = 2*pi/(583.92 * 86400);
+bodies.venus.Tp = 2*pi/bodies.venus.meanMot; % sec
 bodies.venus.MR = bodies.venus.mass / (bodies.venus.mass + bodies.sun.mass);
 
 % ------------------------------------------------------------------------
@@ -76,6 +76,7 @@ bodies.moon.a = 384748; % km
 bodies.moon.R = 1737; % km
 bodies.moon.R_n = bodies.moon.R / bodies.moon.a;
 bodies.moon.meanMot = 2*pi/(27.321661*86400); % rad/s
+bodies.moon.Tp = 2*pi/bodies.moon.meanMot; % sec
 bodies.moon.MR = bodies.moon.mass / (bodies.moon.mass + bodies.earth.mass); % Mass ratio w/ primary
 bodies.moon.J2 = (9.08901807505999991e-05)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
 
@@ -105,6 +106,7 @@ bodies.phobos.a = 9376; % km
 bodies.phobos.R = 11.2667; % km
 bodies.phobos.R_n = bodies.phobos.R / bodies.phobos.a;
 bodies.phobos.meanMot = 2*pi/(0.31891023*86400); % rad/s
+bodies.phobos.Tp = 2*pi/bodies.phobos.meanMot; % sec
 bodies.phobos.MR = bodies.phobos.mass / (bodies.phobos.mass + bodies.mars.mass);  % Mass ratio w/ primary
 bodies.phobos.J2 = (4.49807434353858004e-02)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
 
@@ -118,6 +120,7 @@ bodies.deimos.a = 23463.2; % km
 bodies.deimos.R = 6.2; % km
 bodies.deimos.R_n = bodies.deimos.R / bodies.deimos.a;
 bodies.deimos.meanMot = 2*pi/(1.263*86400); % rad/s
+bodies.deimos.Tp = 2*pi/bodies.deimos.meanMot; % sec
 bodies.deimos.MR = bodies.deimos.mass / (bodies.deimos.mass + bodies.mars.mass);  % Mass ratio w/ primary
 
 % ------------------------------------------------------------------------
@@ -160,6 +163,7 @@ bodies.europa.a = 671100; % km
 bodies.europa.R = 1560.8; % km 
 bodies.europa.R_n = bodies.europa.R / bodies.europa.a;
 bodies.europa.meanMot = 2*pi/(3.551181*86400); % rad/s
+bodies.europa.Tp = 2*pi/bodies.europa.meanMot; % sec
 bodies.europa.MR = bodies.europa.mass / (bodies.europa.mass + bodies.jupiter.mass); % Mass ratio w/ primary
 bodies.europa.J2 = (1.938209808166e-04)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
 
@@ -199,6 +203,7 @@ bodies.saturn.color = [1,1,1]./255;
 bodies.saturn.img = imread([mbinPath,'/textures/saturnSurfTex.jpg']);
 bodies.saturn.a = 1433.53e6; % km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html
 bodies.saturn.R = 58232; % km
+bodies.saturn.Tp = 2*pi*sqrt((bodies.saturn.a^3)/bodies.sun.u);
 bodies.saturn.J2 = 0.01629071; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
 bodies.saturn.J4 = -0.00093583; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
@@ -213,6 +218,7 @@ bodies.enceladus.a = 237948; % km
 bodies.enceladus.R = 252; % km
 bodies.enceladus.R_n = bodies.enceladus.R / bodies.enceladus.a;
 bodies.enceladus.meanMot = 2*pi/(1.370218 * 86400); % rad/s
+bodies.enceladus.Tp = 2*pi/bodies.enceladus.meanMot; % sec
 bodies.enceladus.MR = bodies.enceladus.mass / (bodies.enceladus.mass + bodies.saturn.mass); % Mass ratio w/ primary
 bodies.enceladus.J2 = (5.459785012180e-03)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
 
@@ -225,6 +231,7 @@ bodies.mimas.a = 185520; % km
 bodies.mimas.R = 198.2; % km
 bodies.mimas.R_n = bodies.mimas.R / bodies.mimas.a;
 bodies.mimas.meanMot = 2*pi/(0.9424218*86400); % rad/s
+bodies.mimas.Tp = 2*pi/bodies.mimas.meanMot; % sec
 bodies.mimas.MR = bodies.mimas.mass / (bodies.mimas.mass + bodies.saturn.mass); % Mass ratio w/ primary
 
 %%% Rhea
@@ -248,6 +255,7 @@ bodies.titan.a = 1221870; % km
 bodies.titan.R = 2575.5; % km
 bodies.titan.R_n = bodies.titan.R / bodies.titan.a;
 bodies.titan.meanMot = 2*pi/(15.945*86400); % rad/s
+bodies.titan.Tp = 2*pi/bodies.titan.meanMot; % sec
 bodies.titan.MR = bodies.titan.mass / (bodies.titan.mass + bodies.saturn.mass); % Mass ratio w/ primary
 bodies.titan.J2 = (3.341074092664e-05)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
 

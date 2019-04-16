@@ -1,4 +1,4 @@
-function [dX] = int_CR3BnSTM_J2(t,X,u,R1,R2,J21,J22)
+function [dX] = Int_CR3BnSTM_J2(t,X,u,R1,R2,J21,J22)
 %%% For numerical integration in the normalized CR3BP
 %%% Inputs:
 %          t - normalized time vector

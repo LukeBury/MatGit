@@ -1,17 +1,20 @@
-function [BT, BR, B, theta_rad] = BPlaneTargeter_state(X, mu)
+function [BT, BR, B, theta_rad, S_hat, T_hat, R_hat] = BPlaneTargeter_state(X, mu)
 %%% Description
 %       Calculates B-Plane targeting parameters from initial state
-%       
+%     
 % --------------------------------------------------------------
 %%% Inputs
-%       X  - Initial state vector (km, km/s) [6x1]
+%       X  - Initial state vector (WRT FLYBY BODY) (km, km/s) [6x1]
 %       mu - Gravitational parameter of central body (km^3/s^2)
 % --------------------------------------------------------------
 %%% Outputs
-%       BT       - B-dot-T vector (km)
-%       BR       - B-dot-R vector (km)
-%       B         - B vector (km)
-%       theta_rad - Theta vector (angle of B vector from B_t), (rad)
+%       BT        - [3x1] B-dot-T vector (km)
+%       BR        - [3x1] B-dot-R vector (km)
+%       B         - [3x1] B vector (km)
+%       theta_rad - [1x1] Theta vector (angle of B vector from B_t), (rad)
+%       S_hat     - [3x1] S_hat vector (km)
+%       R_hat     - [3x1] R_hat vector (km)
+%       T_hat     - [3x1] T_hat vector (km)
 % --------------------------------------------------------------
 %%% Author
 %       Luke Bury, luke.bury@colorado.edu
@@ -22,14 +25,14 @@ r = X(1:3);
 v = X(4:6);
 
 %%% State magnitudes
-R = norm(r);
-V = norm(v);
+R = norm(r)
+V = norm(v)
 
 %%% Necessary parameters
-h_hat = cross(r,v)/norm(cross(r,v));
-e_vec = (1/mu)*((V^2 - mu/R)*r - dot(r,v)*v);
-e = norm(e_vec); 
-p = acos(1/e);
+h_hat = cross(r,v)/norm(cross(r,v))
+e_vec = (1/mu)*((V^2 - mu/R)*r - dot(r,v)*v)
+e = norm(e_vec)
+p = acos(1/e)
 
 %%% Defining axes
 S_hat = cos(p)*(e_vec/e) + sin(p)*cross(h_hat,e_vec)/norm(cross(h_hat,e_vec));

@@ -1,4 +1,4 @@
-function [dX] = int_CR3BnSTM(t,X,prms)
+function [dX] = Int_CR3BnSTM(t,X,prms)
 %%% For numerical integration in the normalized CR3BP
 %%% Inputs:
 %          t - normalized time vector
