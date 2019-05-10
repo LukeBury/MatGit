@@ -77,6 +77,6 @@ VSc_DV2_p = VSc_body2;                                 % km/s
 DV1 = abs(VSc_DV1_p - VSc_DV1_m); % km/s
 DV2 = abs(VSc_DV2_m - VSc_DV2_p); % km/s
 DVTot = DV1 + DV2;           % km/s
-TpTrans_sec
+
 warning('Could use a quick looking over')
 end

@@ -7,7 +7,7 @@ tic
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = [1:7]
+for kk = [4]
     if kk == 1
         %%% 50 mps
         logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_log.txt';
@@ -179,7 +179,6 @@ end
 
 iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath,on_J21)
 
-
 end
 toc
 
@@ -229,7 +228,7 @@ plot_binNeckSections_vert = 0;
 plot_binNeckSections_horz = 0;
 plot_metaData             = 0;
 plot_latitudeV0AngleCorr  = 0;
-plot_binTOF               = 1;
+plot_binTOF               = 0;
 calc_maxLatitudeAnalysis  = 0;
 
 % ========================================================================
@@ -425,6 +424,7 @@ end
 %%% Load low impact data
 lowImpactMat = dlmread(lowImpactAngleFile,',',1,0);
 nLowImpactTraj = size(lowImpactMat,1);
+
 
 if size(lowImpactMat) ~= [1,1] % if there are any low-angle impacts:
     
