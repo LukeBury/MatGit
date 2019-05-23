@@ -214,6 +214,7 @@ bodies.enceladus.title = 'Enceladus';
 bodies.enceladus.color = [136, 194, 235]./255;
 bodies.enceladus.img = imread([mbinPath,'/textures/enceladusSurfTex.jpg']);
 bodies.enceladus.mass = 1.08e20; % kg
+bodies.enceladus.u = (1.08022*1e20)*G; % km^3/s^2
 bodies.enceladus.a = 237948; % km
 bodies.enceladus.R = 252; % km
 bodies.enceladus.R_n = bodies.enceladus.R / bodies.enceladus.a;

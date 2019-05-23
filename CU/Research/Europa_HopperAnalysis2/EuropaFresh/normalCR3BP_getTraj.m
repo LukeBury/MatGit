@@ -33,12 +33,15 @@ rH0_BCR_n = rH0_ECEF_n + rB2_BCR_n;
 tol = 1e-13;
 
 %%% Setting integrator options
-options = odeset('Events',@normalCR3BP_impactEvent,'RelTol',tol,'AbsTol',tol);
+options = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 %%% Setting Initial State Vector (ECEF)
 X0_n = [rH0_BCR_n, vH0_BCR_n]'; % km, km/s
 
 %%% Propagating the State
-[Times_n,States_BCR_n] = ode45(@normalCR3BP_Int,time,X0_n,options,u,rB1_BCR_n,rB2_BCR_n,rad2_n);
+prms.u = u;
+prms.R2_n = rad2_n;
+% [Times_n,States_BCR_n] = ode45(@normalCR3BP_Int,time,X0_n,options,u,rB1_BCR_n,rB2_BCR_n,rad2_n);
+[Times_n,States_BCR_n] = ode45(@Int_CR3Bn,time,X0_n,options,prms);
 end
 

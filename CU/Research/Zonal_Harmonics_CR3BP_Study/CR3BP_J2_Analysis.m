@@ -1,8 +1,10 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
-
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
 % ========================================================================
 %%% Run Switches
 % ========================================================================
@@ -15,7 +17,7 @@ run_EquiMovement   = 0;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -69,11 +71,13 @@ time0_n = [ti:dt:tf] ./ tNorm;
 tol = 1e-9;
 
 %%% Setting integrator options
-options = odeset('Events',@impactEvent_CR3Bn,'RelTol',tol,'AbsTol',tol);
-options_J2 = odeset('Events',@impactEvent_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
+options = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options_J2 = odeset('Events',@event_Impact_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
 
 %%% Propagating the States without J2
-[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, secondary.MR, secondary.R_n);
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
+[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
 %%% Propagating the States with J2
 [time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_n, options_J2, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);

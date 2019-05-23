@@ -1,13 +1,15 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
-
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
 % ========================================================================
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -48,9 +50,9 @@ n = 300;
 L_Point = 1;
 % dS_PO = .0001;
 dS_PO = .0001;
-dynamic_dS_PO = 0;
+dynamic_dS_PO = 1;
 PO_plot_skip = 50; %5
-ev_force = 5;
+ev_force = 3;
 
 % ------------------------------------------------- 
 %%% Integration Options
@@ -164,7 +166,7 @@ for PO_i = 1:n
         time = [0,T_guess];
         
         %%% Integrating
-        [T, X] = ode45(@int_CR3BnSTM_J2, time, X, options, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+        [T, X] = ode45(@Int_CR3BnSTM_J2, time, X, options, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
         
         %%% Retreiving updated STM (monodromy matrix guess)
         stm = reshape(X(end,7:end),6,6);
@@ -363,7 +365,8 @@ for PO_i = 1:n
         time = [0,T_guess];
         
         %%% Integrating
-        [T, X] = ode45(@int_CR3BnSTM, time, X, options, secondary.MR);
+        prms.u = secondary.MR;
+        [T, X] = ode45(@Int_CR3BnSTM, time, X, options, prms);
         
         %%% Retreiving updated STM
         stm = reshape(X(end,7:end),6,6);
