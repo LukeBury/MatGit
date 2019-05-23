@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
@@ -15,15 +15,11 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 
+
+%% =======================================================================
+%%% PO With J2
 % ========================================================================
-%%% 
-% ========================================================================
-% ========================================================================
-%%% With J2
-% ========================================================================
-% ========================================================================
-%%% 
-% ========================================================================
+
 
 
 % ========================================================================
@@ -46,12 +42,11 @@ u = secondary.MR;
 % ------------------------------------------------- 
 %%% Periodic Orbit options
 % -------------------------------------------------
-n = 300;
-L_Point = 1;
-% dS_PO = .0001;
+PO_n = 2000;
+L_Point = 2;
 dS_PO = .0001;
-dynamic_dS_PO = 1;
-PO_plot_skip = 50; %5
+dynamic_dS_PO = 0;
+PO_plot_skip = 399; 
 ev_force = 3;
 
 % ------------------------------------------------- 
@@ -85,19 +80,7 @@ J22 = 0;
 % ------------------------------------------------- 
 %%% Evaluating A at equilibrium point
 % -------------------------------------------------
-A = zeros(6,6);
-A(1:3,4:6) = eye(3);
-A(4,5) = 2;
-A(5,4) = -2;
-A(4,1) = (u + xL - 1)*((3*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)) - (3*J22*R2^2*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2)) + (21*J22*R2^2*u*(2*u + 2*xL - 2)*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(4*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2))) + (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) - (u + xL)*((3*(2*u + 2*xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) - (J21*R1^2*(2*u + 2*xL)*(3*u - 3))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) + (7*J21*R1^2*(2*u + 2*xL)*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(4*((u + xL)^2 + yL^2 + zL^2)^(9/2))) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2) - (3*J22*R2^2*u*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2)) + (J21*R1^2*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) + 1;
-A(4,2) = (u + xL - 1)*((3*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*J22*R2^2*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) + (21*J22*R2^2*u*yL*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2))) - (u + xL)*((3*yL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) - (J21*R1^2*yL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) + (7*J21*R1^2*yL*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)));
-A(4,3) = (u + xL - 1)*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) + (12*J22*R2^2*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) + (21*J22*R2^2*u*zL*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2))) - (u + xL)*((3*zL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) + (4*J21*R1^2*zL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) + (7*J21*R1^2*zL*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)));
-A(5,1) = -yL*((3*(2*u + 2*xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) - (3*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)) - (J21*R1^2*(2*u + 2*xL)*(3*u - 3))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) + (3*J22*R2^2*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2)) - (21*J22*R2^2*u*(2*u + 2*xL - 2)*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(4*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2)) + (7*J21*R1^2*(2*u + 2*xL)*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(4*((u + xL)^2 + yL^2 + zL^2)^(9/2)));
-A(5,2) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) + yL*((3*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*yL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) + (J21*R1^2*yL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) - (3*J22*R2^2*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) - (7*J21*R1^2*yL*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)) + (21*J22*R2^2*u*yL*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2))) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2) - (3*J22*R2^2*u*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2)) + (J21*R1^2*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) + 1;
-A(5,3) = yL*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) - (4*J21*R1^2*zL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) + (12*J22*R2^2*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) - (7*J21*R1^2*zL*(3*u - 3)*((u + xL)^2 + yL^2 - 4*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)) + (21*J22*R2^2*u*zL*((u + xL - 1)^2 + yL^2 - 4*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2)));
-A(6,1) = -zL*((3*(2*u + 2*xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) - (3*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)) - (J21*R1^2*(6*u + 6*xL)*(3*u - 3))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) + (3*J22*R2^2*u*(6*u + 6*xL - 6))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2)) + (7*J21*R1^2*(2*u + 2*xL)*(3*u - 3)*(3*(u + xL)^2 + 3*yL^2 - 2*zL^2))/(4*((u + xL)^2 + yL^2 + zL^2)^(9/2)) - (21*J22*R2^2*u*(2*u + 2*xL - 2)*(3*(u + xL - 1)^2 + 3*yL^2 - 2*zL^2))/(4*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2)));
-A(6,2) = zL*((3*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*yL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) + (3*J21*R1^2*yL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) - (9*J22*R2^2*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) + (21*J22*R2^2*u*yL*(3*(u + xL - 1)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2)) - (7*J21*R1^2*yL*(3*u - 3)*(3*(u + xL)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)));
-A(6,3) = zL*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2) - (2*J21*R1^2*zL*(3*u - 3))/((u + xL)^2 + yL^2 + zL^2)^(7/2) + (6*J22*R2^2*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(7/2) - (7*J21*R1^2*zL*(3*u - 3)*(3*(u + xL)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(9/2)) + (21*J22*R2^2*u*zL*(3*(u + xL - 1)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(9/2))) + (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2) + (J21*R1^2*(3*u - 3)*(3*(u + xL)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL)^2 + yL^2 + zL^2)^(7/2)) - (3*J22*R2^2*u*(3*(u + xL - 1)^2 + 3*yL^2 - 2*zL^2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(7/2));
+[A] = get_Amat_CR3BP_J2(u, [xL, yL, zL], J21, J22, R1, R2);
 
 % ------------------------------------------------- 
 %%% Eigenvectors and Eigenvalues
@@ -106,7 +89,7 @@ A(6,3) = zL*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u - 1))/((u 
 [eVecs, eVals] = eig(A);
 
 %%% Finding center manifold (purely imaginary eigenvalue) ... or maybe not
-989
+
 for ev_i = 1:size(eVals,1)
     if abs(real(eVals(ev_i,ev_i))) < 5e-16 && abs(imag(eVals(ev_i,ev_i))) > 5e-16 % If real() == 0 and imag() ~= 0
 %         ev_i = 3
@@ -142,15 +125,15 @@ X_guess = X_pert + dS0*X_tang;
 T_guess = T_pert + dS0*T_tang;
 
 %%% Storing first periodic orbit
-POs = zeros(7,n);
-POs(:,1) = [X_guess; T_guess];
+POs_J2 = zeros(7,PO_n);
+POs_J2(:,1) = [X_guess; T_guess];
 
 % ------------------------------------------------- 
 %%% Iterating through orbits
 % -------------------------------------------------
 %%% Initializating
 error_tol = 1e-10;
-for PO_i = 1:n
+for PO_i = 1:(PO_n-1)
     PO_i
     
     error = 1;
@@ -189,14 +172,14 @@ for PO_i = 1:n
     end
         
     %%% Storing new periodic orbit
-    POs(:,PO_i+1) = [X_guess; T_guess];
+    POs_J2(:,PO_i+1) = [X_guess; T_guess];
 
     %%% Update perturbed orbit
     X_pert = X_guess;
     T_pert = T_guess;
 
     %%% Compute new tangent orbit
-    tangentOrbit = (POs(:,PO_i+1) - POs(:,PO_i))/norm(POs(:,PO_i+1)-POs(:,PO_i));
+    tangentOrbit = (POs_J2(:,PO_i+1) - POs_J2(:,PO_i))/norm(POs_J2(:,PO_i+1)-POs_J2(:,PO_i));
 
     %%% Update the tangent orbit
     X_tang = tangentOrbit(1:6);
@@ -250,21 +233,15 @@ end
 % end
 plot3(xL,yL,zL,'^','markeredgecolor',colors.std.black,'markerfacecolor','m')
 % legend([p1],'With J2')
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
 view(0,90)
 axis square
 
 
-POs_J2 = POs;
 
-% ========================================================================
-%%% 
-% ========================================================================
-% ========================================================================
+
+%% =======================================================================
 %%% No J2
-% ========================================================================
-% ========================================================================
-%%% 
 % ========================================================================
 
 % ------------------------------------------------- 
@@ -286,19 +263,7 @@ zL = Ls_n(L_Point,3);
 % ------------------------------------------------- 
 %%% Evaluating A at equilibrium point
 % -------------------------------------------------
-A = zeros(6,6);
-A(1:3,4:6) = eye(3);
-A(4,5) = 2;
-A(5,4) = -2;
-A(4,1) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2) + (3*u*(2*u + 2*xL - 2)*(u + xL - 1))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)) - (3*(2*u + 2*xL)*(u + xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) + 1;
-A(4,2) = (3*u*yL*(u + xL - 1))/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*yL*(u + xL)*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2);
-A(4,3) = (3*u*zL*(u + xL - 1))/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u + xL)*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2);
-A(5,1) = -yL*((3*(2*u + 2*xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) - (3*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)));
-A(5,2) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) + yL*((3*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*yL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2)) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2) + 1;
-A(5,3) = yL*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2));
-A(6,1) = -zL*((3*(2*u + 2*xL)*(u - 1))/(2*((u + xL)^2 + yL^2 + zL^2)^(5/2)) - (3*u*(2*u + 2*xL - 2))/(2*((u + xL - 1)^2 + yL^2 + zL^2)^(5/2)));
-A(6,2) = zL*((3*u*yL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*yL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2));
-A(6,3) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) + zL*((3*u*zL)/((u + xL - 1)^2 + yL^2 + zL^2)^(5/2) - (3*zL*(u - 1))/((u + xL)^2 + yL^2 + zL^2)^(5/2)) - u/((u + xL - 1)^2 + yL^2 + zL^2)^(3/2);
+A = get_Amat_CR3BP(u, [xL, yL, zL]);
 
 % ------------------------------------------------- 
 %%% Eigenvectors and Eigenvalues
@@ -341,7 +306,7 @@ X_guess = X_pert + dS0*X_tang;
 T_guess = T_pert + dS0*T_tang;
 
 %%% Storing first periodic orbit
-POs = zeros(7,n);
+POs = zeros(7,PO_n);
 POs(:,1) = [X_guess; T_guess];
 
 % ------------------------------------------------- 
@@ -349,7 +314,7 @@ POs(:,1) = [X_guess; T_guess];
 % -------------------------------------------------
 %%% Initializating
 error_tol = 1e-10;
-for PO_i = 1:n
+for PO_i = 1:(PO_n-1)
     PO_i
     
     error = 1;
@@ -449,29 +414,29 @@ end
 % end
 plot3(xL,yL,zL,'^','markeredgecolor',colors.std.black,'markerfacecolor','k')
 % legend([p2],'Basic')
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
 view(0,90)
 axis equal
 
 
 
-legend([p1,p2],'With J2','No J2')
+legend([p1,p2],'With J_{2p}','Without J_{2p}')
 
 
 
 JCs_PO = zeros(1,size(POs,2));
 JCs_PO_J2 = zeros(1,size(POs_J2,2));
-for kk = 1:size(POs,2)
+for kk = 1:PO_n
     [JC] = JacobiConstantCalculator(secondary.MR,POs(1:3,kk)',POs(4:6,kk)');
-    [JC_J2] = JacobiConstantCalculator_J2(secondary.MR,POs_J2(1:3,kk)',POs(4:6,kk)',primary.R/rNorm,secondary.R_n,primary.J2,0);
+    [JC_J2] = JacobiConstantCalculator_J2(secondary.MR,POs_J2(1:3,kk)',POs_J2(4:6,kk)',primary.R/rNorm,secondary.R_n,primary.J2,0);
     
     JCs_PO(kk) = JC;
     JCs_PO_J2(kk) = JC_J2;
 end
     
 figure(2); hold all
-plot(1:size(POs,2),JCs_PO,'mo','markersize',5)
-plot(1:size(POs_J2,2),JCs_PO_J2,'ko','markersize',5)
+plot([1:PO_n],JCs_PO,'mo','markersize',5)
+plot([1:PO_n],JCs_PO_J2,'ko','markersize',5)
 
 % JacobiConstantCalculator_J2(u,rBCR_n,vBCR_n, R1_n, R2_n, J21, J22)
 
@@ -493,7 +458,7 @@ plot(1:size(POs_J2,2),JCs_PO_J2,'ko','markersize',5)
 
 
 
-% ========================================================================
+%% =======================================================================
 %%% Functions
 % ========================================================================
 

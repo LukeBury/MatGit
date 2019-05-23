@@ -1,7 +1,10 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
 
 % ========================================================================
 %%% Run Switches
@@ -14,7 +17,7 @@ run_EquillibriumMovementTable  = 0;
 run_zeroVelocity               = 0;
 run_multSimulation             = 0;
         %%% Secondary Functions
-        firstPeriapsisAnalysis_mult = 0;
+        firstPeriapsisAnalysis_mult = 1;
         %%% Plots and Extras
         plotBCR_n_mult  = 1;
         fpaVSspeed_mult = 0;
@@ -25,7 +28,7 @@ run_SurfaceJCAnalysis          = 0;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -74,7 +77,7 @@ ICs = {'1:Primary','2:Secondary','3:L-Pt [2x1]-(1,2,3,4(1-J2),5(2-J2),6(3-J2))',
 %     bodies.jupiter, bodies.europa, [2;2], [.5-bodies.europa.MR,sqrt(3)/2,0;0,0,0], [.5-bodies.europa.MR,sqrt(3)/2,0;0,0,0]       60, 3600*24*8,'testing';... % IC_i = 12
    };
 
-IC_i = 3; 
+IC_i = 8; % For journal paper - 2,3,5,8,9
 
 % 2 
 % 3,4
@@ -121,17 +124,24 @@ tf = ICs{IC_i,7};
 time0_n = [ti:dt:tf] ./ tNorm;
 
 %%% Choosing ode45 tolerance
-tol = 1e-10;
+tol = 1e-12; % journal - this was 10
 
 %%% Setting integrator options
 options = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 options_J2 = odeset('Events',@event_Impact_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
 
+%%% Setting prms
+prms.u = secondary.MR;
+prms.R1_n = primary.R/rNorm;
+prms.R2_n = secondary.R_n;
+prms.J21 = primary.J2;
+prms.J22 = 0;
+
 %%% Propagating the States without J2
-[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, secondary.MR, secondary.R_n);
+[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
 %%% Propagating the States with J2
-[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_J2n, options_J2, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_J2n, options_J2, prms);
 
 
 %%% Determining shorter simulation, and appending NaNs for plotting/comparison purposes
@@ -194,20 +204,20 @@ end
 % plot3(X_BCR_J2_n(end,1),X_BCR_J2_n(end,2),X_BCR_J2_n(end,3),'rx','linewidth',2,'markersize',8)
 % % plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
-% PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
-% legend('No J2','W/ J2')
+% PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
+% legend('Without J_2','W/ J2')
 % axis equal
 % view(0,90)
 % grid on
 % subplot(3,2,2)
 % plot(timeLong,(X_BCR_J2_n(:,1)-X_BCR_n(:,1)).*rNorm,'k','linewidth',2)
-% PlotBoi2('','$\Delta$x, km',14,'LaTex')
+% PlotBoi2('','$\Delta$x, km',20,'LaTex')
 % subplot(3,2,4)
 % plot(timeLong,(X_BCR_J2_n(:,2)-X_BCR_n(:,2)).*rNorm,'k','linewidth',2)
-% PlotBoi2('','$\Delta$y, km',14,'LaTex')
+% PlotBoi2('','$\Delta$y, km',20,'LaTex')
 % subplot(3,2,6)
 % plot(timeLong,(X_BCR_J2_n(:,3)-X_BCR_n(:,3)).*rNorm,'k','linewidth',2)
-% PlotBoi2('Normalized Time','$\Delta$z, km',14,'LaTex')
+% PlotBoi2('Normalized Time','$\Delta$z, km',20,'LaTex')
 figure('position',[-2285 62 1078 296])
 subplot(3,2,[1,3,5]); hold all
 plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'b','linewidth',2)
@@ -216,22 +226,22 @@ plot3(X_BCR_n(1,1),X_BCR_n(1,2),X_BCR_n(1,3),'bo','linewidth',2,'markersize',8)
 plot3(X_BCR_J2_n(1,1),X_BCR_J2_n(1,2),X_BCR_J2_n(1,3),'ro','linewidth',2,'markersize',8)
 plot3(X_BCR_n(length(timeShort),1),X_BCR_n(length(timeShort),2),X_BCR_n(length(timeShort),3),'bx','linewidth',2,'markersize',8)
 plot3(X_BCR_J2_n(length(timeShort),1),X_BCR_J2_n(length(timeShort),2),X_BCR_J2_n(length(timeShort),3),'rx','linewidth',2,'markersize',8)
-% plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
+plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
-legend('No J2','W/ J2')
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
+legend('Without J_2','W/ J2')
 axis equal
 view(0,90)
 grid on
 subplot(3,2,2)
 plot(timeShort,(X_BCR_J2_n(1:length(timeShort),1)-X_BCR_n(1:length(timeShort),1)).*rNorm,'k','linewidth',2)
-PlotBoi2('','$\Delta$x, km',14,'LaTex')
+PlotBoi2('','$\Delta$x, km',20,'LaTex')
 subplot(3,2,4)
 plot(timeShort,(X_BCR_J2_n(1:length(timeShort),2)-X_BCR_n(1:length(timeShort),2)).*rNorm,'k','linewidth',2)
-PlotBoi2('','$\Delta$y, km',14,'LaTex')
+PlotBoi2('','$\Delta$y, km',20,'LaTex')
 subplot(3,2,6)
 plot(timeShort,(X_BCR_J2_n(1:length(timeShort),3)-X_BCR_n(1:length(timeShort),3)).*rNorm,'k','linewidth',2)
-PlotBoi2('Normalized Time','$\Delta$z, km',14,'LaTex')
+PlotBoi2('Normalized Time','$\Delta$z, km',20,'LaTex')
 
 % figure; hold all
 figure('position',[-2285 62 1078 296]); hold all
@@ -243,8 +253,8 @@ plot3(X_BCR_n(end,1),X_BCR_n(end,2),X_BCR_n(end,3),'bx','linewidth',2,'markersiz
 plot3(X_BCR_J2_n(end,1),X_BCR_J2_n(end,2),X_BCR_J2_n(end,3),'rx','linewidth',2,'markersize',8)
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
-PlotBoi3('$x_n$','$y_n$','z_n',14,'LaTex')
-legend('No J2','With J2')
+PlotBoi3('$x_n$','$y_n$','z_n',20,'LaTex')
+legend('Without J_2','With J_2')
 axis equal
 view(0,90)
 grid on
@@ -273,24 +283,24 @@ if run_POcomparison == 1
 % -----------------------------
 % Setup
 % -----------------------------
-%%% Europa - L1 PO
-primary = bodies.jupiter;
-secondary = bodies.europa;
-% r0_n = [0.981986265631928; -0.000000001419209; -0.000000009598778];
-% v0_n = [-0.000000008769559; 0.005535983529929; 0.037472301863908];
-% tP = 3.388015997951395;
-r0_n = [0.981460590439603; -0.000000000779596; -0.000000006391289];
-v0_n = [-0.000000004926460; 0.003962110642756; 0.032534117970616];
-tP = 3.298067769777886;
-% % % % r0_n = [0.978809538796240; 0.000000345420468; 0];
-% % % % v0_n = [0.000000264003012; 0.006831168844117; 0];
-% % % % tP = 2.995763088664896;
-% % % % % r0_n = [0.978547828848621; 0.000000678875551; 0];
-% % % % % v0_n = [0.000000540270016; 0.008828949995968; 0];
-% % % % % tP = 3.000336746617772;
-X0_n = [r0_n; v0_n];
-t_J2 = 2.6;
-Lpoint = 1;
+% %%% Europa - L1 PO
+% primary = bodies.jupiter;
+% secondary = bodies.europa;
+% % r0_n = [0.981986265631928; -0.000000001419209; -0.000000009598778];
+% % v0_n = [-0.000000008769559; 0.005535983529929; 0.037472301863908];
+% % tP = 3.388015997951395;
+% r0_n = [0.981460590439603; -0.000000000779596; -0.000000006391289];
+% v0_n = [-0.000000004926460; 0.003962110642756; 0.032534117970616];
+% tP = 3.298067769777886;
+% % % % % r0_n = [0.978809538796240; 0.000000345420468; 0];
+% % % % % v0_n = [0.000000264003012; 0.006831168844117; 0];
+% % % % % tP = 2.995763088664896;
+% % % % % % r0_n = [0.978547828848621; 0.000000678875551; 0];
+% % % % % % v0_n = [0.000000540270016; 0.008828949995968; 0];
+% % % % % % tP = 3.000336746617772;
+% X0_n = [r0_n; v0_n];
+% t_J2 = 2.6;
+% Lpoint = 1;
 
 % %%% Europa - L2 PO
 % primary = bodies.jupiter;
@@ -316,15 +326,15 @@ Lpoint = 1;
 % t_J2 = 1.4;
 % Lpoint = 1;
 
-% %%% Enceladus - L2 PO
-% primary = bodies.saturn;
-% secondary = bodies.enceladus;
-% r0_n = [1.003910955372229; 0.000000000371790; 0];
-% v0_n = [0.000000000220842; 0.000523232459032; 0];
-% X0_n = [r0_n; v0_n];
-% tP = 3.042471396742148;
-% t_J2 = 1.4;
-% Lpoint = 2;
+%%% Enceladus - L2 PO
+primary = bodies.saturn;
+secondary = bodies.enceladus;
+r0_n = [1.003910955372229; 0.000000000371790; 0];
+v0_n = [0.000000000220842; 0.000523232459032; 0];
+X0_n = [r0_n; v0_n];
+tP = 3.042471396742148;
+t_J2 = 1.4;
+Lpoint = 2;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -348,16 +358,23 @@ tol = 1e-10;
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
 
+%%% Setting prms
+prms.u = secondary.MR;
+prms.R1_n = primary.R/rNorm;
+prms.R2_n = secondary.R_n;
+prms.J21 = primary.J2;
+prms.J22 = 0;
+
 %%% Propagating the States without J2
-[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, secondary.MR, secondary.R_n);
+[time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
 %%% Propagating the States with J2
-[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_J2_n, X0_n, options, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_J2_n, X0_n, options, prms);
 
 % -----------------------------
 % Plotting
 % -----------------------------
-% figure(1); hold all
+figure(1); hold all
 p1 = plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'b','linewidth',2);
 p2 = plot3(X_BCR_J2_n(:,1),X_BCR_J2_n(:,2),X_BCR_J2_n(:,3),'r','linewidth',2);
 % plot3(X_BCR_n(1,1),X_BCR_n(1,2),X_BCR_n(1,3),'bo','linewidth',2,'markersize',8)
@@ -367,9 +384,9 @@ plot3(X_BCR_J2_n(end,1),X_BCR_J2_n(end,2),X_BCR_J2_n(end,3),'rx','linewidth',2,'
 p3 = plot3(L123_noJ2n(Lpoint,1),L123_noJ2n(Lpoint,2),L123_noJ2n(Lpoint,3),'^','markerfacecolor',colors.std.black,'markeredgecolor',colors.std.black);
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
-% legend([p1,p2,p3],'No J2','With J2',sprintf('L%1.0f, No J2',Lpoint))
-legend([p1,p2,p3],'No J2','With J2',sprintf('L-point, No J2',Lpoint))
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
+legend([p1,p2,p3],'Without J2','With J_2',sprintf('L%1.0f, Without J2',Lpoint))
+% legend([p1,p2,p3],'Without J_2','With J_2',sprintf('L-point, Without J_2',Lpoint))
 axis equal
 view(0,90)
 grid on
@@ -405,20 +422,63 @@ tol = 1e-10;
 %%% Setting integrator options
 options = odeset('RelTol',tol,'AbsTol',tol);
 
-%%% Propagating the States
-[time_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_n, options, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+%%% Setting prms
+prms.u = secondary.MR;
+prms.R1_n = primary.R/rNorm;
+prms.R2_n = secondary.R_n;
+prms.J21 = primary.J2;
+prms.J22 = 0;
+prms.J31 = 0;
+prms.J32 = 0;
+prms.J41 = primary.J4;
+prms.J42 = 0;
 
-[time_n, X_BCR_J2J4_n] = ode45(@Int_CR3Bn_perturb, time0_n, X0_n, options, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0,0,0,primary.J4,0);
+prmsNA.u = secondary.MR;
+prmsNA.R1_n = primary.R/rNorm;
+prmsNA.R2_n = secondary.R_n;
+prmsNA.J21 = 0;
+prmsNA.J22 = 0;
+prmsNA.J31 = 0;
+prmsNA.J32 = 0;
+prmsNA.J41 = 0;
+prmsNA.J42 = 0;
+
+prmsJ2.u = secondary.MR;
+prmsJ2.R1_n = primary.R/rNorm;
+prmsJ2.R2_n = secondary.R_n;
+prmsJ2.J21 = primary.J2;
+prmsJ2.J22 = 0;
+prmsJ2.J31 = 0;
+prmsJ2.J32 = 0;
+prmsJ2.J41 = 0;
+prmsJ2.J42 = 0;
+
+prmsJ4.u = secondary.MR;
+prmsJ4.R1_n = primary.R/rNorm;
+prmsJ4.R2_n = secondary.R_n;
+prmsJ4.J21 = 0;
+prmsJ4.J22 = 0;
+prmsJ4.J31 = 0;
+prmsJ4.J32 = 0;
+prmsJ4.J41 = primary.J4;
+prmsJ4.J42 = 0;
+
+%%% Propagating the States
+[time_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_n, options, prms);
+
+[time_n, X_BCR_J2J4_n] = ode45(@Int_CR3Bn_ZH, time0_n, X0_n, options, prms);
 
 aNA = zeros(size(X_BCR_J2_n,1),1);
 aJ2 = zeros(size(X_BCR_J2_n,1),1);
 aJ4 = zeros(size(X_BCR_J2_n,1),1);
 for kk = 1:size(X_BCR_J2_n,1)
-    acc = Int_CR3Bn_perturb(0,X_BCR_J2_n(kk,:),secondary.MR,primary.R/rNorm,secondary.R_n,0,0,0,0,0,0);
+    acc = Int_CR3Bn_ZH(0,X_BCR_J2_n(kk,:),prmsNA);
     aNA(kk) = norm(acc(4:6));
-    acc = Int_CR3Bn_perturb(0,X_BCR_J2_n(kk,:),secondary.MR,primary.R/rNorm,secondary.R_n,primary.J2,0,0,0,0,0);
+    
+    acc = Int_CR3Bn_ZH(0,X_BCR_J2_n(kk,:),prmsJ2);
     aJ2(kk) = norm(acc(4:6));
-    acc = Int_CR3Bn_perturb(0,X_BCR_J2_n(kk,:),secondary.MR,primary.R/rNorm,secondary.R_n,0,0,0,0,primary.J4,0);
+    
+    acc = Int_CR3Bn_ZH(0,X_BCR_J2_n(kk,:),prmsJ4);
     aJ4(kk) = norm(acc(4:6));
     
 %     clc
@@ -439,24 +499,24 @@ plot3(X_BCR_J2J4_n(:,1),X_BCR_J2J4_n(:,2),X_BCR_J2J4_n(:,3),'b','linewidth',2);
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
 legend('J2','J2 & J4')
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
 axis equal
 view(-18,16)
 grid on
 subplot(3,2,2)
 plot(time_n,(X_BCR_J2J4_n(:,1)-X_BCR_J2_n(:,1)).*rNorm,'k','linewidth',2)
-PlotBoi2('','$\Delta x$, km',14,'LaTex')
+PlotBoi2('','$\Delta x$, km',20,'LaTex')
 subplot(3,2,4)
 plot(time_n,(X_BCR_J2J4_n(:,2)-X_BCR_J2_n(:,2)).*rNorm,'k','linewidth',2)
-PlotBoi2('','$\Delta y$, km',14,'LaTex')
+PlotBoi2('','$\Delta y$, km',20,'LaTex')
 subplot(3,2,6)
 plot(time_n,(X_BCR_J2J4_n(:,3)-X_BCR_J2_n(:,3)).*rNorm,'k','linewidth',2)
-PlotBoi2('Normalized Time','$\Delta z$, km',14,'LaTex')
+PlotBoi2('Normalized Time','$\Delta z$, km',20,'LaTex')
 
 % percentDiffJ2J4 = (aJ2-aNA)./(aJ4-aNA);
 % figure; hold all
 % plot(time_n, percentDiffJ2J4,'.')
-% PlotBoi2('Time_n','$F_{J2}$ / $F_{J4}$',14,'LaTex')
+% PlotBoi2('Time_n','$F_{J2}$ / $F_{J4}$',20,'LaTex')
 
 
 figure
@@ -464,16 +524,16 @@ subplot(2,2,[1,3]); hold all
 plot3(X_BCR_J2_n(:,1),X_BCR_J2_n(:,2),X_BCR_J2_n(:,3),'r','linewidth',2);
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
-PlotBoi3('$x_n$','$y_n$','$z_n$',14,'LaTex')
+PlotBoi3('$x_n$','$y_n$','$z_n$',20,'LaTex')
 axis equal
 view(-18,16)
 grid on
 subplot(2,2,2)
 plot(time_n, aJ2-aNA,'k','linewidth',2)
-PlotBoi2('','$|a_{J2}|$',14,'LaTex')
+PlotBoi2('','$|a_{J2}|$',20,'LaTex')
 subplot(2,2,4)
 plot(time_n, aJ4-aNA,'k','linewidth',2)
-PlotBoi2('Normalized time','$|a_{J4}|$',14,'LaTex')
+PlotBoi2('Normalized time','$|a_{J4}|$',20,'LaTex')
 
 end
 
@@ -495,9 +555,9 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 % ys = linspace(-.2,.2,100);
 
 %%% Secondary
-xs = linspace(0.9,1.1,100);
+xs = linspace(0.9,1.1,500);
 % ys = linspace(-2*secondary.R_n,2*secondary.R_n,100);
-ys = linspace(-.025,.025,100);
+ys = linspace(-.025,.025,500);
 
 Z = 0;
 
@@ -506,15 +566,37 @@ clear xs ys
 
 acc_J2 = zeros(size(X));
 acc_NA = zeros(size(X));
+
+prmsNA.u = secondary.MR;
+prmsNA.R1_n = primary.R/rNorm;
+prmsNA.R2_n = secondary.R_n;
+prmsNA.J21 = 0;
+prmsNA.J22 = 0;
+prmsNA.J31 = 0;
+prmsNA.J32 = 0;
+prmsNA.J41 = 0;
+prmsNA.J42 = 0;
+
+prmsJ2.u = secondary.MR;
+prmsJ2.R1_n = primary.R/rNorm;
+prmsJ2.R2_n = secondary.R_n;
+prmsJ2.J21 = primary.J2;
+prmsJ2.J22 = 0;
+prmsJ2.J31 = 0;
+prmsJ2.J32 = 0;
+prmsJ2.J41 = 0;
+prmsJ2.J42 = 0;
+
+
 for xk = 1:size(X,1)
     for yk = 1:size(X,2)
 
         %%% J2 Zero-Velocity Curve
-        acc = Int_CR3Bn_perturb(0,[X(xk,yk),Y(xk,yk),Z,0,0,0],secondary.MR,primary.R/rNorm,secondary.R_n,primary.J2,0,0,0,0,0);
+        acc = Int_CR3Bn_ZH(0,[X(xk,yk),Y(xk,yk),Z,0,0,0],prmsJ2);
         acc_J2(xk,yk) = norm(acc(4:6)).*rNorm./(tNorm^2)*1000; % m/s^2
 
         %%% Zero-Velocity Curve
-        acc = Int_CR3Bn_perturb(0,[X(xk,yk),Y(xk,yk),Z,0,0,0],secondary.MR,primary.R/rNorm,secondary.R_n,0,0,0,0,0,0);
+        acc = Int_CR3Bn_ZH(0,[X(xk,yk),Y(xk,yk),Z,0,0,0],prmsNA);
         acc_NA(xk,yk) = norm(acc(4:6)).*rNorm./(tNorm^2)*1000; % m/s^2
     end
 end
@@ -531,12 +613,14 @@ PlotBoi2('x_n - BCR','y_n - BCR',12)
 
 
 figure; hold all
-[C,h] = contourf(X,Y,acc_diff);
+[C,h] = contourf(X,Y,acc_diff,linspace(min(min(acc_diff)),max(max(acc_diff)),100),'edgecolor','none');
+colorbar
 % plotBody2( secondary.R_n, [1-secondary.MR,0,0], secondary.color ,[0,0,0],1)
 % plotBody2( primary.R/rNorm, [-secondary.MR,0,0], primary.color ,[0,0,0],1 )
 axis equal
 % xlim([0.93, 1.07]); ylim([-0.02, 0.02])
-PlotBoi2('','Normalized Y Position',12)
+PlotBoi2('$x_n$','$y_n$',20,'LaTex')
+plotBody2(secondary.R_n,[1-secondary.MR,0,0],colors.std.black,colors.std.black,2,0)
 
 figure
 surf(acc_diff)
@@ -692,13 +776,13 @@ L123 = [L123_noJ2n; L123_J2n]; % stacking
 levels = [JC_L1, JC_L2, 3.001, 3.005,3.007, 3.009];
 
 figure('position',[93 413 595 382]);
-subplot(2,1,1); hold all; title('No J2')
+subplot(2,1,1); hold all; title('Without J_2')
 [C,h] = contour(X,Y,Z,levels,'color','k');
 plotBody2( secondary.R_n, [1-secondary.MR,0,0], secondary.color ,[0,0,0],1)
 plotBody2( primary.R/rNorm, [-secondary.MR,0,0], primary.color ,[0,0,0],1 )
 axis equal; clabel(C,h)
 xlim([0.93, 1.07]); ylim([-0.025, 0.025])
-PlotBoi2('','$y_n$',14,'Latex')
+PlotBoi2('','$y_n$',20,'Latex')
 
 subplot(2,1,2); hold all; title('J2')
 [C_J2,h_J2] = contour(X,Y,Z_J2,levels,'color','k');
@@ -706,7 +790,7 @@ plotBody2( secondary.R_n, [1-secondary.MR,0,0], secondary.color ,[0,0,0],1 )
 plotBody2( primary.R/rNorm, [-secondary.MR,0,0], primary.color ,[0,0,0],1 )
 axis equal; clabel(C_J2,h_J2)
 xlim([0.93, 1.07]); ylim([-0.025, 0.025])
-PlotBoi2('$x_n$','$y_n$',14,'Latex')
+PlotBoi2('$x_n$','$y_n$',20,'Latex')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure('position',[93 413 595 382]);
 subplot(2,1,1); hold all
@@ -715,7 +799,7 @@ subplot(2,1,1); hold all
 % plotBody2( primary.R/rNorm, [-secondary.MR,0,0], primary.color ,[0,0,0],1 )
 axis equal
 xlim([0.93, 1.07]); ylim([-0.02, 0.02])
-PlotBoi2('','$y_n$',14,'Latex')
+PlotBoi2('','$y_n$',20,'Latex')
 title('(a)')
 
 subplot(2,1,2); hold all
@@ -724,7 +808,7 @@ subplot(2,1,2); hold all
 %plotBody2( primary.R/rNorm, [-secondary.MR,0,0], primary.color ,[0,0,0],1 )
 axis equal
 xlim([0.93, 1.07]); ylim([-0.02, 0.02])
-PlotBoi2('$x_n$','$y_n$',14,'Latex')
+PlotBoi2('$x_n$','$y_n$',20,'Latex')
 title('(b)')
 
 cmap = parula(5);
@@ -826,16 +910,23 @@ for pp = 1:size(positionNudgeMatrix,1)
 
         %%% Setting integrator options
         if firstPeriapsisAnalysis_mult == 0 % Stop on impact
-            options1 = odeset('Events',@impactEvent_CR3Bn,'RelTol',tol,'AbsTol',tol);
-            options2 = odeset('Events',@impactEvent_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
+            options1 = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
+            options2 = odeset('Events',@event_Impact_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
         elseif firstPeriapsisAnalysis_mult == 1 % Don't Stop on Impact
             options1 = odeset('RelTol',tol,'AbsTol',tol);
             options2 = odeset('RelTol',tol,'AbsTol',tol);
         end
+        
+        %%% Setting prms
+        prms.u = secondary.MR;
+        prms.R1_n = primary.R/rNorm;
+        prms.R2_n = secondary.R_n;
+        prms.J21 = primary.J2;
+        prms.J22 = 0;
 
         %%% Propagating the State with and without J2
-        [time_n_mult, X_BCR_n_mult] = ode45(@Int_CR3Bn, time0_n_mult, X0_n_mult, options1, secondary.MR, secondary.R_n);
-        [time_n_multJ2, X_BCR_n_multJ2] = ode45(@Int_CR3Bn_J2, time0_n_mult, X0_n_mult, options2, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+        [time_n_mult, X_BCR_n_mult] = ode45(@Int_CR3Bn, time0_n_mult, X0_n_mult, options1, prms);
+        [time_n_multJ2, X_BCR_n_multJ2] = ode45(@Int_CR3Bn_J2, time0_n_mult, X0_n_mult, options2, prms);
         
         %%% Storing new state positions
         r_BCR_mult = [r_BCR_mult; X_BCR_n_mult(:,1:3); nan(1,3)];
@@ -866,7 +957,7 @@ for pp = 1:size(positionNudgeMatrix,1)
 
         %%% Periapsis Analysis
         if firstPeriapsisAnalysis_mult == 1
-            secondaryDistances = rownorm(r_SCR_n_mult);
+            secondaryDistances = rowNorm(r_SCR_n_mult);
             for kk = 2:size(secondaryDistances,1)
                 if secondaryDistances(kk-1) < secondaryDistances(kk) && norm(secondaryDistances(kk) - secondaryDistances(kk-1)) > tol
                     periapsisFound = 1;
@@ -896,15 +987,14 @@ if plotBCR_n_mult == 1
     plot3(L123(1,1),L123(1,2),L123(1,3),'k^','markersize',5,'linewidth',1.5)
 %     plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
-    PlotBoi3('X_n','Y_n','Z_n',14)
+    PlotBoi3('X_n','Y_n','Z_n',20)
     axis equal
     xlim([1-secondary.MR-2*secondary.R_n, L123(2,1) + 2*secondary.R_n])
     ylim([-5*secondary.R_n, 5*secondary.R_n])
 %     xlim([L123(1,1)-2*secondary.R_n, L123(2,1)+2*secondary.R_n])
 %     ylim([-12*secondary.R_n, 12*secondary.R_n])
 %     zlim([-5*secondary.R_n, 5*secondary.R_n])
-    legend([p1, p2],'No J2','With J2')
-    title(secondary.name)
+    legend([p1, p2],'Without J_2','With J_2')
     view(180,0)
     if firstPeriapsisAnalysis_mult == 1
         alpha(.6)
@@ -923,7 +1013,7 @@ if anyLandings == 1
         % Terminal Lat/Lon
         figure; hold all
         plot(latlons_mult(:,2), latlons_mult(:,1), 'rx','markersize',5,'linewidth',1.5);
-        PlotBoi2('Longitude, °', 'Latitude, °',14)
+        PlotBoi2('Longitude, °', 'Latitude, °',20)
         xlim([-180 180])
         ylim([-90 90])
         grid on
@@ -934,7 +1024,7 @@ if firstPeriapsisAnalysis_mult == 1
     figure
     subplot(1,2,1); hold all
     plot3(firstPeriapsis_mult(:,1),firstPeriapsis_mult(:,2),firstPeriapsis_mult(:,3),'rx','markersize',5,'linewidth',1)
-    PlotBoi3('X_n','Y_n','Z_n',14)
+    PlotBoi3('X_n','Y_n','Z_n',20)
     axis equal
     xlim([1-secondary.MR-5*secondary.R_n, 1-secondary.MR+5*secondary.R_n])
     ylim([-5*secondary.R_n, 5*secondary.R_n])
@@ -945,7 +1035,7 @@ if firstPeriapsisAnalysis_mult == 1
     plot3(r_BCR_mult(:,1),r_BCR_mult(:,2),r_BCR_mult(:,3),'g','linewidth',1.0)
     plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
     alpha(.3)
-    PlotBoi3('X_n','Y_n','Z_n',14)
+    PlotBoi3('X_n','Y_n','Z_n',20)
     axis equal
     xlim([1-secondary.MR-5*secondary.R_n, 1-secondary.MR+5*secondary.R_n])
     ylim([-5*secondary.R_n, 5*secondary.R_n])

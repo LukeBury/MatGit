@@ -9,10 +9,10 @@ addpath(genpath(moonFuncsPath))
 %%% Run Switches
 % ========================================================================
 run_J2Traj         = 1;
-run_JCverification = 0;
-run_zeroVelocity   = 0;
-run_J2Potential    = 0;
-run_EquiMovement   = 0;
+run_JCverification = 1;
+run_zeroVelocity   = 1;
+run_J2Potential    = 1;
+run_EquiMovement   = 1;
 % ========================================================================
 %%% Importing Data
 % ========================================================================
@@ -45,15 +45,15 @@ L3_n = L_points_n(3,:); % [1x3] normalized barycentric coordinates
 % ========================================================================
 if run_J2Traj == 1
 %%% Initial State
-% positionNudge = [(1-secondary.MR)*rNorm+3*secondary.R, 0, 0]./rNorm; % enter in km
-% velocityNudge = [0, 0, 800]./1000./vNorm; % enter in m/s
+positionNudge = [(1-secondary.MR)*rNorm+3*secondary.R, 0, 0]./rNorm; % enter in km
+velocityNudge = [0, 0, 800]./1000./vNorm; % enter in m/s
 % velocityNudge = [0, 550, 550]./1000./vNorm; % enter in m/s
 % 
 % positionNudge = [0, 0, 0]./rNorm; % enter in km
 % velocityNudge = [-1, -20, 130]./1000./vNorm; % enter in m/s
 
-positionNudge = [.5-secondary.MR, sqrt(3)/2, 0]
-velocityNudge = [0,0,0]
+% positionNudge = [.5-secondary.MR, sqrt(3)/2, 0] % L4
+% velocityNudge = [0,0,0]
 
 %%% Initial State
 % x0_n = L2_n + positionNudge;
@@ -80,7 +80,12 @@ prms.R2_n = secondary.R_n;
 [time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
 %%% Propagating the States with J2
-[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_n, options_J2, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+prms.u = secondary.MR;
+prms.R1_n = primary.R/rNorm;
+prms.R2_n = secondary.R_n;
+prms.J21 = primary.J2;
+prms.J22 = 0;
+[time_J2_n, X_BCR_J2_n] = ode45(@Int_CR3Bn_J2, time0_n, X0_n, options_J2, prms);
 
 %%% Acquiring modified jacobi constant values
 [JCs] = JacobiConstantCalculator_J2(secondary.MR,X_BCR_J2_n(:,1:3),X_BCR_J2_n(:,4:6), primary.R/rNorm, secondary.R_n, primary.J2, 0);
@@ -95,8 +100,8 @@ end
 % Rotating Plot
 % -----------------------------
 figure; hold all
-plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'linewidth',2)
-plot3(X_BCR_J2_n(:,1),X_BCR_J2_n(:,2),X_BCR_J2_n(:,3),'linewidth',2)
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',2)
+plot3(X_BCR_J2_n(:,1),X_BCR_J2_n(:,2),X_BCR_J2_n(:,3),'b','linewidth',2)
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0],secondary.img);
 % plotBody3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.color)
 PlotBoi3('X_n','Y_n','Z_n',14)
@@ -200,14 +205,20 @@ time0_n = [ti:dt:tf] ./ tNorm;
 tol = 1e-10;
 
 %%% Setting integrator options
-options = odeset('Events',@impactEvent_CR3Bn,'RelTol',tol,'AbsTol',tol);
-options_J2 = odeset('Events',@impactEvent_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
+options = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options_J2 = odeset('Events',@event_Impact_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
 
 %%% Propagating the States without J2
-[time_n, X_BCR_n_eqTest] = ode45(@Int_CR3Bn, time0_n, X0_n, options, secondary.MR, secondary.R_n);
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
+[time_n, X_BCR_n_eqTest] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
 %%% Propagating the States with J2
-[time_J2_n, X_BCR_J2_n_eqTest] = ode45(@Int_CR3Bn_J2, time0_n, X0_J2n, options_J2, secondary.MR, primary.R/rNorm, secondary.R_n, primary.J2, 0);
+prms.R1_n = primary.R/rNorm;
+prms.R2_n = secondary.R_n;
+prms.J21 = primary.J2;
+prms.J22 = 0;
+[time_J2_n, X_BCR_J2_n_eqTest] = ode45(@Int_CR3Bn_J2, time0_n, X0_J2n, options_J2, prms);
 
 
 figure
