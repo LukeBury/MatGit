@@ -45,6 +45,8 @@ else
     warning('This computer will explode in 5 seconds')
 end
 
+warning('Need to change the save path on Fortuna to the bigger directory')
+
 %%% Add the function paths to matlab
 addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
@@ -124,7 +126,7 @@ tol = 1e-13;
 options_ImpactNoStop_EscapeStop = odeset('Events',@event_ImpactNoStop_EscapeStop_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 % ========================================================================
-%%% Preparing for Grid Search - Looping through dvLp values
+%%% Preparing for Grid Search - Looping through L2FlyoverVelocity_mps values
 % ========================================================================
 if generateData == 1
 for L2FlyoverVelocity_mps = [L2FlyoverVelocity_mps_vec]
@@ -400,12 +402,12 @@ end % parfor ii = 1:n_r0s
 if testCaseOn == 0
     %%% Latitdue/Longitude data
     filename_LatStudy = fullfile(savepath, sprintf('LatStudy_%s.iGS_%s_%1.0fmps_%1.0fkm_%1.0fv0s.txt',...
-        computerTag,secondary.name(1:3),dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        computerTag,secondary.name(1:3),L2FlyoverVelocity_mps,r0GridSpacing_km,n_v0s_per_r0));
     
     %%% If storing all lat/lons
     if storeAllLatLons == 1
         filename_allLatLons = fullfile(savepath, sprintf('LatStudy_allLatLons_%s.iGS_%s_%1.0fmps_%1.0fkm_%1.0fv0s.txt',...
-        computerTag,secondary.name(1:3),dvLp_mps,r0GridSpacing_km,n_v0s_per_r0));
+        computerTag,secondary.name(1:3),L2FlyoverVelocity_mps,r0GridSpacing_km,n_v0s_per_r0));
     end
     
 elseif testCaseOn == 1
@@ -457,7 +459,7 @@ end
 %%% Close file
 fclose(f_LatStudy);
 
-end % dvLp_mps = [dvLp_mps_vec]
+end % L2FlyoverVelocity_mps = [L2FlyoverVelocity_mps_vec]
 
 end % if generateData == 1
 
