@@ -28,7 +28,7 @@ primary   = bodies.jupiter;
 secondary = bodies.europa;
 
 % ------------------------------------
-%%% Initial conditions and TOF
+%%% From Data File - Initial conditions and TOF
 % ------------------------------------
 %%% Low-angle-landing-file column specifiers
 low_X0_c = 2:7;
@@ -59,11 +59,6 @@ X0_n = myTraj(low_X0_c)';
 % b(1:5,:)
 % X0_n = b(5,low_X0_c)';
 
-%%% Look at landing time vs impact latitude of all trajectories
-% % figure
-% % plot(myFile(:,low_tf_c),myFile(:,low_lat_c),'.')
-% % PlotBoi2('tf','Impact Latitude, deg',18,'LaTex')
-
 
 % ------------------------------------
 %%% Normalizing factors and equillibrium points
@@ -75,6 +70,11 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 
 %%% Collinear equilibrium points
 L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+
+% ------------------------------------
+%%% From ICs
+% ------------------------------------
+X0_n = [L123(2,1);0.000860989390445;0.000925520697828;-0.001208548594430;-0.000697755856323;-0.002417097188860];
 
 % ========================================================================
 %%% Propagate and Plot

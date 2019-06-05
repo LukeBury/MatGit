@@ -1,17 +1,7 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-addpath(genpath(mbinPath))
 ticWhole = tic;
-% ========================================================================
-%%% Importing Data
-% ========================================================================
-%%% General data on solar system bodies
-bodies = getBodyData(mbinPath);
-
-%%% Color options/schemes
-colors = get_colors();
 
 % ========================================================================
 %%% Run Switches
@@ -20,13 +10,13 @@ testCaseOn = 0; % Lowers the resolution
 
 generateData = 1; % Run the grid search
 plotResults  = 0; % Look at data from grid search
-    plotAllLatLons = 1;
-storeAllLatLons = 1; % Store lat/lon at each time step for each trajectory
+    plotAllLatLons = 0;
+storeAllLatLons = 0; % Store lat/lon at each time step for each trajectory
 % ========================================================================
 %%% Setup
 % ========================================================================
 % -------------------------------------------------
-%%% Paths and Data
+%%% Setting Paths and Importing Data
 % -------------------------------------------------
 %%% Set paths based on computer
 if isequal(computer,'MACI64')      % Mac
@@ -39,7 +29,7 @@ elseif isequal(computer,'GLNXA64') % Fortuna
     on_Fortuna         = 1;
     mbinPath = '/home/lubu8198/MatGit/mbin';
     moonFuncsPath = '/home/lubu8198/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
-    savepath = '/home/lubu8198/MatGit/MatlabOutputs';
+    savepath = '/orc_raid/lubu8198/MatlabOutputs';
     computerTag = 'F';
 else 
     warning('This computer will explode in 5 seconds')
@@ -85,7 +75,7 @@ L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR
 %%% Grid Search Settings
 % -------------------------------------------------
 %%% Energy levels to run in terms of L2-flyover-velocity
-L2FlyoverVelocity_mps_vec = [50,100]; % m/s
+L2FlyoverVelocity_mps_vec = [50, 100, 150, 200, 250, 300, 350]; % m/s
 
 if isequal(secondary.name,'europa')
     %%% Spacing of initial positions within y-z-plane neck
@@ -107,8 +97,18 @@ end
 % -------------------------------------------------
 %%% Plot settings
 % -------------------------------------------------
-LatStudyEventFile = [savepath,'/LatStudy_testFile.txt'];
-LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_testFile.txt'];
+if testCaseOn == 1
+    LatStudyEventFile = [savepath,'/LatStudy_testFile.txt'];
+    LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_testFile.txt'];
+else
+%     %%% Europa - 50 m/s
+%     LatStudyEventFile = [savepath,'/LatStudy_F.iGS_eur_50mps_50km_149v0s.txt'];
+%     LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_F.iGS_eur_50mps_50km_149v0s.txt'];
+    
+    %%% Europa - 100 m/s
+    LatStudyEventFile = [savepath,'/LatStudy_F.iGS_eur_100mps_50km_149v0s.txt'];
+    LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_F.iGS_eur_100mps_50km_149v0s.txt'];
+end
 
 % -------------------------------------------------
 %%% Integration settings
@@ -301,7 +301,7 @@ parfor ii = 1:n_r0s
     %%% Initializing data matrices
     X0s_ii              = zeros(n_v0s_per_r0,6);
     eventLatLons_ii     = zeros(n_v0s_per_r0,2);
-    maxLats_ii          = zeros(n_v0s_per_r0,1);
+    maxTrajLats_ii          = zeros(n_v0s_per_r0,1);
     if storeAllLatLons == 1
         allLatLons_ii       = zeros(n_v0s_per_r0*n_t, 2);
     end
@@ -315,7 +315,7 @@ parfor ii = 1:n_r0s
         % ---------------------------------------
         trajID       = [];
         eventLatLon  = [];
-        maxLat       = 0;
+        maxTrajLat       = 0;
         if storeAllLatLons == 1
             allLatLons = NaN(n_t,2);
         end
@@ -357,8 +357,8 @@ parfor ii = 1:n_r0s
         % --------------------------
         for kk = 1:size(X_BCR_n,1)
             [lat_kk_deg, lon_kk_deg] = BCR2latlon(X_BCR_n(kk,1:3), 'secondary', MR);
-            if abs(lat_kk_deg) > maxLat
-                maxLat = abs(lat_kk_deg);
+            if abs(lat_kk_deg) > maxTrajLat
+                maxTrajLat = abs(lat_kk_deg);
             end
             if storeAllLatLons == 1
                 allLatLons(kk,:) = [lat_kk_deg, lon_kk_deg];
@@ -371,17 +371,17 @@ parfor ii = 1:n_r0s
         % ---------------------------------------
         X0s_ii(vi,:)          = X0_n;
         eventLatLons_ii(vi,:) = eventLatLon;
-        maxLats_ii(vi)        = maxLat;
+        maxTrajLats_ii(vi)    = maxTrajLat;
         if storeAllLatLons == 1
 %             allLatLons_ii{vi} = [allLatLons; NaN, NaN];
             allLatLons_ii(((vi-1)*n_t+1):(vi*n_t),:) = allLatLons;
-        end
         
-        %%% Cleaning up allLatLons_ii (getting rid of nans and zeros
-        nonNanIndices = ~isnan(allLatLons_ii(:,1));
-        allLatLons_ii = allLatLons_ii(nonNanIndices,:);
-        nonPlanarIndices = find(allLatLons_ii(:,1) ~= 0);
-        allLatLons_ii = allLatLons_ii(nonPlanarIndices,:);
+            %%% Cleaning up allLatLons_ii (getting rid of nans and zeros
+            nonNanIndices = ~isnan(allLatLons_ii(:,1));
+            allLatLons_ii = allLatLons_ii(nonNanIndices,:);
+            nonPlanarIndices = find(allLatLons_ii(:,1) ~= 0);
+            allLatLons_ii = allLatLons_ii(nonPlanarIndices,:);
+        end
         
     end % vi = 1:n_v0s_per_r0
     
@@ -389,11 +389,21 @@ parfor ii = 1:n_r0s
     % Storing data from all azimuths/elevations
     % -------------------------------------------------
     r0Data{ii}.X0s              = X0s_ii;
-    r0Data{ii}.latLons          = eventLatLons_ii;
-    r0Data{ii}.maxLats          = maxLats_ii;
-    r0Data{ii}.allLatLons       = allLatLons_ii;
-    
+    r0Data{ii}.eventLatLons     = eventLatLons_ii;
+    r0Data{ii}.maxTrajLats      = maxTrajLats_ii;
+    if storeAllLatLons == 1
+        r0Data{ii}.allLatLons       = allLatLons_ii;
+    end
 end % parfor ii = 1:n_r0s
+% -------------------------------------------------
+% Rearranging certain data
+% -------------------------------------------------
+eventLatLons_full = [];
+maxTrajLats_full  = [];
+for kk = 1:length(r0Data)
+    eventLatLons_full = [eventLatLons_full; r0Data{kk}.eventLatLons];
+    maxTrajLats_full = [maxTrajLats_full; r0Data{kk}.maxTrajLats];
+end
 
 % -------------------------------------------------
 % Writing data to CSV
@@ -423,7 +433,10 @@ end
 %%% Opening files and writing header
 f_LatStudy = fopen(filename_LatStudy, 'wt');
 runTime_min = toc(ticWhole)/60;
-fprintf(f_LatStudy,['y0_n,z0_n,maxLatitude(deg),latitude(deg),longitude(deg),',sprintf('runtime=%1.1fmin',runTime_min),'\n']);  % header
+fprintf(f_LatStudy,['y0_n,z0_n,maxLatitude(deg),latitude(deg),longitude(deg)...',...
+    sprintf('runtime=%1.1fmin,',runTime_min),...
+    sprintf('MaxImpactLat=%1.3f,MaxTrajLat=%1.3f',max(abs(eventLatLons_full(:,1))),max(abs(maxTrajLats_full))),...
+    '\n']);  % header
 
 if storeAllLatLons == 1
     %%% Opening files and writing header
@@ -436,12 +449,15 @@ for r0_k = 1:n_r0s
     %%% If there were events from this r0
     if isempty(r0Data{r0_k}) == 0
         for v0_k = 1:n_v0s_per_r0
-            fprintf(f_LatStudy,'%1.16f,%1.16f,%2.3f,%2.3f,%2.3f\n',...
+            fprintf(f_LatStudy,'%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%2.3f,%2.3f,%2.3f\n',...
                 r0Data{r0_k}.X0s(v0_k,2),...
                 r0Data{r0_k}.X0s(v0_k,3),...
-                r0Data{r0_k}.maxLats(v0_k),...
-                r0Data{r0_k}.latLons(v0_k,1),...
-                r0Data{r0_k}.latLons(v0_k,2));
+                r0Data{r0_k}.X0s(v0_k,4),...
+                r0Data{r0_k}.X0s(v0_k,5),...
+                r0Data{r0_k}.X0s(v0_k,6),...
+                r0Data{r0_k}.maxTrajLats(v0_k),...
+                r0Data{r0_k}.eventLatLons(v0_k,1),...
+                r0Data{r0_k}.eventLatLons(v0_k,2));
             
         end
         
@@ -479,20 +495,30 @@ LatStudyData = dlmread(LatStudyEventFile,',',1,0);
 %%% set column specifiers
 c_y0_n      = 1;
 c_z0_n      = 2;
-c_maxLat    = 3;
-c_eventLat  = 4;
-c_eventLon  = 5;
+c_xd0_n     = 3;
+c_yd0_n     = 4;
+c_zd0_n     = 5;
+c_maxLat    = 6;
+c_eventLat  = 7;
+c_eventLon  = 8;
+
+% -------------------------------------------------
+% Printing data takeaways
+% -------------------------------------------------
+%%% Printing maximum latitude
+fprintf('Max Latitude Impacted:              %1.3f deg\n',max(abs(LatStudyData(:,c_eventLat))))
+fprintf('Max Latitude Reached by Trajectory: %1.3f deg\n',max(abs(LatStudyData(:,c_maxLat))))
 
 % -------------------------------------------------
 % Plotting event map
 % -------------------------------------------------
+%%% Lat/Lons of all events (surface crossings)
 figure; hold all
 plot(LatStudyData(:,c_eventLon),LatStudyData(:,c_eventLat),'.','markersize',8,'color',colors.std.black)
 xlim([-180, 180])
 ylim([-90, 90])
-
-figure; hold all
-plot(LatStudyData(:,c_maxLat),'.','markersize',8,'color',colors.std.black)
+PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',18,'LaTex')
+title('Lat/Lon of Events (surface crossings)')
 
 % -------------------------------------------------
 % Plotting event map
@@ -503,7 +529,8 @@ LatStudyAllLonLonsData = dlmread(LatStudyAllLatLonsFile,',',1,0);
 
 figure; hold all
 plot(LatStudyAllLonLonsData(:,2),LatStudyAllLonLonsData(:,1),'.','markersize',8,'color',colors.std.blue)
-
+xlim([-180, 180])
+ylim([-90, 90])
 
 end
 
