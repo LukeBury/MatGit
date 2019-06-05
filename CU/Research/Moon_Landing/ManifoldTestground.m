@@ -1,20 +1,21 @@
 clear
 clc
-% close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+close all
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 
-% ========================================================================
-%%% Run switches
-% ========================================================================
-run_symbollicWork = 0;
 % ========================================================================
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
+% ========================================================================
+%%% Run switches
+% ========================================================================
+run_symbollicWork = 0;
 
 % ========================================================================
 %%% Setup
@@ -157,9 +158,6 @@ rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
 
-%%% Mass ratio of system
-u = secondary.MR;
-
 % ------------------------------------------------- 
 %%% Integration Options
 % -------------------------------------------------
@@ -190,7 +188,8 @@ time = [0, T0];
 %%% Integrating initial periodic orbit
 % -------------------------------------------------
 %%% Find Periodic Orbit with ode45
-[T_PO, X_PO] = ode45(@int_CR3BnSTM, time, X0, options, u);
+prms.u = secondary.MR;
+[T_PO, X_PO] = ode45(@Int_CR3BnSTM, time, X0, options, prms);
 
 %%% Seperating monodromy matrix and getting eigenvalues and vectors
 monodromy = reshape(X_PO(end,7:end),6,6);
@@ -209,7 +208,7 @@ eVec_U = eVecs(:,find(diag(eVals)==eVal_U));
 for kk = 1:nMan
     %%% Integrating PO for some fraction of its total period
     time = [T0*kk/nMan 0];
-    [T_start, X_start] = ode45(@int_CR3BnSTM, time, X0, options, u);
+    [T_start, X_start] = ode45(@Int_CR3BnSTM, time, X0, options, prms);
     stm = reshape(X_start(end,7:end),6,6);
     
     % ----------------------------------------- 
@@ -224,7 +223,7 @@ for kk = 1:nMan
         time = [T_man, 0];
         
         %%% Integrate stable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, secondary.MR);
         
         %%% Plot stable manifold
         figure(1); hold all
@@ -244,7 +243,7 @@ for kk = 1:nMan
         time = [0, T_man];
 
         %%% Integrate unstable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options,prms);
         
         %%% Plot unstable manifold
         figure(1); hold all
@@ -264,7 +263,7 @@ for kk = 1:nMan
         time = [T_man, 0];
         
         %%% Integrate stable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options, prms);
         
         %%% Plot stable manifold
         figure(1); hold all
@@ -284,7 +283,7 @@ for kk = 1:nMan
         time = [0, T_man];
 
         %%% Integrate unstable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options, prms);
         
         %%% Plot unstable manifold
         figure(1); hold all
@@ -300,9 +299,9 @@ figure(1)
 plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'k','linewidth',2)
 
 %%% Plotting bodies
-plotBody2(secondary.R_n,[1-secondary.MR,0,0],secondary.color,colors.std.black,0.5,.5)
+% plotBody2(secondary.R_n,[1-secondary.MR,0,0],secondary.color,colors.std.black,0.5,.5)
 % plotBody2(primary.R/rNorm,[-secondary.MR,0,0],primary.color,colors.std.black,0.5)
-% % plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
+plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
 % % plotBodyTexture3(primary.R/rNorm,[-secondary.MR,0,0],primary.img)
 
 %%% Plotting lagrange points
@@ -317,6 +316,8 @@ if plot_PO == 1
     plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'k','linewidth',2)
     PlotBoi3('X','Y','Z',16)
 end
+
+axis equal 
 
 [JC_L1]   = JacobiConstantCalculator(secondary.MR,Ls_n(1,:),[0,0,0])
 [JC_L2]   = JacobiConstantCalculator(secondary.MR,Ls_n(2,:),[0,0,0])

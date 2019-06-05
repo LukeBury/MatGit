@@ -178,6 +178,9 @@ bodies.ganymede.R_n = bodies.ganymede.R / bodies.ganymede.a;
 bodies.ganymede.meanMot = 2*pi/(7.154553*86400); % rad/s
 bodies.ganymede.MR = bodies.ganymede.mass / (bodies.ganymede.mass + bodies.jupiter.mass);  % Mass ratio w/ primary
 bodies.ganymede.J2 = (5.610021555811e-05)*sqrt(5); % from MONTE ... sqrt(5) is normalizer (vallado pg 547)
+% NOTE: Paper "Eccentric Orbits Around Planetary Moons" lists others in
+% appendix, but they're normalized and I don't have time to verify the
+% conversion
 
 %%% Callisto
 bodies.callisto.name = 'callisto';

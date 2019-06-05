@@ -58,7 +58,7 @@ u = secondary.MR;
 % ------------------------------------------------- 
 %%% Periodic Orbit options
 % -------------------------------------------------
-n = 500;
+n = 1000;
 L_Point = 2;
 dS_PO = .0001;
 % dS_PO = .000001;
@@ -70,6 +70,7 @@ PO_plot_skip = 50;
 % -------------------------------------------------
 tol = 1e-9;
 options = odeset('RelTol',tol,'AbsTol',tol);
+prms.u = secondary.MR;
 
 % ------------------------------------------------- 
 %%% Finding Equilibrium Points
@@ -170,7 +171,7 @@ for PO_i = 1:n
         time = [0,T_guess];
         
         %%% Integrating
-        [T, X] = ode45(@int_CR3BnSTM, time, X, options, secondary.MR);
+        [T, X] = ode45(@Int_CR3BnSTM, time, X, options, prms);
         
         %%% Retreiving updated STM
         stm = reshape(X(end,7:end),6,6);

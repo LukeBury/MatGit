@@ -1,5 +1,5 @@
 clear
-% clc
+clc
 close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
@@ -16,9 +16,150 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 % ========================================================================
+%%% 05/28/19 Testing
+% ========================================================================
+%%% Systems
+
+primary1 = bodies.jupiter;
+primary2 = bodies.saturn;
+
+secondary1 = bodies.europa;
+secondary2 = bodies.ganymede;
+secondary3 = bodies.enceladus;
+secondary4 = bodies.titan;
+secondary5 = bodies.moon;
+
+%%% Normalizing constants
+rNorm1 = secondary1.a;         % n <-> km
+tNorm1 = 1/secondary1.meanMot; % n <-> sec
+vNorm1 = rNorm1 / tNorm1;       % n <-> km/sec
+
+rNorm2 = secondary2.a;         % n <-> km
+tNorm2 = 1/secondary2.meanMot; % n <-> sec
+vNorm2 = rNorm2 / tNorm2;       % n <-> km/sec
+
+rNorm3 = secondary3.a;         % n <-> km
+tNorm3 = 1/secondary3.meanMot; % n <-> sec
+vNorm3 = rNorm3 / tNorm3;       % n <-> km/sec
+
+rNorm4 = secondary4.a;         % n <-> km
+tNorm4 = 1/secondary4.meanMot; % n <-> sec
+vNorm4 = rNorm4 / tNorm4;       % n <-> km/sec
+
+rNorm5 = secondary5.a;         % n <-> km
+tNorm5 = 1/secondary5.meanMot; % n <-> sec
+vNorm5 = rNorm5 / tNorm5;       % n <-> km/sec
+
+
+tBurn_hrs = 12; % hours
+tBurn_sec = tBurn_hrs * 3600; % sec
+tBurn_n1 = tBurn_hrs / tNorm1
+tBurn_n2 = tBurn_hrs / tNorm2
+tBurn_n3 = tBurn_hrs / tNorm3
+tBurn_n4 = tBurn_hrs / tNorm4
+tBurn_n5 = tBurn_hrs / tNorm5
+
+primary = bodies.jupiter;
+secondary = bodies.europa;
+
+L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+
+%%% Normalizing constants
+rNorm = secondary.a;         % n <-> km
+tNorm = 1/secondary.meanMot; % n <-> sec
+vNorm = rNorm / tNorm;       % n <-> km/sec
+
+
+
+%%% Choosing ode tolerance
+tol = 1e-13;
+
+%%% Setting integrator options
+options = odeset('Event',@event_ImpactEscape_CR3Bn, 'RelTol',tol,'AbsTol',tol);
+
+%%% Setting necessary parameters for integration
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
+prms.L1x = L123(1,1);
+prms.L2x = L123(2,1);
+
+% X0 = [1.0204617015266166;-0.0012084061620286;0.0000000000000000;-0.0028596241729016;0.0009291482175995;0.0000000000000000]';
+% X0 = [1.0204617015266166,-0.0019850725823437,0.0000000000000000,-0.0010976413130697,-0.0030157447223195,0.0098771743854318];
+% X0 = [1.020461701526617; 0.000037454199667; 0.000074923811876; -0.010853703861100; 0.001140770244121; 0]';
+X0 = [1.020461701526617; 0.000410765286112; 0.003440050933435; -0.003449156947614; -0.001991371692182; 0.012257623746852];
+t_f = 12.49307;
+
+t_i = 0; % sec
+% t_f = 4*pi; % Long bc events are watching for impact or escape
+n_dt = 10000;
+time0_n = linspace(t_i,t_f,n_dt);
+
+stm0 = reshape(eye(6,6),36,1);
+X0 = [X0; stm0];
+
+[time_n, X_BCR_n] = ode113(@Int_CR3BnSTM, time0_n, X0, options, prms);
+
+r_SCR_n = X_BCR_n(:,1:3) - [1-secondary.MR, 0, 0];
+R_SCR_n = rowNorm(r_SCR_n);
+
+figure(1); hold all
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
+[JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0(1:3)',X0(4:6)');
+plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
+plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
+plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
+% plotBody2(secondary.R_n,[1-secondary.MR,0,0],colors.std.blue,colors.std.black,1,0)
+plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+view(0,90)
+axis equal
+PlotBoi3('$X_n$','$Y_n$','$Z_n$',18,'LaTex')
+% importantIndices = [4991, 6737, 8271, 9081]; % spikes in STM determinant
+importantIndices = [1235, 3066, 5004, 6733, 8284]; % sharp peaks in z-dot
+
+plot3(X_BCR_n(importantIndices,1),X_BCR_n(importantIndices,2),X_BCR_n(importantIndices,3),'m.','markersize',15)
+% plot3(X_BCR_n(importantIndices(3),1),X_BCR_n(importantIndices(3),2),X_BCR_n(importantIndices(3),3),'k.','markersize',16)
+
+determinants = NaN(size(X_BCR_n,1),1);
+determinants_pos = NaN(size(X_BCR_n,1),1);
+determinants_vel = NaN(size(X_BCR_n,1),1);
+for kk = 1:size(X_BCR_n,1)
+    stm = reshape(X_BCR_n(kk,7:42),6,6);
+    stm_pos = stm(1:3,1:3);
+    stm_vel = stm(4:6,4:6);
+    
+    determinants(kk)     = det(stm);
+    determinants_pos(kk) = det(stm_pos);
+    determinants_vel(kk) = det(stm_vel);
+end
+figure
+plot(percentchange(determinants),'linewidth',2)
+title('|\Phi|')
+PlotBoi2('Index','\% Change in $|\Phi|$',18,'LaTex')
+figure
+plot(percentchange(determinants_pos),'linewidth',2)
+title('|\Phi_{pos}|')
+PlotBoi2('Index','\% Change in $|\Phi|$',18,'LaTex')
+figure
+plot(percentchange(determinants_vel),'linewidth',2)
+title('|\Phi_{vel}|')
+PlotBoi2('Index','\% Change in $|\Phi|$',18,'LaTex')
+
+figure
+plot(R_SCR_n,X_BCR_n(:,3),'linewidth',2)
+PlotBoi2('R_{SCR}','Z Amplitude',18,'LaTex')
+
+
+figure
+plot(X_BCR_n(:,3),'linewidth',2)
+PlotBoi2('Index','Z Amplitude',18,'LaTex')
+
+figure
+plot(X_BCR_n(:,6),'linewidth',2)
+PlotBoi2('Index','Z-dot Amplitude',18,'LaTex')
+
+% ========================================================================
 %%% Testing
 % ========================================================================
-
 
 % %%% Choosing ode tolerance
 % tol = 1e-11;
@@ -95,52 +236,52 @@ colors = get_colors();
 
 
 
-primary = bodies.jupiter;
-secondary = bodies.europa;
-
-L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
-
-%%% Normalizing constants
-rNorm = secondary.a;         % n <-> km
-tNorm = 1/secondary.meanMot; % n <-> sec
-vNorm = rNorm / tNorm;       % n <-> km/sec
-
-
-
-%%% Choosing ode tolerance
-tol = 1e-13;
-
-%%% Setting integrator options
-options = odeset('Event',@event_ImpactEscape_CR3Bn, 'RelTol',tol,'AbsTol',tol);
-
-%%% Setting necessary parameters for integration
-prms.u = secondary.MR;
-prms.R2_n = secondary.R_n;
-prms.L1x = L123(1,1);
-prms.L2x = L123(2,1);
-
-% X0 = [1.0204617015266166;-0.0012084061620286;0.0000000000000000;-0.0028596241729016;0.0009291482175995;0.0000000000000000]';
-% X0 = [1.0204617015266166,-0.0019850725823437,0.0000000000000000,-0.0010976413130697,-0.0030157447223195,0.0098771743854318];
-% X0 = [1.020461701526617; 0.000037454199667; 0.000074923811876; -0.010853703861100; 0.001140770244121; 0]';
-X0 = [1.020461701526617; 0.000410765286112; 0.003440050933435; -0.003449156947614; -0.001991371692182; 0.012257623746852];
-t_f = 12.49307;
-
-t_i = 0; % sec
-% t_f = 4*pi; % Long bc events are watching for impact or escape
-n_dt = 10000;
-time0_n = linspace(t_i,t_f,n_dt);
-
-[time_n, X_BCR_n] = ode113(@Int_CR3Bn, time0_n, X0, options, prms);
-
-figure; hold all
-plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
-[JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0(1:3)',X0(4:6)');
-plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
-plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
-plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
-% plotBody2(secondary.R_n,[1-secondary.MR,0,0],colors.std.blue,colors.std.black,1,0)
-plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
-view(0,90)
-axis equal
-PlotBoi3('$X_n$','$Y_n$','$Z_n$',18,'LaTex')
+% primary = bodies.jupiter;
+% secondary = bodies.europa;
+% 
+% L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+% 
+% %%% Normalizing constants
+% rNorm = secondary.a;         % n <-> km
+% tNorm = 1/secondary.meanMot; % n <-> sec
+% vNorm = rNorm / tNorm;       % n <-> km/sec
+% 
+% 
+% 
+% %%% Choosing ode tolerance
+% tol = 1e-13;
+% 
+% %%% Setting integrator options
+% options = odeset('Event',@event_ImpactEscape_CR3Bn, 'RelTol',tol,'AbsTol',tol);
+% 
+% %%% Setting necessary parameters for integration
+% prms.u = secondary.MR;
+% prms.R2_n = secondary.R_n;
+% prms.L1x = L123(1,1);
+% prms.L2x = L123(2,1);
+% 
+% % X0 = [1.0204617015266166;-0.0012084061620286;0.0000000000000000;-0.0028596241729016;0.0009291482175995;0.0000000000000000]';
+% % X0 = [1.0204617015266166,-0.0019850725823437,0.0000000000000000,-0.0010976413130697,-0.0030157447223195,0.0098771743854318];
+% % X0 = [1.020461701526617; 0.000037454199667; 0.000074923811876; -0.010853703861100; 0.001140770244121; 0]';
+% X0 = [1.020461701526617; 0.000410765286112; 0.003440050933435; -0.003449156947614; -0.001991371692182; 0.012257623746852];
+% t_f = 12.49307;
+% 
+% t_i = 0; % sec
+% % t_f = 4*pi; % Long bc events are watching for impact or escape
+% n_dt = 10000;
+% time0_n = linspace(t_i,t_f,n_dt);
+% 
+% [time_n, X_BCR_n] = ode113(@Int_CR3Bn, time0_n, X0, options, prms);
+% 
+% figure; hold all
+% plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
+% [JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0(1:3)',X0(4:6)');
+% plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
+% plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
+% plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
+% % plotBody2(secondary.R_n,[1-secondary.MR,0,0],colors.std.blue,colors.std.black,1,0)
+% plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+% view(0,90)
+% axis equal
+% PlotBoi3('$X_n$','$Y_n$','$Z_n$',18,'LaTex')
 

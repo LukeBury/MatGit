@@ -1,12 +1,12 @@
-function [lat, lon] = BCR2latlon(r_BCR, body, MR)
+function [lat_deg, lon_deg] = BCR2latlon(r_BCR, body, MR)
 %%% Given position vector, returns latitdue and longitude in RADIANS
 %%% Inputs
 %         (1) r    - [3x1] body-centered-rotating position coordinates for s/c
 %         (2) body - 'primary' or 'secondary'
 %         (3) MR   - mass ratio of 3-body system
 %%% Outputs
-%         (1) lat  - latitude (deg)
-%         (2) lon  - longitude (deg)
+%         (1) lat_deg  - latitude (deg)
+%         (2) lon_deg  - longitude (deg)
 % ========================================================================
 %%% Dimension check
 if size(r_BCR) == [1,3]
@@ -53,7 +53,7 @@ if isequal(body,'secondary')
 end
 
 %%% Format units
-lat = lat .* 180/pi;
-lon = lon .* 180/pi;
+lat_deg = lat .* 180/pi;
+lon_deg = lon .* 180/pi;
 
 end

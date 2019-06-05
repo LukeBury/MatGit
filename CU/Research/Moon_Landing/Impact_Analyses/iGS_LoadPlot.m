@@ -1,13 +1,13 @@
 clear
 clc
-close all
+% close all
 tic
 
 
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = [4]
+for kk = [1:7]
     if kk == 1
         %%% 50 mps
         logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_log.txt';
@@ -229,7 +229,7 @@ plot_binNeckSections_horz = 0;
 plot_metaData             = 0;
 plot_latitudeV0AngleCorr  = 0;
 plot_binTOF               = 0;
-calc_maxLatitudeAnalysis  = 0;
+calc_maxLatitudeAnalysis  = 1;
 
 % ========================================================================
 %%% Setting data
@@ -1179,6 +1179,12 @@ binColors_endTimes = colorScale([colors.std.mag;colors.std.cyan],binCount_endTim
 end
 
 if calc_maxLatitudeAnalysis == 1
+%     figure
+%     hist([impactData(:,c_full_impactLatitude); -impactData(:,c_full_impactLatitude)],20)
+%     title(sprintf('%1.0f mps',dvLp_mps))
+    
+    
+    
     latitudeDifferences = abs(impactData(:,c_full_impactLatitude)) - abs(impactData(:,c_full_maxLat));
     maxImpactMinusMaxLat = max(abs(impactData(:,c_full_impactLatitude))) - max(abs(impactData(:,c_full_maxLat)))
     max(latitudeDifferences);
