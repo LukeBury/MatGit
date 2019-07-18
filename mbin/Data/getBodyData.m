@@ -3,8 +3,8 @@ function [bodies] = getBodyData(mbinPath)
 % ------------------------------------------------------------------------
 %%% Gravitational constant
 % ------------------------------------------------------------------------
-G  = 6.6726e-20; % km^3 * kg^?1 * s^?2
-AU_km = 1.495978707e8; % km
+bodies.constants.G  = 6.6726e-20; % km^3 * kg^-1 * s^-2
+bodies.constants.AU_km = 1.495978707e8; % km
 % ------------------------------------------------------------------------
 %%% Sun System
 % ------------------------------------------------------------------------
@@ -100,7 +100,7 @@ bodies.mars.J3 = 0.000036;
 bodies.phobos.name = 'phobos';
 bodies.phobos.title = 'Phobos';
 bodies.phobos.mass = 1.0659e16; % kg
-bodies.phobos.u = bodies.phobos.mass * G; % km^3 * s^-2
+bodies.phobos.u = bodies.phobos.mass * bodies.constants.G; % km^3 * s^-2
 bodies.phobos.color = [176, 130, 122]./255;
 bodies.phobos.a = 9376; % km
 bodies.phobos.R = 11.2667; % km
@@ -114,7 +114,7 @@ bodies.phobos.J2 = (4.49807434353858004e-02)*sqrt(5); % from MONTE ... sqrt(5) i
 bodies.deimos.name = 'deimos';
 bodies.deimos.title = 'Deimos';
 bodies.deimos.mass = 1.476e15; % kg
-bodies.deimos.u = bodies.deimos.mass * G; % km^3 * s^-2
+bodies.deimos.u = bodies.deimos.mass * bodies.constants.G; % km^3 * s^-2
 bodies.deimos.color = [158, 129, 122]./255;
 bodies.deimos.a = 23463.2; % km
 bodies.deimos.R = 6.2; % km
@@ -217,7 +217,7 @@ bodies.enceladus.title = 'Enceladus';
 bodies.enceladus.color = [136, 194, 235]./255;
 bodies.enceladus.img = imread([mbinPath,'/textures/enceladusSurfTex.jpg']);
 bodies.enceladus.mass = 1.08e20; % kg
-bodies.enceladus.u = (1.08022*1e20)*G; % km^3/s^2
+bodies.enceladus.u = (1.08022*1e20)*bodies.constants.G; % km^3/s^2
 bodies.enceladus.a = 237948; % km
 bodies.enceladus.R = 252; % km
 bodies.enceladus.R_n = bodies.enceladus.R / bodies.enceladus.a;
@@ -276,6 +276,28 @@ bodies.uranus.R = 25362; % km
 bodies.uranus.J2 = 0.00351068; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
 
 bodies.uranus.J4 = -.00003417; % NAIF 05/18 https://ssd.jpl.nasa.gov/?gravity_fields_op
+
+%%% Cordelia
+bodies.cordelia.name  = 'cordelia';
+bodies.cordelia.title = 'Cordelia';
+bodies.cordelia.mass  = 4.4e16; % kg
+bodies.cordelia.a     = 49751.722; % km
+bodies.cordelia.e     = 0.00026;
+bodies.cordelia.i_deg = 0.08479; % deg, to Uranus equator
+bodies.cordelia.T_sec = 0.335034 * 86400;
+bodies.cordelia.meanMot = 2*pi/ (bodies.cordelia.T_sec);
+bodies.cordelia.MR = bodies.cordelia.mass / (bodies.cordelia.mass + bodies.uranus.mass);  % Mass ratio w/ primary
+
+%%% Ophelia
+bodies.ophelia.name    = 'ophelia';
+bodies.ophelia.title   = 'Ophelia';
+bodies.ophelia.mass    = 5.3e16; % kg
+bodies.ophelia.a       = 53763.39; % km
+bodies.ophelia.e       = 0.00992;
+bodies.ophelia.i_deg   = 0.10362; % deg, to Uranus equator
+bodies.ophelia.T_sec = 0.376400 * 86400;
+bodies.ophelia.meanMot = 2*pi/ (0.37640039 * 86400);
+bodies.ophelia.MR = bodies.ophelia.mass / (bodies.ophelia.mass + bodies.uranus.mass);  % Mass ratio w/ primary
 
 %%% Titania
 bodies.titania.name = 'titania';

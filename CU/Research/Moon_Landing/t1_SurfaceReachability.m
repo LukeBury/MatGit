@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath('~/Documents/MATLAB/mbin'))
 
 % ========================================================================
 %%% Run Switches
@@ -10,7 +11,7 @@ addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
 % Functions - Single Runs
 % ----------------------
 %%% Primary Functions
-singleSimulation = 0;
+singleSimulation = 1;
         %%% Secondary Functions
         firstPeriapsisAnalysis_sing = 0;
         
@@ -37,7 +38,7 @@ multSimulation = 1;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -61,7 +62,8 @@ L_points_n = EquilibriumPoints(secondary.MR);
 L1_n = L_points_n(1,:); % [1x3] normalized barycentric coordinates
 L2_n = L_points_n(2,:); % [1x3] normalized barycentric coordinates
 
-
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
 % ========================================================================
 %%% Single Run Simulation
 % ========================================================================
@@ -89,13 +91,13 @@ if singleSimulation == 1
     
     %%% Setting integrator options
     if firstPeriapsisAnalysis_sing == 0 % Stop on impact
-        options = odeset('Events',@impactEvent_CR3Bn,'RelTol',tol,'AbsTol',tol);
+        options = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
     elseif firstPeriapsisAnalysis_sing == 1 % Don't Stop on Impact
         options = odeset('RelTol',tol,'AbsTol',tol);
     end
 
     %%% Propagating the State
-    [time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, secondary.MR, secondary.R_n);
+    [time_n, X_BCR_n] = ode45(@Int_CR3Bn, time0_n, X0_n, options, prms);
     
     % -----------------------------
     % Jacobi Constant Analysis
@@ -121,8 +123,8 @@ if singleSimulation == 1
     % -----------------------------
     % Closest Approach and Altitude
     % -----------------------------
-    CAindex = find(rownorm(r_SCR_n) == min(rownorm(r_SCR_n)));
-    altitudes = rownorm(r_SCR_n).*rNorm - secondary.R;
+    CAindex = find(rowNorm(r_SCR_n) == min(rowNorm(r_SCR_n)));
+    altitudes = rowNorm(r_SCR_n).*rNorm - secondary.R;
 
     % -----------------------------
     % Acquiring Normalized Inertial Results
@@ -364,7 +366,7 @@ if multSimulation == 1
             end
 
             %%% Propagating the State
-            [time_n_mult, X_BCR_n_mult] = ode45(@Int_CR3Bn, time0_n_mult, X0_n_mult, options, secondary.MR, secondary.R_n);
+            [time_n_mult, X_BCR_n_mult] = ode45(@Int_CR3Bn, time0_n_mult, X0_n_mult, options, prms);
             
             %%% Storing new state positions
             r_BCR_mult = [r_BCR_mult; X_BCR_n_mult(:,1:3); nan(1,3)];
@@ -394,7 +396,7 @@ if multSimulation == 1
             
             %%% Periapsis Analysis
             if firstPeriapsisAnalysis_mult == 1
-                secondaryDistances = rownorm(r_SCR_n_mult);
+                secondaryDistances = rowNorm(r_SCR_n_mult);
                 for kk = 2:size(secondaryDistances,1)
                     if secondaryDistances(kk-1) < secondaryDistances(kk) && norm(secondaryDistances(kk) - secondaryDistances(kk-1)) > tol
                         periapsisFound = 1;

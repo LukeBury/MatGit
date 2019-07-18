@@ -1,8 +1,8 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '~/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
 tic
@@ -17,18 +17,18 @@ useEvents          = 1; % stop int on impact or interior escape
 
 print_lowImpactL2Trajs = 1;
 
-onlyLowAngleTrajs  = 1;
+onlyLowAngleTrajs  = 0;
 impactAngleUpperLimit_deg = 40;
 % ========================================================================
 %%% Free variables
 % ========================================================================
 %%% Number of vHat directions to test
-n_vHats = 1000;
+n_vHats = 2000;
 
 %%% How fast the SC would be traveling over L2
 % dvLp_mps = 200; % Meters per second
 % dvLp_mps = 400; % Meters per second
-dvLp_mps = 150; % Meters per second
+dvLp_mps = 50; % Meters per second
 
 %%% "Final" time
 t_i = 4*pi;
@@ -68,8 +68,8 @@ L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR
 % lon0 = -245;
 
 %%% Europa Plume, https://europa.nasa.gov/resources/31/source-region-for-possible-europa-plumes/
-lat0 = 20;
-lon0 = -90;
+lat0 = 5;
+lon0 = -20;
 
 [rSCR0_n] = latlon2SCR(lat0, lon0, secondary.R_n);
 
@@ -232,11 +232,11 @@ figure; hold all
 plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
 if storePlot_FullTraj == 0
     for kk = 1:length(trajs)
-        plot3(trajs{kk}(2,1),trajs{kk}(2,2),trajs{kk}(2,3),'b.','markersize',10)
+        plot3(trajs{kk}(2,1),trajs{kk}(2,2),trajs{kk}(2,3),'r.','markersize',10)
     end
 elseif storePlot_FullTraj == 1
     for kk = 1:length(trajs)
-        plot3(trajs{kk}(:,1),trajs{kk}(:,2),trajs{kk}(:,3),'b-','linewidth',0.5)
+        plot3(trajs{kk}(:,1),trajs{kk}(:,2),trajs{kk}(:,3),'r-','linewidth',0.5)
     end
 end
 plot3(L123(1,1),L123(1,2),L123(1,3),'^','markersize',8,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.ltgrn)

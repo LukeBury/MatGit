@@ -1,7 +1,7 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
 addpath(genpath(mbinPath))
 
 % ========================================================================
@@ -326,9 +326,9 @@ for kk = 1:n_iterations
     plot3(X_N5_new(1,1),X_N5_new(1,2),X_N5_new(1,3),'oc','markersize',10)
     plot3(X_N5_new(end,1),X_N5_new(end,2),X_N5_new(end,3),'xc','markersize',10)
     
-    plot3(X_N6_new(:,1),X_N6_new(:,2),X_N6_new(:,3),'p','linewidth',2)
-    plot3(X_N6_new(1,1),X_N6_new(1,2),X_N6_new(1,3),'op','markersize',10)
-    plot3(X_N6_new(end,1),X_N6_new(end,2),X_N6_new(end,3),'xp','markersize',10)
+    plot3(X_N6_new(:,1),X_N6_new(:,2),X_N6_new(:,3),'linewidth',2,'color',colors.std.purp)
+    plot3(X_N6_new(1,1),X_N6_new(1,2),X_N6_new(1,3),'o','markersize',10,'color',colors.std.purp)
+    plot3(X_N6_new(end,1),X_N6_new(end,2),X_N6_new(end,3),'x','markersize',10,'color',colors.std.purp)
     
     
     drawnow

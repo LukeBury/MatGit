@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 ticWhole = tic;
 
 % ========================================================================
@@ -8,8 +8,8 @@ ticWhole = tic;
 % ========================================================================
 testCaseOn = 0; % Lowers the resolution
 
-generateData = 1; % Run the grid search
-plotResults  = 0; % Look at data from grid search
+generateData = 0; % Run the grid search
+plotResults  = 1; % Look at data from grid search
     plotAllLatLons = 0;
 storeAllLatLons = 0; % Store lat/lon at each time step for each trajectory
 % ========================================================================
@@ -33,9 +33,8 @@ elseif isequal(computer,'GLNXA64') % Fortuna
     computerTag = 'F';
 else 
     warning('This computer will explode in 5 seconds')
+    return
 end
-
-warning('Need to change the save path on Fortuna to the bigger directory')
 
 %%% Add the function paths to matlab
 addpath(genpath(mbinPath))
@@ -101,13 +100,12 @@ if testCaseOn == 1
     LatStudyEventFile = [savepath,'/LatStudy_testFile.txt'];
     LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_testFile.txt'];
 else
-%     %%% Europa - 50 m/s
-%     LatStudyEventFile = [savepath,'/LatStudy_F.iGS_eur_50mps_50km_149v0s.txt'];
-%     LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_F.iGS_eur_50mps_50km_149v0s.txt'];
     
-    %%% Europa - 100 m/s
-    LatStudyEventFile = [savepath,'/LatStudy_F.iGS_eur_100mps_50km_149v0s.txt'];
-    LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_F.iGS_eur_100mps_50km_149v0s.txt'];
+    desiredFlyoverVelocity_mps = 100;
+
+    LatStudyEventFile = [savepath,'/LatStudy_F.iGS_eur_',num2str(desiredFlyoverVelocity_mps),'mps_50km_149v0s.txt'];
+    LatStudyAllLatLonsFile = [savepath,'/LatStudy_allLatLons_F.iGS_eur_',num2str(desiredFlyoverVelocity_mps),'mps_50km_149v0s.txt'];
+
 end
 
 % -------------------------------------------------
@@ -529,9 +527,10 @@ LatStudyAllLonLonsData = dlmread(LatStudyAllLatLonsFile,',',1,0);
 
 figure; hold all
 plot(LatStudyAllLonLonsData(:,2),LatStudyAllLonLonsData(:,1),'.','markersize',8,'color',colors.std.blue)
+plot(LatStudyAllLonLonsData(:,2),-LatStudyAllLonLonsData(:,1),'.','markersize',8,'color',colors.std.blue)
 xlim([-180, 180])
 ylim([-90, 90])
-
+PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',18,'LaTex')
 end
 
 end % (plotResults == 1) && isequal(computerTag,'M')

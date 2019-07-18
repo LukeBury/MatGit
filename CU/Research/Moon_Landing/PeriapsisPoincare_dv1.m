@@ -1,18 +1,19 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-run_apsesAnalysis = 0;
+run_apsesAnalysis = 1;
 
 % ========================================================================
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -34,6 +35,9 @@ Lpoint = 2;  % 1 or 2
 rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
+
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
 % -------------------------------------------------
 % Equilibrium Points and Jacobi Constants
 % -------------------------------------------------
@@ -116,7 +120,7 @@ JC_max = JC_scDesired + dVMag_n^2;
 
 [ colorMatrix ] = colorScale([colors.std.mag; colors.std.cyan],6 );
 
-return
+
 % -------------------------------------------------
 % Loop Specifications
 % -------------------------------------------------
@@ -135,7 +139,7 @@ time_apses = [];
 % Integration
 % -------------------------------------------------
 %%% Propagating Pre-Burn States
-[time_n_predV, X_BCR_n_predV] = ode45(@Int_CR3Bn, [t_i:dt:t_dV], X0_n, options, secondary.MR, secondary.R_n);
+[time_n_predV, X_BCR_n_predV] = ode45(@Int_CR3Bn, [t_i:dt:t_dV], X0_n, options, prms);
 
 %%% Adding tangent dV to states
 % Finding vHat
@@ -152,7 +156,7 @@ X0_postdV_n = [X_BCR_n_predV(end,1:3), newVelocity];
 %%% Propagating the post-burn States with Apsis event
 if run_apsesAnalysis == 1
     [time_n_Apsis, X_BCR_n_Apsis, time_eventApsis, X_eventApsis, index_eventApsis] = ode45(@Int_CR3Bn, [t_dV:dt:t_f], X0_postdV_n,...
-                                                           options_Apsis, secondary.MR, secondary.R_n);
+                                                           options_Apsis, prms);
     %%% Storing periapses and apoapses
     X_apses_SCR_n = [X_apses_SCR_n; X_eventApsis];
     time_apses = [time_apses; time_eventApsis];
@@ -160,7 +164,7 @@ end
 
  %%% Propagating the post-burn States with Impact event
 [time_n_Impact, X_BCR_n_Impact, time_eventImpact, X_eventImpact, index_eventImpact] = ode45(@Int_CR3Bn, [t_dV:dt:t_f], X0_postdV_n,...
-                                                       options_Impact, secondary.MR, secondary.R_n);
+                                                       options_Impact, prms);
   
 
 % ========================================================================

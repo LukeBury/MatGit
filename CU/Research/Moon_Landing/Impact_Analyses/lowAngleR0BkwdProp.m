@@ -1,8 +1,8 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '~/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
 tic
@@ -10,7 +10,7 @@ tic
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-plot_fwdTrajs  = 0;
+plot_fwdTrajs  = 1;
 plot_L1escapee = 1;
 
 %%% If bkwd trajs should stop on events
@@ -32,7 +32,7 @@ lowImpactAngleFile = 'F.iGS_encL2_39mps_4km_149v0s_land.txt';
 
 
 %%% Outputs path
-MatlabOutputsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
+MatlabOutputsPath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
         
 % ========================================================================
 %%% Free variables
@@ -42,7 +42,8 @@ MatlabOutputsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutp
 % trajCutInt = 25; % 200
 trajCutInt = 50; % 200
 %%% "Final" time
-t_i = 8*pi;
+% t_i = 8*pi;
+t_i = 50*pi;
  
 % ========================================================================
 %%% Importing Data

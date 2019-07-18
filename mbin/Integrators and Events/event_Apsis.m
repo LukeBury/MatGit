@@ -1,4 +1,4 @@
-function [value, isterminal, direction] = event_Apsis(t,X,u,R2)
+function [value, isterminal, direction] = event_Apsis(t,X,prms)
 %%% Designed for standard normalized CR3BP
 %%% Event function watching for when "value" = 0
 %%% Inputs:
@@ -12,7 +12,7 @@ r = X(1:3); % Position
 v = X(4:6); % Velocity
 
 %%% Centering position on secondary
-r(1) = r(1) - (1-u);
+r(1) = r(1) - (1-prms.u);
 
 %%% When velocity is perpendicular to position, dot(r,v) = 0
 value = dot(r,v);

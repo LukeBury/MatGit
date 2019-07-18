@@ -16,6 +16,10 @@ function [A] = get_Amat_CR3BP(mu, r_n)
 % ------------------------------------
 %%% Unpack position
 % ------------------------------------
+%%% Enforcing column vector
+r_n = r_n(:);
+
+%%% Unpacking
 x_n = r_n(1);
 y_n = r_n(2);
 z_n = r_n(3);

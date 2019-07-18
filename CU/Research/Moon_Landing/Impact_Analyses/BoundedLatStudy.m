@@ -12,8 +12,8 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '~/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
 addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
 tic
@@ -65,7 +65,7 @@ n_dataSets = length(dataSets);
 % n_dataSets = 1;
 
 %%% File location
-MatlabOutputsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
+MatlabOutputsPath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/';
 
 %%% Preallocating structure for multiple-data-set data
 dataSetData{n_dataSets}.AzIs_deg    = [];
@@ -73,7 +73,7 @@ dataSetData{n_dataSets}.latLons_deg = [];
 dataSetData{n_dataSets}.rBCRs       = [];
 
 % for dataSet_i = 1:n_dataSets
-for dataSet_i = [2]
+for dataSet_i = [1]
 dataSet = dataSets{dataSet_i};
 
 if contains(dataSet,'impactX0s') == 0

@@ -20,12 +20,12 @@ function [JC_sc] = L2FlyoverVelocity_2_JC(L2FlyoverVelocity_mps, mu, L2_BCR, vNo
 L2FlyoverVelocity_kps = L2FlyoverVelocity_mps/1000;
 
 %%% Convert the L2 flyover velocity to a component of Jacobi constant
-dJC_Lp = (L2FlyoverVelocity_kps/vNorm)^2;
+dJC_L2 = (L2FlyoverVelocity_kps/vNorm)^2;
 
 %%% Calculate Jacobi constant of L2
-[JC_Lp] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
+[JC_L2] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
 
 %%% Calculate Jacobi constant corresponding to L2 flyover velocity
-JC_sc = JC_Lp-dJC_Lp;
+JC_sc = JC_L2-dJC_L2;
 
 end

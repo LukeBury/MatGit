@@ -1,9 +1,9 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
-polarTrajDataPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Impact_Analyses/polarTrajectoryConditions';
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '~/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+polarTrajDataPath = '~/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Impact_Analyses/polarTrajectoryConditions';
 addpath(genpath(mbinPath))
 addpath(genpath(moonFuncsPath))
 tic

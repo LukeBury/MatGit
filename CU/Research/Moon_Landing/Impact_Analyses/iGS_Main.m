@@ -485,14 +485,14 @@ parfor ii = 1:n_r0s
             impact1_escape2_orbit3 = 3;
         end
         
-        if impact1_escape2_orbit3 == 2
-            if X_eventImpact(1) <= prms.L1x
-                format long
-                time_n(end)
-                X0_n
-                fprintf('ttt')
-            end
-        end
+%         if impact1_escape2_orbit3 == 2
+%             if X_eventImpact(1) <= prms.L1x
+%                 format long
+%                 time_n(end)
+%                 X0_n
+%                 fprintf('ttt')
+%             end
+%         end
         
         % ---------------------------------------
         % Determining azimuth and elevation of v0
