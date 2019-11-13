@@ -71,7 +71,7 @@ save_data = 1;
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
-n_nodes = 1;
+n_nodes = 2000;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
 pertScale = 1e-8;
