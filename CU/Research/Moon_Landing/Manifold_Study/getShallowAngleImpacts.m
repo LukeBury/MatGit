@@ -62,7 +62,7 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-save_data = 0;
+save_data = 1;
 
 % ========================================================================
 %%% Setup
@@ -474,13 +474,6 @@ for PO_i = 1:length(PO_indicies)
 %     PObins_latLonHeading{PO_i} = latLonHeading_plotData;
 end
 
-size(allImpactData)
-
-
-
-
-
-
 % -------------------------------------------------
 % Writing data to CSV
 % -------------------------------------------------
@@ -506,8 +499,10 @@ end % save_data
 %%% Closeout
 % ========================================================================
 tocWhole = toc(ticWhole);
-tocWhole
 
+if isequal(computer,'MACI64')
+    fprintf('Elapsed time: %1.4f seconds\n',tocWhole)
+end
 
 
 
