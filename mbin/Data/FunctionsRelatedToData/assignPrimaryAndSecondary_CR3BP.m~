@@ -1,0 +1,87 @@
+function [primary, secondary] = assignPrimaryAndSecondary_CR3BP(familyTag, bodies)
+%%% Description
+%       Assigns structs of body data to a primary and secondary body meant
+%       for use in the CR3BP. 
+%       
+% ------------------------------------------------------------------------
+%%% Inputs
+%       familyTag - [str] A string containing the names of the desired
+%                         primary and secondary bodies according to the
+%                         convention 'Primary_Secondary'. For example,
+%                         familyTag might equal
+%                         "PO_ICs.Jupiter_Europa.CR3BP.L2_Vertical"
+%       bodies    - [struct] A struct containing all the loaded bodies from
+%                            body-data file. Ex:
+%                            'bodies = getBodyData(mbinPath)'
+% ------------------------------------------------------------------------
+%%% Outputs
+%       out1 - [dimension] description (units)
+%       out2 - [dimension] description (units)
+% ------------------------------------------------------------------------
+% Created: 
+% Author : Luke Bury, luke.bury@colorado.edu
+% ========================================================================
+% -------------------------------------------------
+%%% Assign Primary
+% -------------------------------------------------
+if contains(lower(familyTag),'earth')
+    primary = bodies.earth;
+elseif contains(lower(familyTag),'mars')
+    primary = bodies.mars;
+elseif contains(lower(familyTag),'Jupiter')
+    primary = bodies.jupiter;
+elseif contains(lower(familyTag),'Saturn')
+    primary = bodies.saturn;
+elseif contains(lower(familyTag),'Uranus')
+    primary = bodies.uranus;
+elseif contains(lower(familyTag),'Neptune')
+    primary = bodies.neptune;
+else
+    warning('No primary')
+    return
+end
+
+% -------------------------------------------------
+%%% Assign Secondary
+% -------------------------------------------------
+if contains(lower(familyTag),'Moon.')
+    secondary = bodies.moon;
+elseif contains(lower(familyTag),'Europa.')
+    secondary = bodies.europa;
+elseif contains(lower(familyTag),'Enceladus.')
+    secondary = bodies.encealdus;
+elseif contains(lower(familyTag),'Cordelia.')
+    secondary = bodies.cordelia;
+elseif contains(lower(familyTag),'Ophelia.')
+    secondary = bodies.ophelia;
+else
+    warning('No Secondary')
+    return
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% ========================================================================
+%%% Formatting Structures
+% ========================================================================
+% -------------------------------------------------
+%%% 
+% -------------------------------------------------
+
+% --------------------------
+%%% 
+% --------------------------
+
+
+end % function

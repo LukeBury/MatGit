@@ -1,0 +1,2 @@
+x0_n,y0_n,z0_n,xd0_n,yd0_n,zd0_n,Tp,JC,L2ExcessVelocity_mps,landingVelocity_mps,stabilityIndex1,stabilityIndex2...,error_tol=1e-12,n_Nodes=6,stepsize=1.0
+1.180888549172871,-0.000000000000002,-0.000137978545959,0.000000000000128,-0.155846477971307,0,3.415510771287679
