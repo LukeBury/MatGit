@@ -14,7 +14,6 @@
 % ========================================================================
 %%% Initialization
 % ========================================================================
-% /Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Manifold_Study/getShallowAngleImpacts.m
 clear
 clc
 close all
@@ -97,8 +96,8 @@ famName_bodies = 'Saturn_Enceladus';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
 % famName_PO_Family = 'L2_Lyapunov';
-% famName_PO_Family = 'L2_Vertical';
-famName_PO_Family = 'L2_SHalo';
+famName_PO_Family = 'L2_Vertical';
+% famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
 %%% Set up System 
@@ -483,7 +482,7 @@ if save_data
 
     %%% Opening files and writing header
     f_shallowImpacts = fopen(filename_shallowImpact, 'wt');
-    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,lat,lon,impactAngle,heading_x,heading_y,JC,landingVel_mps\n');  % header
+    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,lat,lon,impactAngle_deg,heading_x,heading_y,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
 
     for kk = 1:size(allImpactData,1)
         fprintf(f_shallowImpacts, '%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.2f,%1.2f,%1.2f,%1.6f,%1.6f,%1.16f,%1.6f\n',...
