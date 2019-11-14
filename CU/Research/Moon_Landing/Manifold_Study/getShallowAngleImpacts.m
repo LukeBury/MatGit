@@ -84,20 +84,30 @@ impactAngleBins_deg = [0, 3, 10, 20, 45, 90];
 n_impactAngleBins = length(impactAngleBins_deg) - 1;
 impactAngleColors = colorScale([colors.std.cyan; colors.std.mag], n_impactAngleBins);
 
+for bigLoop = 1:3
+
 %%% 3B System
 % famName_bodies = 'Earth_Moon';
-% famName_bodies = 'Jupiter_Europa';
+famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
-famName_bodies = 'Saturn_Enceladus';
+% famName_bodies = 'Saturn_Enceladus';
 % famName_bodies = 'Neptune_Triton';
 
 %%% PO Family
 % famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
-famName_PO_Family = 'L2_Lyapunov';
+% famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
 % famName_PO_Family = 'L2_SHalo';
+
+if bigLoop == 1
+    famName_PO_Family = 'L2_Lyapunov';
+elseif bigLoop == 2
+    famName_PO_Family = 'L2_Vertical';
+elseif bigLoop == 3
+    famName_PO_Family = 'L2_SHalo';
+end
 
 % -------------------------------------------------
 %%% Set up System 
@@ -446,6 +456,8 @@ end % save_data
 %%% Closeout
 % ========================================================================
 tocWhole = toc(ticWhole);
+
+end % bigLoop
 
 if isequal(computer,'MACI64')
     fprintf('Elapsed time: %1.4f seconds\n',tocWhole)

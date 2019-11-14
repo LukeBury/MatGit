@@ -51,7 +51,7 @@ headingLength = 6;
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
 
 % dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
-dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt';
+dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt'; % n_shallowImpacts = 197;
 
 
 
@@ -112,7 +112,8 @@ options                  = odeset('RelTol',tol,'AbsTol',tol);
 % ========================================================================
 %%% Get number of impacts
 n_shallowImpacts = size(shallowAngleImpactData,1);
-% n_shallowImpacts = 10;
+989
+n_shallowImpacts = 197;
 
 %%% Generate figure
 figure('position', [156 385 560 420]); hold all
@@ -159,16 +160,19 @@ for impact_i = 1:n_shallowImpacts
     % --------------------------
     % Plot the lat/lon impact point (iteratively)
     % --------------------------
-%     plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',8,...
-%     'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+    if n_shallowImpacts ~= size(shallowAngleImpactData,1)
+        plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',8,...
+        'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+    end
 end
 
 % --------------------------
 % Plot the lat/lon impact point (all at once)
 % --------------------------
-plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',8,...
-    'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
-
+if n_shallowImpacts == size(shallowAngleImpactData,1)
+    plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',8,...
+        'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+end
 
 % ========================================================================
 %%% Plot trajectories
