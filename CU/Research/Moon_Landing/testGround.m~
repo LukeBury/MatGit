@@ -1,38 +1,32 @@
 clear
 clc
 close all
-mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
-addpath(genpath(mbinPath))
-addpath(genpath(moonFuncsPath))
+% mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+% moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+% addpath(genpath(mbinPath))
+% addpath(genpath(moonFuncsPath))
 
 % ========================================================================
 %%% Importing Data
 % ========================================================================
-%%% General data on solar system bodies
-bodies = getBodyData(mbinPath);
-
-%%% Color options/schemes
-colors = get_colors();
+% %%% General data on solar system bodies
+% bodies = getBodyData(mbinPath);
+% 
+% %%% Color options/schemes
+% colors = get_colors();
 
 
 
 % ========================================================================
 %%% 11/14/19 Testing
 % ========================================================================
-setpref('Internet','E_mail','luke.bury@colorado.edu');
-setpref('Internet','SMTP_Server','smtp.gmail.com');
+tocWhole = 12;
+receiver = 'broncosferever@gmail.com';
 
-
-
-mail = 'luke.bury@colorado.edu'; %Your GMail email address
-password = 'hTdRKJ3#CU';  %Your GMail password
-setpref('Internet','SMTP_Server','smtp.gmail.com');
-
-
-sendmail('luke.bury@colorado.edu','Hello From MATLAB! dude');
-
-
+subject = sprintf('Fortuna run complete!');
+message = sprintf('Ellapsed time: %1.0f seconds\n\n Great job, buddy',tocWhole);
+    
+sendEmailFromMatlab(receiver, subject, message)
 % % ========================================================================
 % %%% 05/28/19 Testing
 % % ========================================================================
