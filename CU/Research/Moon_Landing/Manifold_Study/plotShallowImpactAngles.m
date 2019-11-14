@@ -34,7 +34,7 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-
+plot_shallowImpactTrajectories = 1;
 
 % ========================================================================
 %%% Setup
@@ -44,6 +44,7 @@ PO_ICs = get_PO_ICs();
 % -------------------------------------------------
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
 dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt';
 
 
 
@@ -98,7 +99,7 @@ c_landingVel_mps  = 13;
 % -------------------------------------------------
 tol                      = 1e-13;
 options                  = odeset('RelTol',tol,'AbsTol',tol);
-% options_impact           = odeset('Event',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
+options_impact           = odeset('Event',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 
 
 
@@ -133,6 +134,38 @@ quiver(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat),...
 %     'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
 plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',8,...
     'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+
+
+% ========================================================================
+%%% Plot trajectories
+% ========================================================================
+if plot_shallowImpactTrajectories
+    989
+    n_shallowImpacts = 1057;
+    trajectories = cell(n_shallowImpacts,1);
+    
+    X0s_n = shallowAngleImpactData(:,c_x0_n:c_zd0_n);
+    parfor impact_i = 1:n_shallowImpacts
+        X0_n = X0s_n(impact_i,:)';
+        
+        [~, X_n, t_event, X_event, index_event] = ode113(@Int_CR3Bn, [0, 4*pi], X0_n, options_impact, prms);
+        
+        trajectories{impact_i} = X_n;
+    end
+    
+    figure; hold all
+    PlotBoi3_CR3Bn(20)
+    axis equal
+    plotSecondary(secondary)
+    for impact_i = 1:n_shallowImpacts
+        plot3(trajectories{impact_i}(:,1), trajectories{impact_i}(:,2), trajectories{impact_i}(:,3), 'r')
+    end
+end
+
+
+
+
+
 % ========================================================================
 %%% Closeout
 % ========================================================================
