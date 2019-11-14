@@ -25,13 +25,13 @@ ticWhole = tic;
 if isequal(computer,'MACI64')      % Mac
     mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
     POfamilyPath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
-    savepath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
+    savePath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
     computerTag = 'M';
     
 elseif isequal(computer,'GLNXA64') % Fortuna
     mbinPath = '/home/lubu8198/MatGit/mbin';
     POfamilyPath = '/home/lubu8198/MatGit/mbin/Data/InitialConditions/PO_Families/';
-    savepath = '/orc_raid/lubu8198/MatlabOutputs';
+    savePath = '/orc_raid/lubu8198/MatlabOutputs';
     computerTag = 'F';
 %   N = maxNumCompThreads returns the current maximum number of computational threads N.
 %   LASTN = maxNumCompThreads(N) sets the maximum number of computational threads to N, 
@@ -70,7 +70,9 @@ save_data = 1;
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
-n_nodes = 2000;
+% n_nodes = 2000;
+989
+n_nodes = 1;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
 pertScale = 1e-8;
@@ -488,11 +490,25 @@ end
 % -------------------------------------------------
 if save_data
     %%% Create File Name
-    filename_shallowImpact = fullfile(savepath, sprintf('shallowImpacts.%s.%s.nodes%1.0f.txt', computerTag, famName, n_nodes));
+    filename_shallowImpact = fullfile(savePath, sprintf('shallowImpacts.%s.%s.nodes%1.0f', computerTag, famName, n_nodes));
+
+    %%% If this file already exists, append an integer to the filename
+    fileAlreadyExists = 1;
+    fileVersion       = 0;
+    filename_new      = filename_shallowImpact;
+    while fileAlreadyExists == 1
+        if isfile([filename_new,'.txt']) == 1
+            fileVersion = fileVersion + 1;
+            filename_new = sprintf('%s_%1d',filename_shallowImpact,fileVersion);
+        else
+            fileAlreadyExists = 0;
+        end
+    end
+    filename_shallowImpact = [filename_new,'.txt'];
 
     %%% Opening files and writing header
     f_shallowImpacts = fopen(filename_shallowImpact, 'wt');
-    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,Tf,lat,lon,impactAngle_deg,heading_x,heading_y,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
+    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,Tf,lat,lon,impactAngle_deg,heading_lat,heading_lon,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
 
     for kk = 1:size(allImpactData,1)
         fprintf(f_shallowImpacts, '%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.2f,%1.2f,%1.2f,%1.6f,%1.6f,%1.16f,%1.6f\n',...

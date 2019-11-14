@@ -1,50 +1,37 @@
 clear
 clc
 close all
-% mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
-% moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
-% addpath(genpath(mbinPath))
-% addpath(genpath(moonFuncsPath))
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
 
 % ========================================================================
 %%% Importing Data
 % ========================================================================
-% %%% General data on solar system bodies
-% bodies = getBodyData(mbinPath);
-% 
-% %%% Color options/schemes
-% colors = get_colors();
+%%% General data on solar system bodies
+bodies = getBodyData(mbinPath);
+
+%%% Color options/schemes
+colors = get_colors();
 
 
 
 % ========================================================================
 %%% 11/14/19 Testing
 % ========================================================================
-% setpref('Internet','E_mail','luke.bury@colorado.edu');
-% setpref('Internet','SMTP_Server','smtp.gmail.com');
-
-
-
-
-mail = 'broncosferever@gmail.com'; %Your GMail email address
-password = 'ZimbabweG';  %Your GMail password
+setpref('Internet','E_mail','luke.bury@colorado.edu');
 setpref('Internet','SMTP_Server','smtp.gmail.com');
 
 
-setpref('Internet','E_mail',mail);
-setpref('Internet','SMTP_Username',mail);
-setpref('Internet','SMTP_Password',password);
-props = java.lang.System.getProperties;
-props.setProperty('mail.smtp.auth','true');
-props.setProperty('mail.smtp.socketFactory.class', 'javax.net.ssl.SSLSocketFactory');
-props.setProperty('mail.smtp.socketFactory.port','465');
-% Send the email.  Note that the first input is the address you are sending the email to
-sendmail(mail,'Test complete!!')
 
-% sendmail('luke.bury@colorado.edu','Hello From MATLAB! dude');
+mail = 'luke.bury@colorado.edu'; %Your GMail email address
+password = 'hTdRKJ3#CU';  %Your GMail password
+setpref('Internet','SMTP_Server','smtp.gmail.com');
 
 
-% sendmail(mail,'Test from MATLAB','Hello! This is a test from MATLAB!')
+sendmail('luke.bury@colorado.edu','Hello From MATLAB! dude');
+
 
 % % ========================================================================
 % %%% 05/28/19 Testing

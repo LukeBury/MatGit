@@ -42,8 +42,8 @@ plot_shallowImpactTrajectories = 1;
 % -------------------------------------------------
 %%% Choose data file
 % -------------------------------------------------
-% dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_Vertical.nodes1.txt';
-dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
+dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_Vertical.nodes1.txt';
+% dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
 
 
 
@@ -106,7 +106,7 @@ options                  = odeset('RelTol',tol,'AbsTol',tol);
 n_shallowImpacts = size(shallowAngleImpactData,1);
 
 %%% Generate figure
-figure('position', [156 385 560 420]); hold all
+figure; hold all
 xlim([-1, 1] .* 185)
 ylim([-1, 1] .* 95)
 PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 18, 'LaTex')
@@ -122,28 +122,10 @@ PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 18, 'LaTex')
 % end
 
 for jj = 1:size(shallowAngleImpactData,1)
-    % --------------------------
-    % For plotting the heading directions, since the lat/lon plot isn't
-    % equal, we need to artificially increase the magnitude as headings
-    % become closer to purely horizontal (since '1' in the longitude-axis
-    % is half as long as '1' in the latitude axis). To do this we calculate
-    % the angle between the heading and [1,0], and use the cosine of that
-    % angle to increase the heading's magnitude
-    % --------------------------
     dx = shallowAngleImpactData(jj,c_impactHeading_lon);
     dy = shallowAngleImpactData(jj,c_impactHeading_lat);
-    
-    headingVec = [dx, dy]./norm([dx, dy]) .*6;
-    angle = acos((dot(headingVec, [1,0])./norm(headingVec)));
-    scaling = 1 + abs(cos(angle));
-    
-    headingVec = headingVec.*scaling;
-    
-    % --------------------------
-    % Plot the heading line
-    % --------------------------
-    xs = [shallowAngleImpactData(jj,c_lon), shallowAngleImpactData(jj,c_lon) + headingVec(1)];
-    ys = [shallowAngleImpactData(jj,c_lat), shallowAngleImpactData(jj,c_lat) + headingVec(2)];
+    xs = [shallowAngleImpactData(jj,c_lon), shallowAngleImpactData(jj,c_lon) + ];
+    ys = [shallowAngleImpactData(jj,c_lat), shallowAngleImpactData(jj,c_lat) + ];
     plot(xs, ys, 'color', colors.std.ltred, 'linewidth', 1)
 end
 % quiver(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat),...
@@ -152,10 +134,6 @@ end
 
 % plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',17,...
 %     'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
-
-% --------------------------
-% Plot the lat/lon impact point
-% --------------------------
 plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',8,...
     'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
 
@@ -177,7 +155,7 @@ if plot_shallowImpactTrajectories
         trajectories{impact_i} = X_n;
     end
     
-    figure('position', [717 385 560 420]); hold all
+    figure; hold all
     PlotBoi3_CR3Bn(20)
     axis equal
     plotSecondary(secondary)

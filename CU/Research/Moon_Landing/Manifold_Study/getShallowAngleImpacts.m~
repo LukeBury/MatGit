@@ -25,13 +25,13 @@ ticWhole = tic;
 if isequal(computer,'MACI64')      % Mac
     mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
     POfamilyPath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
-    savepath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
+    savePath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
     computerTag = 'M';
     
 elseif isequal(computer,'GLNXA64') % Fortuna
     mbinPath = '/home/lubu8198/MatGit/mbin';
     POfamilyPath = '/home/lubu8198/MatGit/mbin/Data/InitialConditions/PO_Families/';
-    savepath = '/orc_raid/lubu8198/MatlabOutputs';
+    savePath = '/orc_raid/lubu8198/MatlabOutputs';
     computerTag = 'F';
 %   N = maxNumCompThreads returns the current maximum number of computational threads N.
 %   LASTN = maxNumCompThreads(N) sets the maximum number of computational threads to N, 
@@ -96,8 +96,8 @@ famName_bodies = 'Saturn_Enceladus';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
 % famName_PO_Family = 'L2_Lyapunov';
-famName_PO_Family = 'L2_Vertical';
-% famName_PO_Family = 'L2_SHalo';
+% famName_PO_Family = 'L2_Vertical';
+famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
 %%% Set up System 
@@ -130,7 +130,7 @@ end
 FamilyDataFile = [POfamilyPath, famName, '.txt'];
 POFamilyData = dlmread(FamilyDataFile,',',1,0);
 
-%%% Column specifiers
+%%% PO Family Data Column specifiers
 c_x0_n                = 1;
 c_y0_n                = 2;
 c_z0_n                = 3;
@@ -246,6 +246,7 @@ stm0_colVec = reshape(stm0,36,1);
 %%% Preallocate outputs
 X0s_n             = cell(length(PO_indicies),1);
 Xfs_n             = cell(length(PO_indicies),1);
+Tfs_n             = cell(length(PO_indicies),1);
 latLons_deg       = cell(length(PO_indicies),1);
 impactAngles_deg  = cell(length(PO_indicies),1);
 latLonHeadingHats = cell(length(PO_indicies),1);
@@ -371,7 +372,7 @@ for PO_index = PO_indicies
         if doubleImpactCounter ~=2
             traj_POi{node_i}.X0_n             = X0_impact;
             traj_POi{node_i}.Xf_n             = Xf_impact;
-            traj_POi{node_i}.Tf_n       = T_impact;
+            traj_POi{node_i}.Tf_n             = T_impact;
 
         elseif doubleImpactCounter == 2
             traj_POi{node_i}.X0_n             = [X0_man_unstable_p_i, X0_man_unstable_m_i];
@@ -397,7 +398,7 @@ for PO_index = PO_indicies
     %%% Grabbing specific data sets and turning them into single matrices
     X0s_POi_n             = NaN(n_conditions,6);
     Xfs_POi_n             = NaN(n_conditions,6);
-    Tfs_POi_n
+    Tfs_POi_n             = NaN(n_conditions,1);
     latLons_POi_deg       = NaN(n_conditions,2);
     impactAngles_POi_deg  = NaN(n_conditions,1);
     latLonHeadingHats_POi = NaN(n_conditions,2);
@@ -409,6 +410,7 @@ for PO_index = PO_indicies
         if ~isempty(traj_POi_structArray(kk).latLon_deg)
             X0s_POi_n(condition_i,:)             = traj_POi_structArray(kk).X0_n(:,1)';
             Xfs_POi_n(condition_i,:)             = traj_POi_structArray(kk).Xf_n(:,1)';
+            Tfs_POi_n(condition_i,:)             = traj_POi_structArray(kk).Tf_n(1);
             latLons_POi_deg(condition_i,:)       = traj_POi_structArray(kk).latLon_deg(1,:);
             impactAngles_POi_deg(condition_i,:)  = traj_POi_structArray(kk).impactAngle_deg(1);
             latLonHeadingHats_POi(condition_i,:) = traj_POi_structArray(kk).latLonHeadingHat(1,:);
@@ -422,6 +424,7 @@ for PO_index = PO_indicies
                 
                 X0s_POi_n(condition_i,:)             = traj_POi_structArray(kk).X0_n(:,2)';
                 Xfs_POi_n(condition_i,:)             = traj_POi_structArray(kk).Xf_n(:,2)';
+                Tfs_POi_n(condition_i,:)             = traj_POi_structArray(kk).Tf_n(2);
                 latLons_POi_deg(condition_i,:)       = traj_POi_structArray(kk).latLon_deg(2,:);
                 impactAngles_POi_deg(condition_i,:)  = traj_POi_structArray(kk).impactAngle_deg(2);
                 latLonHeadingHats_POi(condition_i,:) = traj_POi_structArray(kk).latLonHeadingHat(2,:);
@@ -437,6 +440,7 @@ for PO_index = PO_indicies
     % -------------------------------------------------
     X0s_n{PO_i}             = X0s_POi_n;
     Xfs_n{PO_i}             = Xfs_POi_n;
+    Tfs_n{PO_i}             = Tfs_POi_n;
     latLons_deg{PO_i}       = latLons_POi_deg;
     impactAngles_deg{PO_i}  = impactAngles_POi_deg;
     latLonHeadingHats{PO_i} = latLonHeadingHats_POi;
@@ -468,9 +472,9 @@ for PO_i = 1:length(PO_indicies)
             JC_current     = getJacobiConstant_ZH(X0s_n{PO_i}(kk,:), prms);
             landingVel_mps = norm(Xfs_n{PO_i}(kk,4:6)) * vNorm * 1000;
             
-            % x0, y0, z0, xd0, yd0, zd0, lat, lon, impactAngle, heading_x, heading_y, JC, landingVel_mps
+            % x0, y0, z0, xd0, yd0, zd0, Tf, lat, lon, impactAngle, heading_x, heading_y, JC, landingVel_mps
             allImpactData  = [allImpactData;...
-                            X0s_n{PO_i}(kk,:), latLons_deg{PO_i}(kk,:), impactAngles_deg{PO_i}(kk,:), latLonHeadingHats{PO_i}(kk,:), JC_current, landingVel_mps];
+                            X0s_n{PO_i}(kk,:), Tfs_n{PO_i}(kk,:), latLons_deg{PO_i}(kk,:), impactAngles_deg{PO_i}(kk,:), latLonHeadingHats{PO_i}(kk,:), JC_current, landingVel_mps];
                         
         end
         
@@ -484,16 +488,41 @@ end
 % -------------------------------------------------
 if save_data
     %%% Create File Name
-    filename_shallowImpact = fullfile(savepath, sprintf('shallowImpacts.%s.%s.nodes%1.0f.txt', computerTag, famName, n_nodes));
+    filename_shallowImpact = fullfile(savePath, sprintf('shallowImpacts.%s.%s.nodes%1.0f', computerTag, famName, n_nodes));
 
+    
+    
+    
+    
+    fileAlreadyExists = 1;
+    fileVersion       = 0;
+    filename_new       = filename_shallowImpact;
+    while fileAlreadyExists == 1
+        if isfile([savePath,filename_new,'.txt']) == 1
+            fileVersion = fileVersion + 1;
+            filename_new = sprintf('%s_%1d',famName_pretty,fileVersion);
+        else
+            fileAlreadyExists = 0;
+        end
+    end
+    fileName = [savePath,filename_new,'.txt'];
+    
+    
+    
+    
+    
+    
+    
+    
+    
     %%% Opening files and writing header
     f_shallowImpacts = fopen(filename_shallowImpact, 'wt');
-    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,lat,lon,impactAngle_deg,heading_x,heading_y,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
+    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,Tf,lat,lon,impactAngle_deg,heading_lat,heading_lon,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
 
     for kk = 1:size(allImpactData,1)
-        fprintf(f_shallowImpacts, '%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.2f,%1.2f,%1.2f,%1.6f,%1.6f,%1.16f,%1.6f\n',...
+        fprintf(f_shallowImpacts, '%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.2f,%1.2f,%1.2f,%1.6f,%1.6f,%1.16f,%1.6f\n',...
             allImpactData(kk,1),allImpactData(kk,2),allImpactData(kk,3),allImpactData(kk,4),allImpactData(kk,5),allImpactData(kk,6),allImpactData(kk,7),...
-            allImpactData(kk,8),allImpactData(kk,9),allImpactData(kk,10),allImpactData(kk,11),allImpactData(kk,12),allImpactData(kk,13));
+            allImpactData(kk,8),allImpactData(kk,9),allImpactData(kk,10),allImpactData(kk,11),allImpactData(kk,12),allImpactData(kk,13),allImpactData(kk,14));
     end
 
     %%% Close file
