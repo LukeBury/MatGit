@@ -15,7 +15,7 @@ clear
 clc
 close all
 mbinPath    = '~/CU_Google_Drive/Documents/MatGit/mbin';
-dataBinpath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs';
+dataBinpath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -86,13 +86,14 @@ c_z0_n            = 3;
 c_xd0_n           = 4;
 c_yd0_n           = 5;
 c_zd0_n           = 6;
-c_lat             = 7;
-c_lon             = 8;
-c_impactAngle_deg = 9;
-c_impactHeading_x = 10;
-c_impactHeading_y = 11;
-c_JC              = 12;
-c_landingVel_mps  = 13;
+c_Tf_n            = 7;
+c_lat             = 8;
+c_lon             = 9;
+c_impactAngle_deg = 10;
+c_impactHeading_x = 11;
+c_impactHeading_y = 12;
+c_JC              = 13;
+c_landingVel_mps  = 14;
 
 % -------------------------------------------------
 %%% Integrator options
@@ -140,8 +141,7 @@ plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','ma
 %%% Plot trajectories
 % ========================================================================
 if plot_shallowImpactTrajectories
-    989
-    n_shallowImpacts = 1057;
+    n_shallowImpacts = 200;
     trajectories = cell(n_shallowImpacts,1);
     
     X0s_n = shallowAngleImpactData(:,c_x0_n:c_zd0_n);
