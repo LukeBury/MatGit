@@ -44,13 +44,17 @@ store_and_plot_manifold_trajectories  = 1;
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
-n_nodes = 200;
+% n_nodes = 200;
+989
+n_nodes = 20;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
 pertScale = 1e-8;
 
 %%% Set propagation time for unstable manifolds
-Tf_manifolds_n = 4*pi;
+% Tf_manifolds_n = 4*pi;
+989
+Tf_manifolds_n = 2*pi;
 
 %%% Bins and colors for impact angles
 impactAngleBins_deg = [0, 3, 10, 20, 45, 90];
@@ -60,18 +64,18 @@ impactAngleColors = colorScale([colors.std.cyan; colors.std.mag], n_impactAngleB
 
 %%% 3B System
 % famName_bodies = 'Earth_Moon';
-% famName_bodies = 'Jupiter_Europa';
+famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
-famName_bodies = 'Saturn_Enceladus';
+% famName_bodies = 'Saturn_Enceladus';
 % famName_bodies = 'Neptune_Triton';
 
 %%% PO Family
 % famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
-% famName_PO_Family = 'L2_Lyapunov';
+famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
-famName_PO_Family = 'L2_SHalo';
+% famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
 %%% Set up System 
@@ -152,7 +156,7 @@ elseif isequal(famName, 'Earth_Moon.CR3BP.L1_SHalo') % max - 513
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Lyapunov')
     %%% Around 340, can impact 4 regions at shallow angle
 %     PO_indicies = [1, 5, 15, 17, 19, 21, 24, 29, 35, 42, 49, 59, 75, 100, 150, 220, 340, 510];
-    PO_indicies = [340];
+    PO_indicies = [10];
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Vertical') % max - 511
 %     PO_indicies = [2, 3, 5, 10, 14, 15, 17, 20, 25, 30, 50, 100]; % interesting things between 15 and 18 .. the manifold first grazes off the moon
 %     *** Should be integrating for 6 pi to get extra set of intersections

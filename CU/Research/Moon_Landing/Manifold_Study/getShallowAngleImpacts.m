@@ -95,8 +95,8 @@ famName_bodies = 'Saturn_Enceladus';
 % famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
-% famName_PO_Family = 'L2_Lyapunov';
-famName_PO_Family = 'L2_Vertical';
+famName_PO_Family = 'L2_Lyapunov';
+% famName_PO_Family = 'L2_Vertical';
 % famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
@@ -430,7 +430,7 @@ if save_data
 
     %%% Opening files and writing header
     f_shallowImpacts = fopen(filename_shallowImpact, 'wt');
-    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,Tf,lat,lon,impactAngle_deg,heading_lat,heading_lon,JC,landingVel_mps,...runTime=%1.0sec\n',toc(ticWhole));  % header
+    fprintf(f_shallowImpacts,'x0,y0,z0,xd0,yd0,zd0,Tf,lat,lon,impactAngle_deg,heading_lat,heading_lon,JC,landingVel_mps,...runTime=%1.0fsec\n',toc(ticWhole));  % header
 
     for kk = 1:size(allImpactData,1)
         fprintf(f_shallowImpacts, '%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.16f,%1.2f,%1.2f,%1.2f,%1.6f,%1.6f,%1.16f,%1.6f\n',...
@@ -450,7 +450,7 @@ tocWhole = toc(ticWhole);
 if isequal(computer,'MACI64')
     fprintf('Elapsed time: %1.4f seconds\n',tocWhole)
 elseif isequal(computer,'GLNXA64')
-    receiver = 'broncosferever@gmail.com';
+    receiver = '6052547400@vtext.com';
     subject  = sprintf('Fortuna run complete!');
     message  = sprintf('Ellapsed time: %1.0f seconds\n\n Great job, buddy',tocWhole);
     sendEmailFromMatlab(receiver, subject, message)

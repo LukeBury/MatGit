@@ -21,10 +21,11 @@ addpath(genpath(moonFuncsPath))
 %%% 11/14/19 Testing
 % ========================================================================
 tocWhole = 12;
-receiver = 'broncosferever@gmail.com';
+% receiver = 'broncosferever@gmail.com';
+receiver = '6052547400@vtext.com';
 
 subject = sprintf('Fortuna run complete!');
-message = sprintf('llapsed time: %1.0f seconds\n\n Great job, buddy',tocWhole);
+message = sprintf('Ellapsed time: %1.0f seconds\n\n Great job, buddy',tocWhole);
     
 sendEmailFromMatlab(receiver, subject, message)
 % % ========================================================================

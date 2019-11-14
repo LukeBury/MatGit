@@ -34,7 +34,7 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-plot_shallowImpactTrajectories = 0;
+plot_shallowImpactTrajectories = 1;
 
 % ========================================================================
 %%% Setup
@@ -50,7 +50,8 @@ headingLength = 6;
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_Vertical.nodes1.txt';
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
 
-dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt';
 
 
 
@@ -191,7 +192,7 @@ if plot_shallowImpactTrajectories
     axis equal
     plotSecondary(secondary)
     for impact_i = 1:n_shallowImpacts
-        plot3(trajectories{impact_i}(:,1), trajectories{impact_i}(:,2), trajectories{impact_i}(:,3), 'r')
+        plot3(trajectories{impact_i}(:,1), trajectories{impact_i}(:,2), trajectories{impact_i}(:,3), 'r', 'linewidth', 0.5)
     end
 end
 
