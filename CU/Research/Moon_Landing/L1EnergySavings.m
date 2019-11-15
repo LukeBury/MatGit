@@ -83,10 +83,10 @@ for sys_i = systems
 %     d_L2sY  = JC_sY  - JC_L2;
     
     %%% Calculating minimum necessary DV to stop on surface
-    sys.dV_L1sNX_mps = sqrt(JC_sNX - JC_L1)*systems{kk}.vNorm*1000; % m/s
-    sys.dV_L1sY_mps  = sqrt(JC_sY  - JC_L1)*systems{kk}.vNorm*1000; % m/s
-    sys.dV_L2sNX_mps = sqrt(JC_sNX - JC_L2)*systems{kk}.vNorm*1000; % m/s
-    sys.dV_L2sY_mps  = sqrt(JC_sY  - JC_L2)*systems{kk}.vNorm*1000; % m/s
+    sys.dV_L1sNX_mps = sqrt(JC_sNX - JC_L1)*vNorm*1000; % m/s
+    sys.dV_L1sY_mps  = sqrt(JC_sY  - JC_L1)*vNorm*1000; % m/s
+    sys.dV_L2sNX_mps = sqrt(JC_sNX - JC_L2)*vNorm*1000; % m/s
+    sys.dV_L2sY_mps  = sqrt(JC_sY  - JC_L2)*vNorm*1000; % m/s
     
     sys.dV_minLanding = sys.dV_L1sY_mps;
     
@@ -113,6 +113,7 @@ for sys_i = systems
     %%% Storing values for matrix to be printed to LaTex
     dataMat(counter,1) = round(sys.dV_minLanding,2);
     dataMat(counter,2) = round(sys.diff_sY_mps,2);
+    
 end
 
 figure(1)

@@ -27,34 +27,39 @@ colors = struct;
 %==========================================================================
 %% Standard Colors
 %==========================================================================
-colors.std.blue       = [50  100 200]./255;
-colors.std.ltblue     = [125 216 255]./255;
-colors.std.orange     = [255 127 14]./255;
-colors.std.ltorange   = [255 187 120]./255;
-colors.std.grn        = [44 160 44]./255;
-colors.std.ltgrn      = [152 223 138]./255;
-colors.std.drkgrn     = [15 87 20]./255;
-colors.std.red        = [209   0   0]./255;
-colors.std.ltred      = [255 152 150]./255;
-colors.std.drkred     = [150 40 32]./255;
-colors.std.purp       = [148 103 189]./255;
-colors.std.ltpurp     = [197 176 213]./255;
-colors.std.brown      = [140 86 75]./255;
-colors.std.ltbrown    = [196 156 148]./255;
-colors.std.pink       = [227 119 194]./255;
-colors.std.ltpink     = [247 182 210]./255;
-colors.std.grey       = [127 127 127]./255;
-colors.std.ltgrey     = [199 199 199]./255;
-colors.std.ylwgrn     = [188 189 34]./255;
-colors.std.khaki      = [219 219 141]./255;
-colors.std.turq       = [23 190 207]./255;
-colors.std.ltturq     = [158 218 229]./255;
-colors.std.mag        = [255  0 255]./255;
-colors.std.maglt      = [229 194 237]./255;
-colors.std.ylw        = [247 202   0]./255;
-colors.std.black      = [0 0 0]./255;
-colors.std.cyan       = [0 255 255]./255;
-colors.std.white      = [255 255 255]./255;
+colors.black      = [0 0 0]./255;
+colors.blue       = [50  100 200]./255;
+colors.blue2      = [47 130 255]./255;
+colors.brown      = [140 86 75]./255;
+colors.cyan       = [0 255 255]./255;
+colors.drkgrn     = [15 87 20]./255;
+colors.drkred     = [150 40 32]./255;
+colors.grey       = [127 127 127]./255;
+colors.grn        = [44 160 44]./255;
+colors.grn2       = [44 235 44]./255;
+colors.khaki      = [219 219 141]./255;
+colors.ltblue     = [125 216 255]./255;
+colors.ltbrown    = [196 156 148]./255;
+colors.ltgrey     = [199 199 199]./255;
+colors.ltgrn      = [152 223 138]./255;
+colors.ltmag      = [229 194 237]./255;
+colors.ltorange   = [255 187 120]./255;
+colors.ltpink     = [247 182 210]./255;
+colors.ltpurp     = [197 176 213]./255;
+colors.ltred      = [255 152 150]./255;
+colors.ltturq     = [158 218 229]./255;
+colors.mag        = [255  0 255]./255;
+colors.orange     = [255 127 14]./255;
+colors.pink       = [227 119 194]./255;
+colors.pink2      = [255 7 178]./255;
+colors.purp       = [148 103 189]./255;
+colors.red        = [209   0   0]./255;
+colors.red2       = [255 91 69]./255;
+colors.red3       = [255 53 17]./255;
+colors.turq       = [23 190 207]./255;
+colors.ylwgrn     = [188 189 34]./255;
+colors.ylw        = [247 202   0]./255;
+colors.white      = [255 255 255]./255;
 
 %==========================================================================
 %% Color Schemes

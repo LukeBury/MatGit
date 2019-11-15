@@ -44,28 +44,30 @@ plot_stable_manifolds   = 1;
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
-n_nodes = 500;
+n_nodes = 50;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
 pertScale = 1e-8;
 
 %%% Set propagation time for unstable manifolds
-Tf_manifolds_n = 4*pi;
+% Tf_manifolds_n = 4*pi;
+989
+Tf_manifolds_n = 3*pi;
 
 %%% 3B System
-% famName_bodies = 'Earth_Moon';
+famName_bodies = 'Earth_Moon';
 % famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
 % famName_bodies = 'Saturn_Enceladus';
-famName_bodies = 'Neptune_Triton';
+% famName_bodies = 'Neptune_Triton';
 
 %%% PO Family
-% famName_PO_Family = 'L1_Lyapunov';
+famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
 % famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
-famName_PO_Family = 'L2_SHalo';
+% famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
 %%% Set up System 
@@ -128,8 +130,8 @@ options_impact           = odeset('Event',@event_Impact_CR3Bn,'RelTol',tol,'AbsT
 %%% Set PO family indices to study manifolds of
 % -------------------------------------------------
 if     isequal(famName, 'Earth_Moon.CR3BP.L1_Lyapunov') % max - 507
-    PO_indicies = [27, 35, 52, 70, 95, 120, 150, 300, 500];
-%     PO_indicies = [507];
+%     PO_indicies = [27, 35, 52, 70, 95, 120, 150, 300, 500];
+    PO_indicies = [180];
 elseif isequal(famName, 'Earth_Moon.CR3BP.L1_Vertical') % max - 512
     %%% don't see impacts until vertical orbits are 0.1415 tall, or 54,440 km
     %%% 160 is just a bunch of close misses

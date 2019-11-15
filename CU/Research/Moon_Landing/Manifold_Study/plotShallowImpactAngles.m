@@ -34,7 +34,9 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-plot_shallowImpactTrajectories = 1;
+useImpactSpeedColor = 1;
+
+plot_shallowImpactTrajectories  = 1;
 
 % ========================================================================
 %%% Setup
@@ -42,17 +44,22 @@ plot_shallowImpactTrajectories = 1;
 % -------------------------------------------------
 %%% Preferences
 % -------------------------------------------------
-headingLength = 6;
+headingLength = 8;
 
 % -------------------------------------------------
 %%% Choose data file
 % -------------------------------------------------
-% dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_Vertical.nodes1.txt';
-% dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
+% dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_Lyapunov.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_Vertical.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_All.nodes2000.txt';
 
-dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Lyapunov.nodes2000.txt';
 % dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt'; % n_shallowImpacts = 197;
-% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Lyapunov.nodes2000.txt'; % n_shallowImpacts = 197;
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_All.nodes2000.txt';
+
+
 
 
 
@@ -80,6 +87,16 @@ if contains(dataFile,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; prms.J4p = primary.J4; prms.J6p = primary.J6; prms.J2s = secondary.J2;
 end
 
+% -------------------------------------------------
+%%% Colors for impact speed
+% -------------------------------------------------
+color1 = colors.grn2;
+color2 = colors.blue2;
+% color1 = colors.blue2;
+% color2 = colors.red3;
+
+colorDiff = color2 - color1;
+colorBarColors = colorScale([color1; color2],100);
 % -------------------------------------------------
 %%% Load PO family data
 % -------------------------------------------------
@@ -114,13 +131,30 @@ options                  = odeset('RelTol',tol,'AbsTol',tol);
 %%% Get number of impacts
 n_shallowImpacts = size(shallowAngleImpactData,1);
 % 989
-% n_shallowImpacts = 197;
+% n_shallowImpacts = 250;
+
+%%% Get min and max landing speeds
+maxLandingSpeed_mps = max(shallowAngleImpactData(1:n_shallowImpacts, c_landingVel_mps));
+minLandingSpeed_mps = min(shallowAngleImpactData(1:n_shallowImpacts, c_landingVel_mps));
+
 
 %%% Generate figure
 figure('position', [156 385 560 420]); hold all
 xlim([-1, 1] .* 185)
 ylim([-1, 1] .* 95)
 PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 18, 'LaTex')
+
+if useImpactSpeedColor
+    cbar1 = colorbar;
+    cbar1.FontName     = 'Arial';
+    cbar1.FontSize     = 10;
+    cbar1.Ticks        = linspace(1e-5, 1, 5);
+    cbar1.TickLabels   = num2cell(round(linspace(minLandingSpeed_mps, maxLandingSpeed_mps, 5)));
+    cbar1.Label.String = {'Impact Speed, m/s'};
+    cbar1.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
+    cbar1.Label.Position = [0.7, 1.05, 0];
+    colormap(colorBarColors)
+end
 % 
 % for impact_i = 1:n_shallowImpacts
 %     plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',17,...
@@ -150,29 +184,45 @@ for impact_i = 1:n_shallowImpacts
     
     headingVec = headingVec.*scaling;
     
+    
     % --------------------------
     % Plot the heading line
     % --------------------------
     xs = [shallowAngleImpactData(impact_i,c_lon), shallowAngleImpactData(impact_i,c_lon) + headingVec(1)];
     ys = [shallowAngleImpactData(impact_i,c_lat), shallowAngleImpactData(impact_i,c_lat) + headingVec(2)];
-    plot(xs, ys, 'color', colors.std.ltred, 'linewidth', 1)
+    if useImpactSpeedColor
+        landingSpeedFrac = (shallowAngleImpactData(impact_i, c_landingVel_mps) - minLandingSpeed_mps) / (maxLandingSpeed_mps - minLandingSpeed_mps);
+        impactSpeedColor_i = color1 + colorDiff.*landingSpeedFrac;
+        plot(xs, ys, 'color', impactSpeedColor_i, 'linewidth', 1.5)
+    else
+        plot(xs, ys, 'color', colors.ltred, 'linewidth', 1.5)
+    end
+    
+    
     
     
     % --------------------------
     % Plot the lat/lon impact point (iteratively)
     % --------------------------
-    if n_shallowImpacts ~= size(shallowAngleImpactData,1)
-        plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',8,...
-        'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+    if (n_shallowImpacts ~= size(shallowAngleImpactData,1)) || (useImpactSpeedColor == 1)
+        if useImpactSpeedColor
+            plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',8,...
+                'markeredgecolor',colors.black,'markerfacecolor',impactSpeedColor_i)
+        else
+            plot(shallowAngleImpactData(impact_i, c_lon), shallowAngleImpactData(impact_i, c_lat), '.','markersize',8,...
+                'markeredgecolor',colors.red,'markerfacecolor',colors.red)
+        end
+        
     end
+    
 end
 
 % --------------------------
 % Plot the lat/lon impact point (all at once)
 % --------------------------
-if n_shallowImpacts == size(shallowAngleImpactData,1)
+if n_shallowImpacts == size(shallowAngleImpactData,1) && (useImpactSpeedColor == 0)
     plot(shallowAngleImpactData(:, c_lon), shallowAngleImpactData(:, c_lat), '.','markersize',8,...
-        'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.red)
+        'markeredgecolor',colors.red,'markerfacecolor',colors.red)
 end
 
 % ========================================================================
@@ -186,12 +236,12 @@ if plot_shallowImpactTrajectories
     parfor impact_i = 1:n_shallowImpacts
         X0_n = X0s_n(impact_i,:)';
         Tf_n = Tfs_n(impact_i);
-        
+
         [~, X_n] = ode113(@Int_CR3Bn, [0, Tf_n], X0_n, options, prms);
-        
+
         trajectories{impact_i} = X_n;
     end
-    
+
     figure('position', [717 385 560 420]); hold all
     PlotBoi3_CR3Bn(20)
     axis equal
@@ -199,6 +249,7 @@ if plot_shallowImpactTrajectories
     for impact_i = 1:n_shallowImpacts
         plot3(trajectories{impact_i}(:,1), trajectories{impact_i}(:,2), trajectories{impact_i}(:,3), 'r', 'linewidth', 0.5)
     end
+
 end
 
 

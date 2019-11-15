@@ -39,14 +39,15 @@ PO_ICs = get_PO_ICs();
 % -------------------------------------------------
 %%% Systems
 % -------------------------------------------------
-systemNames = ['Earth_Moon.CR3BP',...
+systemNames = {'Earth_Moon.CR3BP',...
                'Jupiter_Europa.CR3BP',...
                'Saturn_Ganymede.CR3BP',...
                'Saturn_Enceladus.CR3BP',...
-               'Uranus_Triton.CR3BP'];
-
+               'Uranus_Triton.CR3BP'};
+% systemNames = {'Jupiter_Europa.CR3BP'};
+           
 for sys_i = 1:length(systemNames)
-    sysName = systemNames(sys_i);
+    sysName = systemNames{sys_i};
     
     % --------------------------
     % Set primary & secondary
@@ -74,44 +75,25 @@ for sys_i = 1:length(systemNames)
     % --------------------------
     %%% Calculate Jacobi constant of L2
     [JC_L2] = JacobiConstantCalculator(prms.u, rLPs_n(2,:), [0,0,0]);
+    JC_L2 = getJacobiConstant_ZH([1-prms.u, prms.R2, 0, 0, 0, 0], prms);
     
     %%% Calculat JC on surface
-    JC_spx = getJacobiConstant_ZH([1-prms.u+prms.R2, 0, 0, 0, 0, 0], prms);
-    JC_smx = getJacobiConstant_ZH([1-prms.u-prms.R2, 0, 0, 0, 0, 0], prms);
+%     JC_spx = getJacobiConstant_ZH([1-prms.u+prms.R2, 0, 0, 0, 0, 0], prms);
+%     JC_smx = getJacobiConstant_ZH([1-prms.u-prms.R2, 0, 0, 0, 0, 0], prms);
     JC_spy = getJacobiConstant_ZH([1-prms.u, prms.R2, 0, 0, 0, 0], prms);
-    JC_smy = getJacobiConstant_ZH([1-prms.u, -prms.R2, 0, 0, 0, 0], prms);
+%     JC_smy = getJacobiConstant_ZH([1-prms.u, -prms.R2, 0, 0, 0, 0], prms);
     
-    
-    
-    warning('finish this and also make a plot in plotShallow
-% % % %     %%% Calculate Jacobi constant of L2
-% % % %     [JC_L2] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
-% % % % 
-% % % %     %%% Calculate difference between sc JC and JC_L2
-% % % %     dJC_L2 = JC_L2 - JC_sc;
-% % % % 
-% % % %     %%% Convert the difference in JC to difference in velocity
-% % % %     L2FlyoverVelocity_kps = sqrt(dJC_L2)*vNorm;
-% % % %     L2FlyoverVelocity_mps = L2FlyoverVelocity_kps * 1000;
+%     velocityDiff_spx_mps = sqrt(JC_spx - JC_L2) * vNorm * 1000
+%     velocityDiff_smx_mps = sqrt(JC_smx - JC_L2) * vNorm * 1000
+    velocityDiff_spy_mps = sqrt(JC_spy - JC_L2) * vNorm * 1000;
+%     velocityDiff_smy_mps = sqrt(JC_smy - JC_L2) * vNorm * 1000
 
-% % % %     %%% Calculate Jacobi constant of positive-x surface
-% % % %     x_posXSurface = 1 - prms.u + prms.R2;
-% % % %     [JC_posXSurface] = getJacobiConstant_ZH([x_posXSurface, 0, 0, 0, 0, 0], prms);
-% % % % 
-% % % %     %%% Calculate difference between sc JC and JC_L2
-% % % %     dJC = JC_sc - JC_posXSurface;
-% % % % 
-% % % %     %%% Make sure the surface is accessible
-% % % %     if dJC > 0
-% % % %         warning('Surface not reachable')
-% % % %         landingVelocity_mps = NaN;
-% % % %         return
-% % % %     end
-% % % % 
-% % % %     %%% Convert the difference in JC to difference in velocity
-% % % %     landingVelocity_mps = sqrt(abs(dJC)) * vNorm * 1000;
+    fprintf('============================================\n')
+    fprintf('%s\n',sysName)
+    fprintf('Minimum impact velocity from L2: %1.1f mps\n', velocityDiff_spy_mps)
+    
 end
-
+fprintf('============================================\n')
 
 
 % -------------------------------------------------
@@ -121,7 +103,9 @@ end
 
 
 
-
+warning('finish this and also make a plot in plotShallowImpactAngles.m that shows the manifolds propagated backwards')
+warning('With NRHOs, some give shallow impacts, but the stable manifolds won''t be useful.. need to think about this')
+warning('Also need to bin by impact speed')
 
 
 
