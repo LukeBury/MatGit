@@ -84,6 +84,7 @@ for sys_i = 1:length(systemNames)
     
     
     warning('finish this and also make a plot in plotShallowImpactAngles.m that shows the manifolds propagated backwards')
+    warning('With NRHOs, some give shallow impacts, but the stable manifolds won''t be useful.. need to think about this')
 % % % %     %%% Calculate Jacobi constant of L2
 % % % %     [JC_L2] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
 % % % % 

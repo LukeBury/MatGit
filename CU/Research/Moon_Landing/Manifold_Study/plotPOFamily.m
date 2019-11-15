@@ -35,7 +35,7 @@ plot_secondary = 1;
 plot_L1        = 0;
 plot_L2        = 0;
 
-plot_onlyOneOrbit    = 1;
+plot_onlyOneOrbit    = 0;
     chosenOrbitIndex = 389;
     
 plot_stabilityIndices = 1;

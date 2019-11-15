@@ -50,8 +50,9 @@ headingLength = 6;
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_Vertical.nodes1.txt';
 % dataFile = 'shallowImpacts.M.Saturn_Enceladus.CR3BP.L2_SHalo.nodes1.txt';
 
-% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
-dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt'; % n_shallowImpacts = 197;
+dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_SHalo.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Vertical.nodes2000.txt'; % n_shallowImpacts = 197;
+% dataFile = 'shallowImpacts.F.Saturn_Enceladus.CR3BP.L2_Lyapunov.nodes2000.txt'; % n_shallowImpacts = 197;
 
 
 
@@ -112,8 +113,8 @@ options                  = odeset('RelTol',tol,'AbsTol',tol);
 % ========================================================================
 %%% Get number of impacts
 n_shallowImpacts = size(shallowAngleImpactData,1);
-989
-n_shallowImpacts = 197;
+% 989
+% n_shallowImpacts = 197;
 
 %%% Generate figure
 figure('position', [156 385 560 420]); hold all

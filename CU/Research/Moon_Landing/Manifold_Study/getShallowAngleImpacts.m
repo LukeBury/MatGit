@@ -87,8 +87,8 @@ impactAngleColors = colorScale([colors.std.cyan; colors.std.mag], n_impactAngleB
 for bigLoop = 1:3
 
 %%% 3B System
-% famName_bodies = 'Earth_Moon';
-famName_bodies = 'Jupiter_Europa';
+famName_bodies = 'Earth_Moon';
+% famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
 % famName_bodies = 'Saturn_Enceladus';
 % famName_bodies = 'Neptune_Triton';
@@ -102,11 +102,11 @@ famName_bodies = 'Jupiter_Europa';
 % famName_PO_Family = 'L2_SHalo';
 
 if bigLoop == 1
-    famName_PO_Family = 'L2_Lyapunov';
+    famName_PO_Family = 'L1_Lyapunov';
 elseif bigLoop == 2
-    famName_PO_Family = 'L2_Vertical';
+    famName_PO_Family = 'L1_Vertical';
 elseif bigLoop == 3
-    famName_PO_Family = 'L2_SHalo';
+    famName_PO_Family = 'L1_SHalo';
 end
 
 % -------------------------------------------------
