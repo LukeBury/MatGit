@@ -49,6 +49,11 @@ headingLength = 8;
 % -------------------------------------------------
 %%% Choose data file
 % -------------------------------------------------
+% dataFile = 'shallowImpacts.F.Earth_Moon.CR3BP.L1_Lyapunov.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Earth_Moon.CR3BP.L1_Vertical.nodes2000.txt';
+% dataFile = 'shallowImpacts.F.Earth_Moon.CR3BP.L1_SHalo.nodes2000.txt';
+dataFile = 'shallowImpacts.F.Earth_Moon.CR3BP.L1_All.nodes2000.txt';
+
 % dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_Lyapunov.nodes2000.txt';
 % dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_Vertical.nodes2000.txt';
 % dataFile = 'shallowImpacts.F.Jupiter_Europa.CR3BP.L2_SHalo.nodes2000.txt';

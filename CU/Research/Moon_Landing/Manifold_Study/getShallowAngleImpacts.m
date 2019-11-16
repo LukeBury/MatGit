@@ -84,7 +84,7 @@ impactAngleBins_deg = [0, 3, 10, 20, 45, 90];
 n_impactAngleBins = length(impactAngleBins_deg) - 1;
 impactAngleColors = colorScale([colors.cyan; colors.mag], n_impactAngleBins);
 
-for bigLoop = 1:5
+for bigLoop = 1:6
 
 %%% 3B System
 % famName_bodies = 'Earth_Moon';
@@ -102,25 +102,23 @@ for bigLoop = 1:5
 % famName_PO_Family = 'L2_SHalo';
 
 if bigLoop == 1
-    famName_bodies    = 'Earth_Moon';
-    famName_PO_Family = 'L1_SHalo';
-    famName_aug       = 'L1_NHalo';
+    famName_bodies    = 'Jupiter_Ganymede';
+    famName_PO_Family = 'L2_Lyapunov';
 elseif bigLoop == 2
-    famName_bodies    = 'Jupiter_Europa';
-    famName_PO_Family = 'L2_SHalo';
-    famName_aug       = 'L2_NHalo';
+    famName_bodies    = 'Jupiter_Ganymede';
+    famName_PO_Family = 'L2_Vertical';
 elseif bigLoop == 3
     famName_bodies    = 'Jupiter_Ganymede';
     famName_PO_Family = 'L2_SHalo';
-    famName_aug       = 'L2_NHalo';
 elseif bigLoop == 4
-    famName_bodies    = 'Saturn_Enceladus';
-    famName_PO_Family = 'L2_SHalo';
-    famName_aug       = 'L2_NHalo';
+    famName_bodies    = 'Neptune_Triton';
+    famName_PO_Family = 'L2_Lyapunov';
 elseif bigLoop == 5
     famName_bodies    = 'Neptune_Triton';
+    famName_PO_Family = 'L2_Vertical';
+elseif bigLoop == 6
+    famName_bodies    = 'Neptune_Triton';
     famName_PO_Family = 'L2_SHalo';
-    famName_aug       = 'L2_NHalo';
 end
 
 % -------------------------------------------------
@@ -128,7 +126,6 @@ end
 % -------------------------------------------------
 %%% Create family name
 famName = [famName_bodies, '.CR3BP.', famName_PO_Family];
-famName_aug = [famName_bodies, '.CR3BP.', famName_aug];
 
 %%% Set primary & secondary
 [primary, secondary] = assignPrimaryAndSecondary_CR3BP(famName, bodies);
@@ -212,8 +209,6 @@ for PO_index = PO_indicies
     % --------------------------
     %%% Grab IC
     X0_PO_i_n = POFamilyData(PO_index, c_x0_n:c_zd0_n)';
-    X0_PO_i_n(3) = -X0_PO_i_n(3);
-    X0_PO_i_n(6) = -X0_PO_i_n(6);
     Tp_PO_i_n = POFamilyData(PO_index, c_Tp_n);
     
     %%% Integrate to get manifold nodes and state transition matrices
@@ -439,7 +434,7 @@ end
 % -------------------------------------------------
 if save_data
     %%% Create File Name
-    filename_shallowImpact = fullfile(savePath, sprintf('shallowImpacts.%s.%s.nodes%1.0f', computerTag, famName_aug, n_nodes));
+    filename_shallowImpact = fullfile(savePath, sprintf('shallowImpacts.%s.%s.nodes%1.0f', computerTag, famName, n_nodes));
 
     %%% If this file already exists, append an integer to the filename
     fileAlreadyExists = 1;
@@ -474,21 +469,23 @@ end % save_data
 % ========================================================================
 tocWhole = toc(ticWhole);
 
+if isequal(computer,'GLNXA64')
+    receiver = '6052547400@vtext.com';
+    subject  = sprintf('Fortuna run complete!');
+    message  = sprintf('%s\nEllapsed time: %1.0f minutes\n\n Great job, buddy',famName,tocWhole/60);
+    sendEmailFromMatlab(receiver, subject, message)
+end
+
 end % bigLoop
 
 if isequal(computer,'MACI64')
     fprintf('Elapsed time: %1.4f seconds\n',tocWhole)
-elseif isequal(computer,'GLNXA64')
-    receiver = '6052547400@vtext.com';
-    subject  = sprintf('Fortuna run complete!');
-    message  = sprintf('Ellapsed time: %1.0f minutes\n\n Great job, buddy',tocWhole/60);
-    sendEmailFromMatlab(receiver, subject, message)
 end
 
 
 
 
-
+famName
 
 
 
