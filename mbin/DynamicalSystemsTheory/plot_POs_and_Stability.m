@@ -1,4 +1,322 @@
-c
+% ========================================================================
+%%% Description
+% ========================================================================
+% For plotting families of POs and describing the bifurcations that occur
+% within them. For plotting, designed to integrate the trajectories in
+% parallel, but the 'parfor' can be switched to 'for' if small, fast
+% batches are desired
+
+% Created: 12/16/20
+% Author : Luke Bury, luke.bury@colorado.edu
+% ========================================================================
+%%% Initialization
+% ========================================================================
+clear
+clc
+close all
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
+ticWhole = tic;
+
+% ========================================================================
+%%% Importing Data
+% ========================================================================
+%%% General data on solar system bodies
+bodies = getBodyData(mbinPath);
+
+%%% Color options/schemes
+colors = get_colors();
+
+
+%%% Periodic orbit ICs
+PO_ICs = get_PO_ICs();
+
+% ========================================================================
+%%% Run Switches
+% ========================================================================
+plot_family        = true;
+plot_energy        = true;
+plot_stability     = true;
+    check_for_false_Stability_Indices = false; % Warning, this takes a while
+print_bifurcations = false;
+    plot_BrouckeDiagram = false;
+
+check_Tp_monotonic = false;
+
+study_missionUtility = false; % Warning, this takes a while
+
+% ========================================================================
+%%% Setup
+% ========================================================================
+% -------------------------------------------------
+%%% Personal options
+% -------------------------------------------------
+
+
+% -------------------------------------------------
+%%% Choose data
+% -------------------------------------------------
+% family = 'Earth_Moon.CR3BP.L2_SHalo.txt';
+% family = 'Earth_Moon.CR3BP.L2_L_1T_1P2.txt';
+% family = 'Earth_Moon.CR3BP.L2_L_1T_2P2.txt';
+% family = 'Earth_Moon.CR3BP.L2_L_1T_3P2.txt';
+% family = 'Earth_Moon.CR3BP.L2_L_1T_4P2.txt';
+% family = 'Earth_Moon.CR3BP.Apollo.txt';
+
+
+% family = 'Jupiter_Europa.CR3BP.L2_Lyapunov.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_NHalo.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_SHalo.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_1P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_3P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2.txt'; % Butterfly
+% % % % % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P4.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P3.txt'; % the end of this is the 2P2 bifurcation from LoPO_2P2_1T (so this is also LoPO_2P2_1T_2P2)
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P2.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_2P2.txt'; 
+% % % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_2P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_2P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_2T.txt'; % Full Axial family (Also L2_V_T)
+% family = 'Jupiter_Europa.CR3BP.L2_L_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_L_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.L2_Vertical.txt';
+
+% family = 'Jupiter_Europa.CR3BP.DRO.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_1P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_1P4_1P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_1P4_1P4_1T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_1P3_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P3_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P3_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P4_1T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DRO_2P4_2T.txt'; 
+
+family = 'Jupiter_Europa.CR3BP.DPO.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_1P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_1P4_1T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_2P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_3P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_2P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_3P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_3P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_3P4_symmetricAboutXb2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_4P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_4P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO_4P2.txt';  % THIS IS DPO_3P2 FROM THE OTHER SIDE
+% family = 'Jupiter_Europa.CR3BP.DPO_5P2.txt';  % THIS IS LoPO_3P2 FROM THE OTHER SIDE
+% family = 'Jupiter_Europa.CR3BP.DPO_2T.txt'; 
+
+% family = 'Jupiter_Europa.CR3BP.LoPO.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_1P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_2P2_1T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_2P4.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_3P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.LoPO_3P4.txt'; 
+
+% family = 'Jupiter_Europa.CR3BP.Hg1.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg1_1P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg1_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg1_1P3.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg1_1T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg1_2T.txt'; 
+
+% family = 'Jupiter_Europa.CR3BP.Hg2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg2_1P2.txt';
+% family = 'Jupiter_Europa.CR3BP.Hg2_2P2.txt';
+% family = 'Jupiter_Europa.CR3BP.Hg2_1P3.txt';
+% family = 'Jupiter_Europa.CR3BP.Hg2_2T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg2_3T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg2_5T.txt';
+
+% family = 'Jupiter_Europa.CR3BP.Se7.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_2P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_2T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_3T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_5P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_6P2.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_5T.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Se7_6T.txt'; 
+
+% family = 'Jupiter_Europa.CR3BP.Hg1_full?.txt'; 
+% family = 'Jupiter_Europa.CR3BP.Hg3.txt'; 
+
+
+
+% 50 mps l2 flythrough velocity => 3.003595836097908
+% --------------------------
+% Actually load family
+% --------------------------
+%%% Path from mbin to data
+dataPathFromMBin = '/Data/InitialConditions/PO_Families/';
+
+%%% PO data file
+PO_datafile = [mbinPath, dataPathFromMBin, family];
+% -------------------------------------------------
+%%% Set up parameters
+% -------------------------------------------------
+%%% Set primary and secondary bodies
+[primary, secondary] = assignPrimaryAndSecondary_CR3BP(family, bodies);
+
+%%% Normalizing constants
+[rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
+
+%%% prms for integration
+prms.u  = secondary.MR;
+prms.R2 = secondary.R_n;
+
+if contains(family,'.CR3BP.')
+    prms.n    = 1;
+    rLPs_n = EquilibriumPoints(prms.u, prms.n);
+end
+
+%%% Integration options
+tol = 1e-13;
+options = odeset('RelTol',tol,'AbsTol',tol);
+
+% -------------------------------------------------
+%%% Load data
+% -------------------------------------------------
+%%% Load the data file
+PO_data = dlmread(PO_datafile,',',1,0);
+
+%%% Grab header line
+fid = fopen(PO_datafile, 'rt');  %the 't' is important!
+header = fgetl(fid);
+fclose(fid);
+
+%%% Number of ICs
+n_POs = size(PO_data,1);
+
+%%% Indices for plotting purposes
+PO_indices = linspace(1, n_POs, n_POs);
+% --------------------------
+% Create column specifiers
+% --------------------------
+PO_header_2020 = 'x0,y0,z0,xd0,yd0,zd0,Tp,JC,stabilityIndex1,stabilityIndex2,alpha,beta,impactFlag,error';
+
+if contains(header, PO_header_2020)
+    c_x0 = 1;   c_y0 = 2;   c_z0 = 3;
+    c_xd0 = 4;  c_yd0 = 5;  c_zd0 = 6;
+    c_Tp = 7;   c_JC = 8;   c_S1 = 9;   c_S2 = 10;
+    c_alpha = 11;   c_beta = 12;    c_impactFlag = 13;
+    c_error = 14;
+end
+
+% ========================================================================
+%%% Stability Analysis
+% ========================================================================
+if plot_energy
+% % %     %%% Calculate approximate landing velocities
+% % %     [landingVelocities_mps] = JC_2_approxLandingVelocity(PO_data(:, c_JC), prms, vNorm);
+% % %     
+% % %     %%% Plot Jacobi constant and corresponding approximate landing velocity vs Tp
+% % %     
+% % %     
+% % %     figure; hold all
+% % %     yyaxis left
+% % %     plot3(PO_data(:, c_Tp), PO_data(:, c_JC), PO_indices,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
+% % %     PlotBoi2('','Jacobi Constant',26,'LaTex')
+% % %     yyaxis right
+% % %     plot3(PO_data(:, c_Tp), landingVelocities_mps, PO_indices,'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred)
+% % %     PlotBoi2('$T_P$','+$x$ Landing Velocity, $m/s$',26,'LaTex')
+   
+    
+    %%% Plot Jacobi constant and Tp
+    figure; hold all
+    plot3(PO_data(:, c_Tp), PO_data(:, c_JC), PO_indices,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
+    PlotBoi2('$T_P$','Jacobi Constant',26,'LaTex')
+end
+
+if plot_stability    
+    figure('position',[209 322 948 302])
+    subplot(1,2,1); hold all
+    p1 = plot3(PO_data(:, c_JC), abs(PO_data(:, c_S1)), PO_indices,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot3(PO_data(:, c_JC), abs(PO_data(:, c_S2)), PO_indices,'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
+    plot3(unique([min(PO_data(:, c_JC)) max(PO_data(:, c_JC))]),[2 2], [1 1],'k','linewidth',1)
+    PlotBoi2('Jacobi Constant','Stability Indices',26,'LaTex')
+    legend([p1 p2],'S_1','S_2','FontSize',14)
+    xlim(unique([min(PO_data(:, c_JC)) max(PO_data(:, c_JC))]))
+    view(0,90)
+    
+    subplot(1,2,2); hold all
+    p1 = plot3(PO_data(:, c_JC), abs(PO_data(:, c_S1)), PO_indices,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot3(PO_data(:, c_JC), abs(PO_data(:, c_S2)), PO_indices,'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
+    plot3(unique([min(PO_data(:, c_JC)) max(PO_data(:, c_JC))]),[2 2], [1 1],'k','linewidth',1)
+    PlotBoi2('Jacobi Constant','',26,'LaTex')
+    ylim([0 4])
+    xlim(unique([min(PO_data(:, c_JC)) max(PO_data(:, c_JC))]))
+    view(0,90)
+    
+    %%% Recalculate stability
+    if 1+1==1
+%         stm0_colVec = reshape(eye(6),36,1);
+%         newStabilityIndices = nan(n_POs,2);
+%         for kk = 1:n_POs
+%             [~, X_new] = ode113(@Int_CR3BnSTM, [0, PO_data(kk, c_Tp)], [PO_data(kk, c_x0:c_zd0)'; stm0_colVec], options, prms);
+%             stm_tf_t0                           = reshape(X_new(end,7:42),6,6);
+%             monodromy                           = stm_tf_t0;
+%             [eigenVectors_new, eigenValues_new] = eig(monodromy);
+%             [S1, S2]                            = getStabilityIndices(diag(eigenValues_new));
+%             newStabilityIndices(kk,:)          = [S1, S2];
+%         end
+    end
+    
+    %%% Check for false positives of stability (where complex components
+    %%% lie off the unit circle so magnitude is greater than one
+    if check_for_false_Stability_Indices
+        stm0_colVec = reshape(eye(6),36,1);
+%         newStabilityIndices = nan(n_POs,2);
+        for kk = 1:n_POs
+            
+            if max(abs([PO_data(kk, c_S1), PO_data(kk, c_S2)])) < 11
+            
+                [~, X_new] = ode113(@Int_CR3BnSTM, [0, PO_data(kk, c_Tp)], [PO_data(kk, c_x0:c_zd0)'; stm0_colVec], options, prms);
+                stm_tf_t0                           = reshape(X_new(end,7:42),6,6);
+                monodromy                           = stm_tf_t0;
+                [eigenVectors_new, eigenValues_new] = eig(monodromy);
+                [S1, S2]                            = getStabilityIndices(diag(eigenValues_new));
+                if (max(rowNorm(diag(eigenValues_new))) > max(abs([S1,S2])))
+                    warning('Stability indices may not be representative ... May have large imaginary components')
+                    kk
+                    break
+                end
+            end
+%             newStabilityIndices(kk,:)          = [S1, S2];
+        end
+    end
+        
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if print_bifurcations
     [bifurcation_strings] = plot_BrouckeStabilityDiagram(PO_data(:, c_alpha), PO_data(:, c_beta), plot_BrouckeDiagram);
