@@ -65,6 +65,10 @@ for kk = 1:length(sysName)
     %%% Factor for normalizing distances
     rNorm = secondary.a; % n <-> km
     
+    %%% Getting normalized mean motion
+%     tNorm = sqrt((rNorm^3)/(bodies.constants.G*(primary.mass + secondary.mass)));
+%     prms.n = secondary.meanMot * tNorm;
+    
     %%% Setting parameters structure
     prms.u = secondary.MR;
     prms.R1 = primary.R / rNorm;
@@ -73,17 +77,26 @@ for kk = 1:length(sysName)
 %     prms.J4p = primary.J4;
 %     prms.J6p = primary.J6;
     prms.J2s = secondary.J2;
+
+
+%     prms.u = 0.1899309048e-6;
+%     prms.R1 = 60268/238042;
+%     prms.R2 = 252.1/238042;
+%     prms.J2p = 1.6298e-2;
+%     prms.J2s = 2.5e-3;
+    prms.n = sqrt(1 + (3/2)*((1-prms.u)*(prms.R1^2)*prms.J2p + prms.u*(prms.R2^2)*prms.J2s));
     
     %%% Equillibrium Points
-    rLPs_n_van = EquilibriumPoints(prms.u, 1:3);
+    rLPs_n_van = EquilibriumPoints(prms.u, 1, 1:3);
     rLPs_n_ZH  = collinearEquilibriumPoints_ZH(prms);
     
     dL123_n = rLPs_n_ZH(:,1) - rLPs_n_van(:,1);
     dL123 = dL123_n .* rNorm;
     
     fprintf('%s\n',sysName_k)
-%     fprintf('dL1n: %1.3e,\tdL2n: %1.3e,\tdL3n: %1.3e\n', dL123_n(1), dL123_n(2), dL123_n(3))
+    fprintf('dL1n: %1.3e,\tdL2n: %1.3e,\tdL3n: %1.3e\n', dL123_n(1), dL123_n(2), dL123_n(3))
     fprintf('dL1:  %1.3f,\t\tdL2:  %1.3f,\t\tdL3:  %1.3f km\n', dL123(1), dL123(2), dL123(3))
+    fprintf('%1.3f      & %1.3f      & %1.3f \n', dL123(1), dL123(2), dL123(3))
     fprintf('\n============================================================\n')
 
 end % kk = 1:length(sysName)
@@ -107,6 +120,10 @@ for kk = 1:2
     %%% Factor for normalizing distances
     rNorm = secondary.a; % n <-> km
     
+    %%% Getting normalized mean motion
+    tNorm = sqrt((rNorm^3)/(bodies.constants.G*(primary.mass + secondary.mass)));
+    prms.n = secondary.meanMot * tNorm;
+    
     %%% Setting parameters structure
     prms.u = secondary.MR;
     prms.R1 = primary.R / rNorm;
@@ -117,7 +134,7 @@ for kk = 1:2
     prms.J2s = secondary.J2;
     
     %%% Equillibrium Points
-    rLPs_n_van = EquilibriumPoints(prms.u, 1:3);
+    rLPs_n_van = EquilibriumPoints(prms.u, 1, 1:3);
     rLPs_n_ZH  = collinearEquilibriumPoints_ZH(prms);
     
     dL123_n = rLPs_n_ZH(:,1) - rLPs_n_van(:,1);
@@ -173,30 +190,41 @@ fprintf('\n(Elapsed time: %1.4f seconds)\n',tocWhole)
 
 
 
+%%% Set primary & secondary
+[primary, secondary] = assignPrimaryAndSecondary_CR3BP('Saturn_Enceladus', bodies);
 % 
-% clc
-% 
-% for kk = 1:length(sysName)
-%     clear prms
-%     sysName_k = sysName{kk};
-%     
-%     %%% Set primary & secondary
-%     [primary, secondary] = assignPrimaryAndSecondary_CR3BP(sysName_k, bodies);
-%     
-% %     rNorm = secondary.a; % n <-> km
-% %     tNorm = 1/secondary.meanMot; % n <-> sec
-% 
-% %     fprintf('%s\n',sysName_k)
-% %     fprintf('dL1n: %1.3e,\tdL2n: %1.3e,\tdL3n: %1.3e\n', dL123_n(1), dL123_n(2), dL123_n(3))
-%     fprintf('%8s\t& %1.1f\t& %1.4e\t& %1.0f\t& %1.8e\t& %1.8f\\\\\n',secondary.title, secondary.R, secondary.MR, secondary.a, secondary.meanMot, secondary.J2)
-% %     fprintf('\n============================================================\n')
-% 
-% end % kk = 1:length(sysName)
-% 
-% 
-% 
+% prms.u = secondary.MR;
+% prms.R1 = primary.R;
+% prms.R2 = 252.1;
+% secondary.a = 238042;
+% rNorm = secondary.a;
+% prms.J2p = 1.6298e-2;
+% prms.J2s = 2.5e-3;
+
+prms.u = 0.19e-6;
+secondary.a = 238042;
+rNorm = secondary.a;
+prms.R1 = 60268/rNorm;
+prms.R2 = 252.1/rNorm;
+prms.J2p = 1.6298e-2;
+prms.J2s = 2.5e-3;
+% prms.n = sqrt(1 + (3/2)*((1-prms.u)*(prms.R1^2)*prms.J2p + prms.u*(prms.R2^2)*prms.J2s));
+% prms.n = sqrt(1 + (3/2)*((prms.R1^2)*prms.J2p + (prms.R2^2)*prms.J2s));
+prms.n = sqrt(1 + (3/2)*((prms.R1^2)*prms.J2p/(secondary.a^2) + (prms.R2^2)*prms.J2s/(secondary.a^2)));
+
+%%% Equillibrium Points
+rLPs_n_van = EquilibriumPoints(prms.u, 1, 1:3);
+rLPs_n_ZH  = collinearEquilibriumPoints_ZH(prms);
+
+dL123_n = rLPs_n_ZH(:,1) - rLPs_n_van(:,1);
+dL123 = dL123_n .* rNorm;
+
+% fprintf('%s\n',sysName_k)
+fprintf('dL1n: %1.3e,\tdL2n: %1.3e,\tdL3n: %1.3e\n', dL123_n(1), dL123_n(2), dL123_n(3))
+fprintf('dL1:  %1.3f,\t\tdL2:  %1.3f,\t\tdL3:  %1.3f km\n', dL123(1), dL123(2), dL123(3))
+% fprintf('%1.3f      & %1.3f      & %1.3f \n', dL123(1), dL123(2), dL123(3))
 
 
 
-
+% page 13
 

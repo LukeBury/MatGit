@@ -11,7 +11,7 @@
 % ========================================================================
 clear
 clc
-close all
+% close all
 mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
 POfamilyPath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
 addpath(genpath(mbinPath))
@@ -35,37 +35,44 @@ PO_ICs = get_PO_ICs();
 plot_POs_alone = 1;
 
 plot_unstable_manifolds = 1;
-plot_stable_manifolds   = 1;
+plot_stable_manifolds   = 0;
 
 % ========================================================================
 %%% Setup
 % ========================================================================
+%%% Manifold Colors
+% color_stable   = colors.red;
+% color_unstable = colors.grn;
+
+color_stable   = colors.red2;
+color_unstable = colors.blue2;
+
 % -------------------------------------------------
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
+% n_nodes = 24;
 n_nodes = 50;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
 pertScale = 1e-8;
 
 %%% Set propagation time for unstable manifolds
-% Tf_manifolds_n = 4*pi;
-989
-Tf_manifolds_n = 3*pi;
+Tf_manifolds_n = 2.03*pi;
+% Tf_manifolds_n = 1.96*pi;
 
 %%% 3B System
-famName_bodies = 'Earth_Moon';
-% famName_bodies = 'Jupiter_Europa';
+% famName_bodies = 'Earth_Moon';
+famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
 % famName_bodies = 'Saturn_Enceladus';
 % famName_bodies = 'Neptune_Triton';
 
 %%% PO Family
-famName_PO_Family = 'L1_Lyapunov';
+% famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
-% famName_PO_Family = 'L2_Lyapunov';
+famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
 % famName_PO_Family = 'L2_SHalo';
 
@@ -88,9 +95,12 @@ prms.u     = secondary.MR;
 prms.rNorm = rNorm;
 prms.R1    = primary.R / rNorm;
 prms.R2    = secondary.R_n;
+prms.n     = 1;
 
 if contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; prms.J4p = primary.J4; prms.J6p = primary.J6; prms.J2s = secondary.J2;
+    warning('Add something for prms.n')
+    return
 end
 
 %%% Equillibrium Points
@@ -125,7 +135,7 @@ options                  = odeset('RelTol',tol,'AbsTol',tol);
 options_XZStop           = odeset('Event',@event_yEqualsZeroPastL2,'RelTol',tol,'AbsTol',tol);
 options_impactOrL1Escape = odeset('Event',@event_ImpactorL1Escape_CR3Bn,'RelTol',tol,'AbsTol',tol);
 options_impact           = odeset('Event',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
-
+options_xStop            = odeset('Event',@event_xEqualsSecondary_terminal, 'RelTol',tol,'AbsTol',tol);
 % -------------------------------------------------
 %%% Set PO family indices to study manifolds of
 % -------------------------------------------------
@@ -145,9 +155,12 @@ elseif isequal(famName, 'Earth_Moon.CR3BP.L1_SHalo') % max - 513
     %%% ~305 is last impact (not really, but effectively ..some around 370)
     PO_indicies = [2, 7, 18, 27, 40, 42, 48, 70, 110, 155, 170, 210, 230, 300];
 %     PO_indicies = [490];
+elseif isequal(famName, 'Jupiter_Europa.CR3BP.L1_Lyapunov')
+    PO_indicies = [52];
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Lyapunov')
 %     PO_indicies = [1, 5, 15, 17, 19, 21, 24, 29, 35, 42, 49, 59, 75, 100, 150, 220, 340, 510];
-    PO_indicies = [19];
+%     PO_indicies = [184];
+    PO_indicies = [81];
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Vertical') % max - 511
 %     PO_indicies = [2, 3, 5, 10, 14, 15, 17, 20, 25, 30, 50, 100]; % interesting things between 15 and 18 .. the manifold first grazes off the moon
 %     *** Should be integrating for 6 pi to get extra set of intersections
@@ -156,8 +169,8 @@ elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Vertical') % max - 511
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_SHalo') % max - 525
 %     PO_indicies = [5, 10, 15, 20, 25, 30, 35, 45, 60, 100];
 %     PO_indicies = [60, 70, 80, 90, 95, 100, 105, 110];
-    PO_indicies = [90, 91, 92, 93, 94, 95];
-    
+%     PO_indicies = [90, 91, 92, 93, 94, 95];
+    PO_indicies = [40];
 elseif isequal(famName, 'Jupiter_Ganymede.CR3BP.L2_Lyapunov') % max - 583
     %%% around 350 has large regions of shallow landing angles (4 different areas)
     PO_indicies = [1, 74, 79, 85, 86, 92, 100, 110, 150, 220, 350, 500];
@@ -198,7 +211,7 @@ if plot_POs_alone
     p.Position = [112 385 560 420];
     axis equal
     plotSecondary(secondary)
-    PlotBoi3_CR3Bn(20)
+    PlotBoi3_CR3Bn(26)
     view(0,90)
     
     for PO_index = PO_indicies
@@ -210,7 +223,7 @@ if plot_POs_alone
         [~, X_ref_PO] = ode113(@Int_CR3Bn, linspace(0, Tp_PO_i_n*2, 100000), X0_PO_i_n, options, prms);
         
         %%% Plot
-        plot3(X_ref_PO(:,1),X_ref_PO(:,2),X_ref_PO(:,3),'b','linewidth',1.5)
+        plot3(X_ref_PO(:,1),X_ref_PO(:,2),X_ref_PO(:,3),'k','linewidth',2)
     end
     
 end % plot_POs_from_chosen_indices
@@ -301,11 +314,24 @@ for PO_index = PO_indicies
         X0_man_stable_m_i   = X0_manNode_i_n - stableEigenvectors(:,node_i).*pertScale;
         
         %%% Integrate the manifolds
-        [~, X_man_unstable_p] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_p_i, options, prms);
-        [~, X_man_unstable_m] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_m_i, options, prms);
+%         [~, X_man_unstable_p] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_p_i, options, prms);
+%         [~, X_man_unstable_m] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_m_i, options, prms);
+%         
+%         [~, X_man_stable_p] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_p_i, options, prms);
+%         [~, X_man_stable_m] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_m_i, options, prms);
+
+%         [~, X_man_unstable_p] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_p_i, options_xStop, prms);
+%         [~, X_man_unstable_m] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_m_i, options_xStop, prms);
+%         
+%         [~, X_man_stable_p] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_p_i, options_xStop, prms);
+%         [~, X_man_stable_m] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_m_i, options_xStop, prms);
         
-        [~, X_man_stable_p] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_p_i, options, prms);
-        [~, X_man_stable_m] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_m_i, options, prms);
+        [~, X_man_unstable_p] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_p_i, options_impact, prms);
+        [~, X_man_unstable_m] = ode113(@Int_CR3Bn, [0, Tf_manifolds_n], X0_man_unstable_m_i, options_impact, prms);
+        
+        [~, X_man_stable_p] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_p_i, options_impact, prms);
+        [~, X_man_stable_m] = ode113(@Int_CR3Bn, [Tf_manifolds_n, 0], X0_man_stable_m_i, options_impact, prms);        
+        
         % --------------------------
         %%% Store manifolds for this PO
         % --------------------------
@@ -325,24 +351,39 @@ for PO_index = PO_indicies
 end
 
 
+
 for PO_i = 1:length(PO_indicies)
     
-    figure; hold all
+    figure(26); hold all
     axis equal
     plotSecondary(secondary)
-    PlotBoi3_CR3Bn(20)
+    PlotBoi3_CR3Bn(26)
     view(0,90)
-    for man_i = 1:n_nodes
+%     for man_i = 1:n_nodes
+    for man_i = 18
         if plot_unstable_manifolds
-            plot3(manifolds_unstable_p_n{PO_i}{man_i}(:,1), manifolds_unstable_p_n{PO_i}{man_i}(:,2), manifolds_unstable_p_n{PO_i}{man_i}(:,3),'r','linewidth',1)
-            plot3(manifolds_unstable_m_n{PO_i}{man_i}(:,1), manifolds_unstable_m_n{PO_i}{man_i}(:,2), manifolds_unstable_m_n{PO_i}{man_i}(:,3),'r','linewidth',1)
+%             p_u = plot3(manifolds_unstable_p_n{PO_i}{man_i}(:,1), manifolds_unstable_p_n{PO_i}{man_i}(:,2), manifolds_unstable_p_n{PO_i}{man_i}(:,3),'r','linewidth',1);
+%             plot3(manifolds_unstable_m_n{PO_i}{man_i}(:,1), manifolds_unstable_m_n{PO_i}{man_i}(:,2), manifolds_unstable_m_n{PO_i}{man_i}(:,3),'r','linewidth',1)
+%             p_u = plot3(manifolds_unstable_p_n{PO_i}{man_i}(:,1), manifolds_unstable_p_n{PO_i}{man_i}(:,2), manifolds_unstable_p_n{PO_i}{man_i}(:,3),'color', color_stable,'linewidth',1);
+% % %             p_u = plot3(manifolds_unstable_m_n{PO_i}{man_i}(:,1), manifolds_unstable_m_n{PO_i}{man_i}(:,2), manifolds_unstable_m_n{PO_i}{man_i}(:,3),'color', color_stable,'linewidth',1);
+            range = 1:335;
+            p_u = plot3(manifolds_unstable_m_n{PO_i}{man_i}(range,1), manifolds_unstable_m_n{PO_i}{man_i}(range,2), manifolds_unstable_m_n{PO_i}{man_i}(range,3),'color', color_stable,'linewidth',1);
         end
         if plot_stable_manifolds
-            plot3(manifolds_stable_p_n{PO_i}{man_i}(:,1), manifolds_stable_p_n{PO_i}{man_i}(:,2), manifolds_stable_p_n{PO_i}{man_i}(:,3),'g','linewidth',1)
-            plot3(manifolds_stable_m_n{PO_i}{man_i}(:,1), manifolds_stable_m_n{PO_i}{man_i}(:,2), manifolds_stable_m_n{PO_i}{man_i}(:,3),'g','linewidth',1)
+%             p_s = plot3(manifolds_stable_p_n{PO_i}{man_i}(:,1), manifolds_stable_p_n{PO_i}{man_i}(:,2), manifolds_stable_p_n{PO_i}{man_i}(:,3),'g','linewidth',1);
+%             plot3(manifolds_stable_m_n{PO_i}{man_i}(:,1), manifolds_stable_m_n{PO_i}{man_i}(:,2), manifolds_stable_m_n{PO_i}{man_i}(:,3),'g','linewidth',1)
+            p_s = plot3(manifolds_stable_p_n{PO_i}{man_i}(:,1), manifolds_stable_p_n{PO_i}{man_i}(:,2), manifolds_stable_p_n{PO_i}{man_i}(:,3),'color', color_unstable,'linewidth',1);
+%             p_s = plot3(manifolds_stable_m_n{PO_i}{man_i}(:,1), manifolds_stable_m_n{PO_i}{man_i}(:,2), manifolds_stable_m_n{PO_i}{man_i}(:,3),'color', color_unstable,'linewidth',1);
         end
     end
     
+    if (plot_unstable_manifolds == 1) && (plot_stable_manifolds == 0)
+        legend(p_u, 'Unstable manifold', 'FontSize', 16)
+    elseif (plot_unstable_manifolds == 0) && (plot_stable_manifolds == 1)
+        legend(p_s, 'Stable manifold', 'FontSize', 16)
+    elseif (plot_unstable_manifolds == 1) && (plot_stable_manifolds == 1)
+        legend([p_s, p_u], 'Stable manifold', 'Unstable manifold', 'FontSize', 16)
+    end
 end
 
 

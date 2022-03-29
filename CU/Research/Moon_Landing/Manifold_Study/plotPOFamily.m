@@ -35,9 +35,8 @@ plot_secondary = 1;
 plot_L1        = 0;
 plot_L2        = 0;
 
-plot_onlyOneOrbit    = 0;
-    chosenOrbitIndex = 389;
-    
+plot_onlyOneOrbit    = 1;
+    chosenOrbitIndex = 1;
 plot_stabilityIndices = 1;
 
 % ========================================================================
@@ -52,14 +51,14 @@ plot_stabilityIndices = 1;
 % family = 'Earth_Moon.CR3BP.L2_Lyapunov.txt';
 % family = 'Earth_Moon.CR3BP.L2_SHalo.txt';
 
-% family = 'Jupiter_Europa.CR3BP.L2_EasternAxial.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_Lyapunov.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_NHalo.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_SHalo.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_Vertical.txt';
+% family = 'Jupiter_Europa.CR3BP.L2_EasternAxial.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_WesternAxial.txt';
 % family = 'Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_Lyapunov.txt';
-% family = 'Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_NHalo.txt';
+% family = 'Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_SHalo.txt';
 % family = 'Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_Vertical.txt';
 
 % family = 'Jupiter_Ganymede.CR3BP.L2_Lyapunov.txt';
@@ -72,7 +71,7 @@ plot_stabilityIndices = 1;
 % family = 'Saturn_Enceladus.CR3BP.L2_EasternAxial.txt';
 % family = 'Saturn_Enceladus.CR3BP.L2_Lyapunov.txt';
 % family = 'Saturn_Enceladus.CR3BP.L2_NHalo.txt';
-family = 'Saturn_Enceladus.CR3BP.L2_SHalo.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_SHalo.txt';
 % family = 'Saturn_Enceladus.CR3BP.L2_Vertical.txt';
 % family = 'Saturn_Enceladus.CR3BP.L2_WesternAxial.txt';
 % family = 'Saturn_Enceladus.CR3BP.SLeadingSneakerHeel.txt';
@@ -87,7 +86,7 @@ family = 'Saturn_Enceladus.CR3BP.L2_SHalo.txt';
 
 % family = 'Neptune_Triton.CR3BP.L2_Lyapunov.txt';
 % family = 'Neptune_Triton.CR3BP.L2_Vertical.txt';
-% family = 'Neptune_Triton.CR3BP.L2_SHalo.txt';
+family = 'Neptune_Triton.CR3BP.L2_SHalo.txt';
 
 %%% Path from mbin to data
 dataPathFromMBin = '/Data/InitialConditions/PO_Families/';
@@ -98,7 +97,7 @@ PO_datafile = [mbinPath, dataPathFromMBin, family];
 % -------------------------------------------------
 %%% Plot Options
 % -------------------------------------------------
-lw = 0.5; % linewidth
+lw = 2; % linewidth
 
 % -------------------------------------------------
 %%% Set up the system
@@ -116,12 +115,13 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 %%% prms for integration
 prms.u    = secondary.MR;
 prms.R2_n = secondary.R_n;
+prms.n    = 1;
 
 
 
 %%% Equillibrium Points
 if contains(family,'.CR3BP.')
-    rLPs_n = EquilibriumPoints(prms.u);
+    rLPs_n = EquilibriumPoints(prms.u, 1);
 elseif contains(family,'.CR3BP_J2pJ4pJ6pJ2s.')
     rLPs_n = collinearEquilibriumPoints_ZH(prms);
     prms.J2p = primary.J2; 
@@ -130,6 +130,11 @@ elseif contains(family,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2s = secondary.J2;
     prms.R2 = secondary.R_n;
     prms.R1 = primary.R / rNorm;
+    
+    tNorm = sqrt((rNorm^3)/(bodies.constants.G*(primary.mass + secondary.mass)));
+    vNorm = rNorm/tNorm;
+    prms.n = secondary.meanMot * tNorm;
+
 end
 
 
@@ -165,6 +170,8 @@ trajs = cell(n_POs,1);
 
 %%% Create figure
 figure(837920); hold all
+% 989
+% figure(123456); hold all
 
 % -------------------------------------------------
 %%% Loop through conditions and integrate
@@ -173,6 +180,8 @@ if plot_onlyOneOrbit == 1
     orbitRange = chosenOrbitIndex;
 else
     orbitRange = 1:n_POs;
+%     989
+%     orbitRange = [6, 35, 50, 80, 95, 105, 112, 120, 138];
 end
 
 %%% Preallocate
@@ -206,15 +215,15 @@ for kk = orbitRange
         monodromy                           = stm_tf_t0;
         [eigenVectors_new, eigenValues_new] = eig(monodromy);
         [S1, S2]                            = getStabilityIndices(diag(eigenValues_new));
-        stabilityIndices(kk,:)          = [S1, S2];
+        stabilityIndices(kk,:)              = [S1, S2];
     end
     
     
     %%% Plot
     if contains(family,'.CR3BP.')
-        plot3(Xn_i(:,1),Xn_i(:,2),Xn_i(:,3),'r','linewidth',lw)
-    elseif contains(family,'.CR3BP_J2pJ4pJ6pJ2s.')
         plot3(Xn_i(:,1),Xn_i(:,2),Xn_i(:,3),'b','linewidth',lw)
+    elseif contains(family,'.CR3BP_J2pJ4pJ6pJ2s.')
+        plot3(Xn_i(:,1),Xn_i(:,2),Xn_i(:,3),'r','linewidth',lw)
     end
     
     
@@ -237,10 +246,10 @@ end
 axis equal
 
 if plot_L1 == 1
-    plot3(rLPs_n(1,1), rLPs_n(1,2), rLPs_n(1,3),'^','markerfacecolor',colors.std.grn,'markeredgecolor',colors.std.black,'markersize',8)
+    plot3(rLPs_n(1,1), rLPs_n(1,2), rLPs_n(1,3),'^','markerfacecolor',colors.grn,'markeredgecolor',colors.black,'markersize',8)
 end
 if plot_L2 == 1
-    plot3(rLPs_n(2,1), rLPs_n(2,2), rLPs_n(2,3),'^','markerfacecolor',colors.std.ltgrn,'markeredgecolor',colors.std.black,'markersize',8)
+    plot3(rLPs_n(2,1), rLPs_n(2,2), rLPs_n(2,3),'^','markerfacecolor',colors.ltgrn,'markeredgecolor',colors.black,'markersize',8)
 end
 
 % -------------------------------------------------
@@ -256,25 +265,25 @@ if plot_stabilityIndices == 1
     
     figure('position',[209 322 948 302])
     subplot(1,2,1); hold all
-%     p1 = plot(abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-%     p2 = plot(abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+%     p1 = plot(abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+%     p2 = plot(abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 %     plot([0 length(S1)],[2 2],'k','linewidth',1)
-    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
     PlotBoi2('Jacobi Constant','Stability Indices',18,'LaTex')
     legend([p1 p2],'S_1','S_2')
     xlim(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]))
     
     subplot(1,2,2); hold all
-%     p1 = plot(abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-%     p2 = plot(abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+%     p1 = plot(abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+%     p2 = plot(abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 %     plot([0 length(S1)],[2 2],'k','linewidth',1)
 %     PlotBoi2('PO index','',18,'LaTex')
 %     ylim([1.9 2.1])
 %     xlim([0 length(S1)])
-    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
     PlotBoi2('Jacobi Constant','',18,'LaTex')
     ylim([1.9 2.1])
@@ -285,16 +294,16 @@ if plot_stabilityIndices == 1
 %     
 %     figure('position',[209 322 948 302])
 %     subplot(1,2,1); hold all
-%     p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-%     p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+%     p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+%     p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 %     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
 %     PlotBoi2('Jacobi Constant','Stability Indices',18,'LaTex')
 %     legend([p1 p2],'S_1','S_2')
 %     xlim(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]))
 %     
 %     subplot(1,2,2); hold all
-%     p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-%     p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+%     p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+%     p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 %     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
 %     PlotBoi2('Jacobi Constant','',18,'LaTex')
 %     ylim([1.9 2.1])
@@ -307,6 +316,39 @@ end
 % ========================================================================
 tocWhole = toc(ticWhole);
 fprintf('Elapsed time: %1.4f seconds\n',tocWhole)
+
+
+
+
+%===== testing something
+% As it's coded in the nCR3BP, norm(Xn_i(1,1:3) - Xn_i(end,1:3)) = 1.019935959809836e-11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

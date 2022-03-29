@@ -1,5 +1,5 @@
-clear
-clc
+% clear
+% clc
 % close all
 mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
 moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
@@ -9,10 +9,12 @@ addpath(genpath(moonFuncsPath))
 % ========================================================================
 %%% Run switches
 % ========================================================================
-plot_secondary         = 1;
+plot_secondary         = 0;
 plot_secondaryGradient = 0;
 plot_system            = 0;
-plot_zvSurface         = 0;
+plot_zvSurface         = 1;
+plot_L1                = 0;
+plot_L2                = 0;
 
 % ========================================================================
 %%% Importing Data
@@ -27,10 +29,14 @@ colors = get_colors();
 %%% Setting up system
 % ========================================================================
 
-primary = bodies.mars;
-secondary = bodies.deimos;
+primary = bodies.jupiter;
+secondary = bodies.europa;
 
-L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+prms.u = secondary.MR;
+prms.n = 1;
+prms.R2_n = secondary.R_n;
+
+L123 = EquilibriumPoints(prms.u, prms.n,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -44,9 +50,10 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 % Plot Near Secondary
 % -------------------------------------------------
 if plot_secondary == 1
-dvLp_mps = 200; % 450?, 525, 650
+dvLp_mps = 300; % 450?, 525, 650
 
-[JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(2,:),[0,0,0]);
+% [JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(2,:),[0,0,0]);
+JC_Lp = getJacobiConstant_ZH([L123(2,:),0,0,0], prms);
 dJC_vel_kps = dvLp_mps/1000;
 dJC_Lp = (dJC_vel_kps/vNorm)^2;
 JC_scInitial = JC_Lp-dJC_Lp;
@@ -58,17 +65,21 @@ if isfield(secondary,'img') == 1
 else
     plotBody3(secondary.R_n,[1-secondary.MR,0,0],secondary.color,1)
 end
-PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+% PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+PlotBoi3_CR3Bn(26)
 axis equal
-plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
-plot3(L123(1,1),0,0,'^','markersize',5,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
+plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.black,'markerfacecolor',colors.grn);
+plot3(L123(1,1),0,0,'^','markersize',5,'markeredgecolor',colors.black,'markerfacecolor',colors.grn);
 prms.R2_n = secondary.R_n;
-plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
-plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
-% plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
-plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
+if plot_L1 == 1
+    plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.black, 1.5)
+end
+if plot_L2 == 1
+    plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.black, 1.5)
+end
+% plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.black, 1.5)
+plotCR3BP_Neck(prms,L123,JC_scInitial,600,200,colors.black,1.5)
 view(-38,30)
-
 end % plot_secondary
 
 % -------------------------------------------------
@@ -77,7 +88,7 @@ end % plot_secondary
 if plot_secondaryGradient == 1
 dvLp_mps_vec = [50, 150, 350];
 
-gradColors = colorScale([colors.std.ltred; colors.std.ltblue], 3);
+gradColors = colorScale([colors.ltred; colors.ltblue], 3);
     
 %%% Near Secondary
 figure; hold all
@@ -97,7 +108,7 @@ end
 
 PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
 axis equal
-plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
+plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.black,'markerfacecolor',colors.grn);
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
 view(-38,30)
 
@@ -139,17 +150,17 @@ for xk = 1:size(X_xy,1)
 end
 
 [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-    'color',colors.std.black,'linewidth',1.5);
+    'color',colors.black,'linewidth',1.5);
 
-plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.std.black,'markerfacecolor',colors.std.grn);
+plot3(L123(2,1),0,0,'^','markersize',5,'markeredgecolor',colors.black,'markerfacecolor',colors.grn);
 plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
 plotBodyTexture3(primary.R/rNorm, [-secondary.MR, 0, 0], primary.img)
 plot([L123(2,1) L123(2,1)],[-0.15 0.15],'r--','linewidth',1)
-PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+% PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+PlotBoi3_CR3Bn(26)
 axis equal
 view(0,90)
-xlim([0.8 1.15])
-ylim([-0.15 0.15])
+
 
 end % plot_system
 
@@ -169,7 +180,7 @@ zCont_max = 9*secondary.R_n;
 % Calculate Jacobi constant
 dvLp_mps = 150; % 450?, 525, 650
 
-[JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(2,:),[0,0,0]);
+JC_Lp = getJacobiConstant_ZH([secondary.MR,L123(2,:),0,0,0],prms);
 dJC_vel_kps = dvLp_mps/1000;
 dJC_Lp = (dJC_vel_kps/vNorm)^2;
 JC_scInitial = JC_Lp-dJC_Lp;
@@ -198,8 +209,8 @@ hold on
 % colormap(jet)
 p = patch(isosurface(x, y, z, U, v));
 % p.EdgeColor = 0.8 * ones(3,1);
-p.EdgeColor = 'None';
-% p.EdgeColor = colors.std.white;
+% p.EdgeColor = 'None';
+p.EdgeColor = colors.black;
 % p.FaceLighting = 'gouraud';
  
 ver = p.Vertices;
@@ -210,18 +221,18 @@ for ii = 1:nVer
 end
 p.FaceVertexCData = c;
 % p.FaceColor = 'interp';
-p.FaceColor = colors.std.blue;
+p.FaceColor = colors.blue;
 
 % plot3([-2 2],[0 0],[0 0], 'k-')
 % plot3([0 0],[-2 1],[0 0], 'k-')
 % plot3([0 0],[0 0],[-1.5 2], 'k-')
 
-PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
-axis('equal')
-% camva(7)
-view([30,30])
-% light('Position',[1 -1 0])
-light('Position',[-1 -1 0.5])
+% PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+% axis('equal')
+% % camva(7)
+% view([30,30])
+% % light('Position',[1 -1 0])
+% light('Position',[-1 -1 0.5])
 
 end % plot_neckSurface
 

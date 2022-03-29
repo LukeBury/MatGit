@@ -1,9 +1,9 @@
 function [lat_deg, lon_deg] = BCR2latlon(r_BCR, body, MR)
-%%% Given position vector, returns latitdue and longitude in RADIANS
+%%% Given position vector, returns latitdue and longitude in degrees
 %%% Inputs
-%         (1) r    - [3x1] body-centered-rotating position coordinates for s/c
-%         (2) body - 'primary' or 'secondary'
-%         (3) MR   - mass ratio of 3-body system
+%         (1) r_BCR - [3x1] body-centered-rotating position coordinates for s/c
+%         (2) body  - 'primary' or 'secondary'
+%         (3) MR    - mass ratio of 3-body system
 %%% Outputs
 %         (1) lat_deg  - latitude (deg)
 %         (2) lon_deg  - longitude (deg)
@@ -24,8 +24,7 @@ elseif isequal(body,'secondary')
 end
 
 
-%%% Define axes
-x = [1 0 0]';
+%%% Define z axis
 z = [0 0 1];
 
 %%% Compute latitudes and longitudes

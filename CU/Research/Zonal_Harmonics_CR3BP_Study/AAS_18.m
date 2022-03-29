@@ -77,7 +77,7 @@ ICs = {'1:Primary','2:Secondary','3:L-Pt [2x1]-(1,2,3,4(1-J2),5(2-J2),6(3-J2))',
 %     bodies.jupiter, bodies.europa, [2;2], [.5-bodies.europa.MR,sqrt(3)/2,0;0,0,0], [.5-bodies.europa.MR,sqrt(3)/2,0;0,0,0]       60, 3600*24*8,'testing';... % IC_i = 12
    };
 
-IC_i = 8; % For journal paper - 2,3,5,8,9
+IC_i = 11; % For journal paper - 2,3,5,8,9
 
 % 2 
 % 3,4
@@ -134,6 +134,7 @@ options_J2 = odeset('Events',@event_Impact_CR3Bn_J2,'RelTol',tol,'AbsTol',tol);
 prms.u = secondary.MR;
 prms.R1_n = primary.R/rNorm;
 prms.R2_n = secondary.R_n;
+prms.R2 = prms.R2_n;
 prms.J21 = primary.J2;
 prms.J22 = 0;
 

@@ -1,6 +1,6 @@
-% clear
-% clc
-% close all
+clear
+clc
+close all
 mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
 addpath(genpath(mbinPath))
 
@@ -24,6 +24,7 @@ X0_from_data = 0;
 
 %%% Plot options
 plot_periapses = 0;
+plot_secondary = 1;
 
 % ========================================================================
 %%% Load Trajectories
@@ -38,6 +39,17 @@ plot_periapses = 0;
 primary = bodies.saturn;    secondary = bodies.enceladus;
 % primary = bodies.saturn;    secondary = bodies.titan;
 % primary = bodies.neptune;   secondary = bodies.triton;
+
+% ------------------------------------
+%%% Normalizing factors and equillibrium points
+% ------------------------------------
+%%% Normalizing factors
+rNorm = secondary.a;         % n <-> km
+tNorm = 1/secondary.meanMot; % n <-> sec
+vNorm = rNorm / tNorm;       % n <-> km/sec
+
+%%% Collinear equilibrium points
+L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
 % ------------------------------------
 %%% From Data File - Initial conditions and TOF
@@ -92,20 +104,15 @@ else % X0_from_data == 0
 %     myPO = PO_ICs.SaturnEnceladus.L2_DRO;
 %     X0_n = myPO(1:6);
 
-    myPO = PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingS;
-    X0_n = myPO(1:6); 
+%     myPO = PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingS;
+%     X0_n = myPO(1:6); 
+%     X0_n = [L123(2,1); -0.007022277023407; 0.000189267429242; -0.008279782523184; -0.002690264422308; 0.002332733126350];
+    X0_n = [1.0012817580085769;-0.0031462600718849;0.0008841600648361;-0.0030965359266087;0.0019046518458714;-0.0075904114074846];
+    
+    
 end % X0_from_data
 
-% ------------------------------------
-%%% Normalizing factors and equillibrium points
-% ------------------------------------
-%%% Normalizing factors
-rNorm = secondary.a;         % n <-> km
-tNorm = 1/secondary.meanMot; % n <-> sec
-vNorm = rNorm / tNorm;       % n <-> km/sec
 
-%%% Collinear equilibrium points
-L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 
 
 % ========================================================================
@@ -117,8 +124,9 @@ L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR
 %%% Create initial normalized time vector
 t0 = 0;
 n_t = 10000;
-tf = myPO(end);
+% tf = myPO(end);
 % tf = 3.473507769258945; % 110
+tf = 10.7832734013799598;
 
 time0_n = linspace(t0,tf,n_t);
 
@@ -127,10 +135,13 @@ tol = 1e-13;
 
 %%% Setting integrator options
 options = odeset('Event',@event_Impact_CR3Bn, 'RelTol',tol,'AbsTol',tol);
+% options = odeset('RelTol',tol,'AbsTol',tol);
+
 
 %%% Setting necessary parameters for integration
 prms.u    = secondary.MR;
-prms.R2_n = secondary.R_n;
+% prms.R2_n = secondary.R_n;
+prms.R2 = secondary.R_n;
 
 % ------------------------------------
 %%% Integrate
@@ -141,15 +152,19 @@ prms.R2_n = secondary.R_n;
 %%% Plot
 % ------------------------------------
 figure(123456); hold all
-plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'r','linewidth',1.5)
-[JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0_n(1:3)',X0_n(4:6)');
+plot3(X_BCR_n(:,1),X_BCR_n(:,2),X_BCR_n(:,3),'b','linewidth',1.5)
+% [JC_scInitial] = JacobiConstantCalculator(secondary.MR,X0_n(1:3)',X0_n(4:6)');
 % plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 2, 0, prms, colors.std.black, 1.5)
 % plotCR3BP_YZNeck( JC_scInitial, secondary.MR , 1, 0, prms, colors.std.black, 1.5)
-plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
-plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
+% plotCR3BP_Neck(secondary,L123,JC_scInitial,600,200,colors.std.black,1.5)
+% plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
 view(0,90)
 axis equal
-PlotBoi3('$X_n$','$Y_n$','$Z_n$',18,'LaTex')
+% PlotBoi3('$X_n$','$Y_n$','$Z_n$',18,'LaTex')
+PlotBoi3_CR3Bn(20)
+if plot_secondary == 1
+    plotSecondary(secondary)
+end
 
 % ------------------------------------
 %%% Find and plot periapses

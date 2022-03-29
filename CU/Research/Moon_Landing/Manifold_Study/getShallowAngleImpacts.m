@@ -25,7 +25,7 @@ ticWhole = tic;
 if isequal(computer,'MACI64')      % Mac
     mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
     POfamilyPath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
-    savePath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ShallowImpactDataSets';
+    savePath = '~/CU_Google_Drive/Documents/MatGit/MatlabOutputs/ManifoldShallowImpactDataSets';
     computerTag = 'M';
     
 elseif isequal(computer,'GLNXA64') % Fortuna
@@ -84,10 +84,10 @@ impactAngleBins_deg = [0, 3, 10, 20, 45, 90];
 n_impactAngleBins = length(impactAngleBins_deg) - 1;
 impactAngleColors = colorScale([colors.cyan; colors.mag], n_impactAngleBins);
 
-for bigLoop = 1:6
+% for bigLoop = 1:6
 
 %%% 3B System
-% famName_bodies = 'Earth_Moon';
+famName_bodies = 'Earth_Moon';
 % famName_bodies = 'Jupiter_Europa';
 % famName_bodies = 'Jupiter_Ganymede';
 % famName_bodies = 'Saturn_Enceladus';
@@ -99,27 +99,27 @@ for bigLoop = 1:6
 % famName_PO_Family = 'L1_SHalo';
 % famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
-% famName_PO_Family = 'L2_SHalo';
+famName_PO_Family = 'L2_SHalo';
 
-if bigLoop == 1
-    famName_bodies    = 'Jupiter_Ganymede';
-    famName_PO_Family = 'L2_Lyapunov';
-elseif bigLoop == 2
-    famName_bodies    = 'Jupiter_Ganymede';
-    famName_PO_Family = 'L2_Vertical';
-elseif bigLoop == 3
-    famName_bodies    = 'Jupiter_Ganymede';
-    famName_PO_Family = 'L2_SHalo';
-elseif bigLoop == 4
-    famName_bodies    = 'Neptune_Triton';
-    famName_PO_Family = 'L2_Lyapunov';
-elseif bigLoop == 5
-    famName_bodies    = 'Neptune_Triton';
-    famName_PO_Family = 'L2_Vertical';
-elseif bigLoop == 6
-    famName_bodies    = 'Neptune_Triton';
-    famName_PO_Family = 'L2_SHalo';
-end
+% if bigLoop == 1
+%     famName_bodies    = 'Jupiter_Ganymede';
+%     famName_PO_Family = 'L2_Lyapunov';
+% elseif bigLoop == 2
+%     famName_bodies    = 'Jupiter_Ganymede';
+%     famName_PO_Family = 'L2_Vertical';
+% elseif bigLoop == 3
+%     famName_bodies    = 'Jupiter_Ganymede';
+%     famName_PO_Family = 'L2_SHalo';
+% elseif bigLoop == 4
+%     famName_bodies    = 'Neptune_Triton';
+%     famName_PO_Family = 'L2_Lyapunov';
+% elseif bigLoop == 5
+%     famName_bodies    = 'Neptune_Triton';
+%     famName_PO_Family = 'L2_Vertical';
+% elseif bigLoop == 6
+%     famName_bodies    = 'Neptune_Triton';
+%     famName_PO_Family = 'L2_SHalo';
+% end
 
 % -------------------------------------------------
 %%% Set up System 
@@ -140,9 +140,12 @@ prms.u     = secondary.MR;
 prms.rNorm = rNorm;
 prms.R1    = primary.R / rNorm;
 prms.R2    = secondary.R_n;
+prms.n     = 1;
 
 if contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; prms.J4p = primary.J4; prms.J6p = primary.J6; prms.J2s = secondary.J2;
+    warning('Need prms.n')
+    return
 end
 
 % -------------------------------------------------
@@ -177,7 +180,11 @@ options_impact           = odeset('Event',@event_Impact_CR3Bn,'RelTol',tol,'AbsT
 %%% Set PO family indices to study manifolds of
 % -------------------------------------------------
 PO_indicies = linspace(1,size(POFamilyData,1),size(POFamilyData,1));
-
+PO_indicies = 1:2:PO_indicies(end)
+% prms.R2 = 0.005406045704499; % This is so it has the same Size Ratio as enceladus. If this results in something that looks like the enceladus mapping, we'll know that the Hill's model would have worked well
+prms.R2 = 5.764220485713268e-04;% This is so it has the same Size Ratio as the moon.
+989
+warning('989 989 989 989 989 989 989 ')
 % ========================================================================
 %%% Loop through chosen PO indicies, find the unstable manifolds, and
 %%% propagate them until impact (or escape)
@@ -476,7 +483,7 @@ if isequal(computer,'GLNXA64')
     sendEmailFromMatlab(receiver, subject, message)
 end
 
-end % bigLoop
+% end % bigLoop
 
 if isequal(computer,'MACI64')
     fprintf('Elapsed time: %1.4f seconds\n',tocWhole)
@@ -485,7 +492,6 @@ end
 
 
 
-famName
 
 
 

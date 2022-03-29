@@ -3,7 +3,7 @@ function [dX] = Int_CR3Bn(t,X,prms)
 %%% Inputs:
 %          t - normalized time vector
 %          X - initial state [6x1]
-%          prms - (u)
+%          prms - (u,n)
 
 %%% Preallocate state output
 dX = zeros(6,1);
@@ -13,8 +13,8 @@ r1 = sqrt((X(1)+prms.u)^2 + X(2)^2 + X(3)^2);
 r2 = sqrt((X(1)+prms.u-1)^2 + X(2)^2 + X(3)^2);
 
 %%% Equations of Motion
-ddx = 2*X(5) + X(1) - (1-prms.u)*(X(1)+prms.u)/(r1^3) - prms.u*(X(1)+prms.u-1)/(r2^3);
-ddy = -2*X(4) + X(2) -((1-prms.u)/(r1^3) + prms.u/(r2^3))*X(2);
+ddx = 2*prms.n*X(5) + (prms.n^2)*X(1) - (1-prms.u)*(X(1)+prms.u)/(r1^3) - prms.u*(X(1)+prms.u-1)/(r2^3);
+ddy = -2*prms.n*X(4) + (prms.n^2)*X(2) -((1-prms.u)/(r1^3) + prms.u/(r2^3))*X(2);
 ddz = -((1-prms.u)/(r1^3) + prms.u/(r2^3))*X(3);
 
 %%% Output the derivative of the state

@@ -7,147 +7,148 @@ tic
 % -------------------------------------------------
 % Choosing data files
 % -------------------------------------------------
-for kk = [1:7]
+dataPath = ['/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/NeckGridSearchStudy/MainResults/'];
+for kk = [1,3,6]
     if kk == 1
         %%% 50 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_50mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_50mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_50mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_50mps_50km_149v0s_land.txt'];
     end
     if kk == 2
         %%% 100 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_100mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_100mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_100mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_100mps_50km_149v0s_land.txt'];
     end
     if kk == 3
         %%% 150 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_150mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_150mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_150mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_150mps_50km_149v0s_land.txt'];
     end
     if kk == 4
         %%% 200 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_200mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_200mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_200mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_200mps_50km_149v0s_land.txt'];
     end
     if kk == 5
         %%% 250 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_250mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_250mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_250mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_250mps_50km_149v0s_land.txt'];
     end
     if kk == 6
         %%% 300 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_300mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_300mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_300mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_300mps_50km_149v0s_land.txt'];
     end
     if kk == 7
         %%% 350 mps
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_350mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_350mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_350mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_350mps_50km_149v0s_land.txt'];
     end
     
     if kk == 8
         %%% 50 mps - ZH                                                                      
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_50mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_50mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_50mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_50mps_50km_149v0s_land.txt'];
     end
     
     if kk == 9
         %%% 100 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_100mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_100mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_100mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_100mps_50km_149v0s_land.txt'];
     end
     
     if kk == 10
         %%% 150 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_150mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_150mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_150mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_150mps_50km_149v0s_land.txt'];
     end
     
     if kk == 11
         %%% 200 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_200mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_200mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_200mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_200mps_50km_149v0s_land.txt'];
     end
     
     if kk == 12
         %%% 250 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_250mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_250mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_250mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_250mps_50km_149v0s_land.txt'];
     end
     
     if kk == 13
         %%% 300 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_300mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_300mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_300mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_300mps_50km_149v0s_land.txt'];
     end
     
     if kk == 14
         %%% 350 mps - ZH
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_eurL2_J21_350mps_50km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_eurL2_J21_350mps_50km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_eurL2_J21_350mps_50km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_eurL2_J21_350mps_50km_149v0s_land.txt'];
     end
     
     
     if kk == 15
         %%% 13 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_13mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_13mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_13mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_13mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_13mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_13mps_4km_149v0s_land.txt'];
     end
     
     if kk == 16
         %%% 26 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_26mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_26mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_26mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_26mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_26mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_26mps_4km_149v0s_land.txt'];
     end
     
     if kk == 17
         %%% 39 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_39mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_39mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_39mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_39mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_39mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_39mps_4km_149v0s_land.txt'];
     end
     
     if kk == 18
         %%% 52 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_52mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_52mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_52mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_52mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_52mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_52mps_4km_149v0s_land.txt'];
     end
     
     if kk == 19
         %%% 65 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_65mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_65mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_65mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_65mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_65mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_65mps_4km_149v0s_land.txt'];
     end
     
     if kk == 20
         %%% 78 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_78mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_78mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_78mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_78mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_78mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_78mps_4km_149v0s_land.txt'];
     end
     
     if kk == 21
         %%% 91 mps (Enc)
-        logFile            = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_91mps_4km_149v0s_log.txt';
-        impactFile         = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_91mps_4km_149v0s_data.txt';
-        lowImpactAngleFile = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/MatlabOutputs/F.iGS_encL2_91mps_4km_149v0s_land.txt';
+        logFile            = [dataPath,'F.iGS_encL2_91mps_4km_149v0s_log.txt'];
+        impactFile         = [dataPath,'F.iGS_encL2_91mps_4km_149v0s_data.txt'];
+        lowImpactAngleFile = [dataPath,'F.iGS_encL2_91mps_4km_149v0s_land.txt'];
     end
     
     
@@ -213,7 +214,6 @@ function iGS_LoadPlot2(logFile,impactFile,lowImpactAngleFile,mbinPath,on_J21)
 % -------------------------------------------------
 % Run Switches
 % -------------------------------------------------
-on_symmetricImpactResults = 0;
 
 plot_fullLowTrajectories  = 0;
 plot_lowTrajectories_r0   = 0;
@@ -222,14 +222,15 @@ plot_fullSystemContour    = 0;
 plot_sectionColors        = 0;
 plot_allTrajectories      = 0; % Careful now!!
 
-plot_binImpactAngles      = 0;
+on_symmetricImpactResults = 1;
+plot_binImpactAngles      = 1;
 plot_binNeckSections_rad  = 0;
 plot_binNeckSections_vert = 0;
 plot_binNeckSections_horz = 0;
 plot_metaData             = 0;
 plot_latitudeV0AngleCorr  = 0;
 plot_binTOF               = 0;
-calc_maxLatitudeAnalysis  = 1;
+calc_maxLatitudeAnalysis  = 0;
 
 % ========================================================================
 %%% Setting data
@@ -309,12 +310,13 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 
 %%% Find equilibrium points
 if on_J21 == 0
-    L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+    L123 = EquilibriumPoints(secondary.MR, 1,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 elseif on_J21 == 1
     J21 = primary.J2;
     J22 = 0;
     R1_n = primary.R/rNorm;
     R2_n = secondary.R_n;
+    warning('Should calculate new n')
     L123 = EquilibriumPoints_J2(secondary.MR,J21,J22,R1_n,R2_n,1:3);
 end
 
@@ -499,11 +501,14 @@ zs = linspace(-z_neck_upper*2, z_neck_upper*2, 1000);
 
 %%% Calculating JCs across y-z grid
 JCs_yz_Lpoint = zeros(size(Y_yz));
+prms.u = secondary.MR;
+prms.n = 1;
 for yk = 1:size(Y_yz,1)
     for zk = 1:size(Y_yz,2)
         %%% Zero-Velocity Curve
         if on_J21 == 0
-            zv = JacobiConstantCalculator(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+%             zv = JacobiConstantCalculator(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+            zv = getJacobiConstant_ZH([L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk), 0, 0, 0],prms);
         elseif on_J21 == 1
             zv = JacobiConstantCalculator_J2(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)],[0,0,0], R1_n, R2_n, J21, J22);
         end
@@ -586,7 +591,7 @@ if plot_allTrajectories_r0 == 1
     plot3(ones(size(yzContourPoints4,2),1).*L123(Lpoint,1), yzContourPoints4(1,:),yzContourPoints4(2,:),'k','linewidth',3)
 %     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
 %     [xyContourPoints,href] = contour(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-%         'color',colors.std.black,'linewidth',3);
+%         'color',colors.black,'linewidth',3);
     plot3(ones(size(impactData,1),1).*L123(2,1),impactData(:,c_full_y0_n),impactData(:,c_full_z0_n),'b.','markersize',6)
     plot3(ones(size(impactData,1),1).*L123(2,1),impactData(:,c_full_y0_n),-impactData(:,c_full_z0_n),'b.','markersize',6)
     PlotBoi3('x$_n$','y$_n$','z$_n$',16,'LaTex')
@@ -635,7 +640,7 @@ if plot_fullSystemContour == 1
     plotBodyTexture3(secondary.R_n, [1-secondary.MR, 0, 0], secondary.img)
     plotBodyTexture3(primary.R./rNorm, [-secondary.MR, 0, 0], primary.img)
     [xyContourPoints,href] = contourf(X_xy,Y_xy,JCs_xy,[JC_scInitial, JC_scInitial],...
-        'color',colors.std.black,'linewidth',1.5);
+        'color',colors.black,'linewidth',1.5);
     colormap(colors.sch.r6(6,:))
     PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
     view(0,90)
@@ -651,7 +656,7 @@ if plot_binNeckSections_rad == 1
 %     binColors_NeckSections = [colors.sch.d4_1(2,:);colors.sch.d4_1(1,:);...
 %                              colors.sch.d4_1(4,:);colors.sch.d4_1(3,:)];
                          
-    binColors_NeckSections = colorScale([colors.std.mag;colors.std.cyan],4);
+    binColors_NeckSections = colorScale([colors.mag;colors.cyan],4);
                      
     figure; hold all
     for kk = 1:4
@@ -717,7 +722,7 @@ if plot_binNeckSections_vert == 1
     n_vertBins = 4; 
     
     %%% Choosing color for bins of neck sections 
-    binColors_vertNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_vertBins);
+    binColors_vertNeckSections = colorScale([colors.mag;colors.cyan],n_vertBins);
     
     %%% Find min and max bounds of bins
 %     vert_min = min(abs(impactData(:,c_z0_n)));
@@ -809,7 +814,7 @@ if plot_binNeckSections_horz == 1
     n_horzBins = 4; 
     
     %%% Choosing color for bins of neck sections 
-    binColors_horzNeckSections = colorScale([colors.std.mag;colors.std.cyan],n_horzBins);
+    binColors_horzNeckSections = colorScale([colors.mag;colors.cyan],n_horzBins);
     
     %%% Find min and max bounds of bins
 %     horz_min = min(impactData(:,c_y0_n));
@@ -956,43 +961,51 @@ end
 % Lat/Lon plot colored by impact angle
 % -------------------------------------------------
 if plot_binImpactAngles == 1
-    %%% Choosing color for bins of impact angles 
-    binColors_ImpactAngles = [colors.sch.s5_1(5,:);colors.sch.s5_1(4,:);...
-                             colors.sch.s5_1(3,:);colors.sch.s5_1(2,:);...
-                             colors.sch.s5_1(1,:)];
+    %%% Choosing color for bins of impact angles
+    989
+%     binColors_ImpactAngles = [colors.sch.s5_1(5,:);colors.sch.s5_1(4,:);...
+%                              colors.sch.s5_1(3,:);colors.sch.s5_1(2,:);...
+%                              colors.sch.s5_1(1,:)];
+    binColors_ImpactAngles = colorScale([colors.cyan;colors.mag],7);
+    binColors_ImpactAngles = binColors_ImpactAngles([1, 4:7],:);
                      
     figure; hold all
     for kk = binCount_ImpactAngles:-1:1
-%         if isempty(binData_impactAngles(kk).latLons) == 0
-%             plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-%             '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
-%             if on_symmetricImpactResults == 1
-%                 plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
-%                 '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
-%             end
-%         end
         if isempty(binData_impactAngles(kk).latLons) == 0
             plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
-            '.','markersize',15,'color',colors.std.black)
+            '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
             if on_symmetricImpactResults == 1
                 plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
-                '.','markersize',15,'color',colors.std.black)
+                '.','markersize',15,'color',binColors_ImpactAngles(kk,:))
             end
         end
+%         if isempty(binData_impactAngles(kk).latLons) == 0
+%             plot(binData_impactAngles(kk).latLons(:,2),binData_impactAngles(kk).latLons(:,1),...
+%             '.','markersize',15,'color',colors.black)
+%             if on_symmetricImpactResults == 1
+%                 plot(binData_impactAngles(kk).latLons(:,2),-binData_impactAngles(kk).latLons(:,1),...
+%                 '.','markersize',15,'color',colors.black)
+%             end
+%         end
     end
-    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
+%     PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',26,'LaTex')
+    ax = gca;
+    ax.FontSize;
+    ax.FontSize = 18;
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',32,'LaTex')
     xlim([-180 180])
     ylim([-90 90])
     %%% Colorbar for whole figure
     cbar2 = colorbar;
     caxis([0, 90]);
     cbar2.FontName     = 'Arial';
-    cbar2.FontSize     = 10;
+    cbar2.FontSize     = 20;
     cbar2.Ticks        = [bins_impactAngles(1:end-1), 90];
     cbar2.TickLabels = num2cell([bins_impactAngles(1:end-1), 90]);
-    cbar2.Label.String = {'Impact Angle °'};
+%     cbar2.Label.String = {'Impact Angle °'};
     cbar2.Label.Rotation = 0; % 0 = horizontal, 90 = vertical
-    cbar2.Label.Position = [.2, 95, 0];
+%     cbar2.Label.Position = [.2, 95, 0];
+    cbar2.Label.Position = [-1, 97, 0];
     binColors_ImpactAngles_spaced = [...
         repmat(binColors_ImpactAngles(1,:),1,1);...
         repmat(binColors_ImpactAngles(2,:),3,1);...
@@ -1008,11 +1021,11 @@ end
 % -------------------------------------------------
 if plot_metaData == 1
     if on_J21 == 0
-        color1 = colors.std.red;
-        color2 = colors.std.black;
+        color1 = colors.red;
+        color2 = colors.black;
     elseif on_J21 == 1
-        color1 = colors.std.red;
-        color2 = colors.std.black;
+        color1 = colors.red;
+        color2 = colors.black;
     end
     figure(20); hold all
     plot(dvLp_mps,nLowImpactTraj,'x','linewidth',2,'markersize',10,'color',color1)
@@ -1077,7 +1090,7 @@ if plot_latitudeV0AngleCorr == 1
     
     %%% Plotting
     figure; hold all
-    plot(v0_YZ_angles_deg,abs(lowImpactMat(:,col_lat)),'.','markersize',10,'color',colors.std.blue)
+    plot(v0_YZ_angles_deg,abs(lowImpactMat(:,col_lat)),'.','markersize',10,'color',colors.blue)
     PlotBoi2('Angle between v0 and impact latitude, $^\circ$','Latitude, $^\circ$',16,'LaTex')
 
 end
@@ -1119,7 +1132,7 @@ for kk = 1:binCount_endTime
     binData_endTimes(kk).latLons = impactData(currentBinIndices,[c_full_impactLatitude,c_full_impactLongitude]);
 end
 
-binColors_endTimes = colorScale([colors.std.mag;colors.std.cyan],binCount_endTime);
+binColors_endTimes = colorScale([colors.mag;colors.cyan],binCount_endTime);
 
     figure; hold all
     for kk = binCount_endTime:-1:1

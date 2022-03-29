@@ -1,5 +1,6 @@
 function [X,Y,Z,N_new] = mySphere(N)
-
+% Copyright (c) 2016, Brian Bentz
+% All rights reserved.
 
 %% Generate Node xyz positions
 % Used 2004 paper by Markus Deserno, Max-Planck-Institut:

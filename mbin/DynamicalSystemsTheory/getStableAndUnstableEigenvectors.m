@@ -46,10 +46,10 @@ if length(unstableEigenvalue_index) == 2
     
     %%% Remove the complex pair closest to 1 by differencing the real
     %%% values by one and removing the smallest remainders
-    realPartsDifferencedWithOne = 1-abs(realParts);
+    realPartsDifferencedWithOne        = 1-abs(realParts);
     logicalIndicesOfValuesClosestToOne = (realPartsDifferencedWithOne == min(realPartsDifferencedWithOne));
-    logicalIndicesOfRemainingValues = ~logicalIndicesOfValuesClosestToOne;
-    diag_eigenValues_new = diag_eigenValues_new(logicalIndicesOfRemainingValues);
+    logicalIndicesOfRemainingValues    = ~logicalIndicesOfValuesClosestToOne;
+    diag_eigenValues_new               = diag_eigenValues_new(logicalIndicesOfRemainingValues);
     
     %%% Try to find an unstable eigenvalue from the 4 remaining values
     unstableEigenvalue_index = find(abs(real(diag_eigenValues_new)) == max(abs(real(diag_eigenValues_new))));

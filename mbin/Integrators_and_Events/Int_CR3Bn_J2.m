@@ -27,8 +27,8 @@ gamma1_z = 3*(1-prms.u)*prms.R1_n^2*prms.J21*(5*z^2-3*r1^2)/(2*r1^7);
 gamma2_z = 3*prms.u*prms.R2_n^2*prms.J22*(5*z^2-3*r2^2)/(2*r2^7);
 
 %%% Equations of Motion
-ddx = 2*dy + x + ((1-prms.u)/r1^3-gamma1)*(x1-x) + (prms.u/r2^3 - gamma2)*(x2-x);
-ddy = -2*dx + y*(-(1-prms.u)/r1^3 - prms.u/r2^3 + gamma1 + gamma2 + 1);
+ddx = 2*prms.n*dy + (prms.n^2)*x + ((1-prms.u)/r1^3-gamma1)*(x1-x) + (prms.u/r2^3 - gamma2)*(x2-x);
+ddy = -2*prms.n*dx + y*(-(1-prms.u)/r1^3 - prms.u/r2^3 + gamma1 + gamma2 + prms.n^2);
 ddz = z*(-(1-prms.u)/r1^3 - prms.u/r2^3 + gamma1_z + gamma2_z);
 
 %%% Output the derivative of the state

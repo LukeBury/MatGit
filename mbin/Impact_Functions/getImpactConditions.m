@@ -14,7 +14,7 @@ function [latLon_deg, impactAngle_deg, latLonHeadingHat, impactColor] = getImpac
 %                  normalizing constant for distances (equal to semimajor
 %                  axis of system))
 %
-%       impactAngleBins_deg - [n] bin values for impact angle (bin is equal
+%       impactAngleBins_deg - [1xn] bin values for impact angle (bin is equal
 %                             to or great than this number)
 %
 %       impactAngleColors   - [nx3] matrix of color codes for impact angle

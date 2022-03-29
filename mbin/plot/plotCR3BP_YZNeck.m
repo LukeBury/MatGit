@@ -16,9 +16,9 @@ function plotCR3BP_YZNeck( JC, u , Lpoint, on_J21, prms, color, linewidth)
 % Acquire Collinear Lagrange points
 % -------------------------------------------------
 if on_J21 == 0
-    L123 = EquilibriumPoints(u,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+    L123 = EquilibriumPoints(u, prms.n,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 elseif on_J21 == 1
-    L123 = EquilibriumPoints_J2(u,prms.J21,0,prms.R1_n,prms.R2_n,1:3);
+    L123 = EquilibriumPoints_J2(u, prms.n,prms.J21,0,prms.R1_n,prms.R2_n,1:3);
 end
 
 % -------------------------------------------------
@@ -29,8 +29,8 @@ x = L123(Lpoint,1);
 z = 0;
 
 %%% JC function equal to zero
-r1 = @(x,y,z) sqrt((x+u)^2+y.^2+z^2);
-r2 = @(x,y,z) sqrt((x-1+u)^2+y.^2+z^2);
+r1 = @(x,y,z) sqrt((x+u)^2  + y.^2 + z^2);
+r2 = @(x,y,z) sqrt((x-1+u)^2+ y.^2 + z^2);
 if on_J21 == 0
     f = @(y) x^2 + y.^2 - JC + 2*(1-u)./r1(x,y,z) + 2*u./r2(x,y,z);
 elseif on_J21 == 1
@@ -85,7 +85,8 @@ for yk = 1:size(Y_yz,1)
     for zk = 1:size(Y_yz,2)
         %%% Zero-Velocity Curve
         if on_J21 == 0
-            zv = JacobiConstantCalculator(u,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+%             zv = JacobiConstantCalculator(u,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+            zv = getJacobiConstant_ZH([L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk), 0, 0, 0], prms);
         elseif on_J21 == 1
             zv = JacobiConstantCalculator_J2(u,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)],[0,0,0], prms.R1_n, prms.R2_n, prms.J21, 0);
         end

@@ -74,7 +74,12 @@ for sys_i = 1:length(systemNames)
     % Calculations
     % --------------------------
     %%% Calculate Jacobi constant of L2
-    JC_L2 = getJacobiConstant_ZH([rLPs_n(2,:), 0, 0, 0], prms);
+    if isequal(sysName, 'Earth_Moon.CR3BP')
+        LP = 1;
+    else
+        LP = 2;
+    end
+    JC_LP = getJacobiConstant_ZH([rLPs_n(LP,:), 0, 0, 0], prms);
     
     %%% Calculat JC on surface
 %     JC_spx = getJacobiConstant_ZH([1-prms.u+prms.R2, 0, 0, 0, 0, 0], prms);
@@ -84,12 +89,14 @@ for sys_i = 1:length(systemNames)
     
 %     velocityDiff_spx_mps = sqrt(JC_spx - JC_L2) * vNorm * 1000
 %     velocityDiff_smx_mps = sqrt(JC_smx - JC_L2) * vNorm * 1000
-    velocityDiff_spy_mps = sqrt(JC_spy - JC_L2) * vNorm * 1000;
+    velocityDiff_spy_mps = sqrt(JC_spy - JC_LP) * vNorm * 1000;
 %     velocityDiff_smy_mps = sqrt(JC_smy - JC_L2) * vNorm * 1000
 
     fprintf('============================================\n')
     fprintf('%s\n',sysName)
-    fprintf('Minimum impact velocity from L2: %1.0f mps\n', velocityDiff_spy_mps)
+    fprintf('Mass Ratio: %1.1e\n', prms.u)
+    fprintf('Secondary Radius: %1.0f\n', secondary.R)
+    fprintf('Minimum impact velocity from L%1d: %1.0f mps\n', LP, velocityDiff_spy_mps)
     
 end
 fprintf('============================================\n')

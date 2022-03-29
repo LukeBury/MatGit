@@ -108,8 +108,8 @@ else
 end
 
 %%% Equations of Motion
-ddx = 2*X(5) + X(1) + (-(1-mu)/r1^3 + gamma_J2p + gamma_J3p + gamma_J4p + gamma_J5p + gamma_J6p)*(X(1) + mu) + (-mu/r2^3 + gamma_J2s + gamma_J3s + gamma_J4s + gamma_J5s + gamma_J6s)*(X(1) - 1 + mu);
-ddy = -2*X(4) + X(2) + X(2)*(-(1-mu)/r1^3 - mu/r2^3 + gamma_J2p + gamma_J2s + gamma_J3p + gamma_J3s + gamma_J4p + gamma_J4s + gamma_J5p + gamma_J5s + gamma_J6p + gamma_J6s);
+ddx = 2*prms.n*X(5) + (prms.n^2)*X(1) + (-(1-mu)/r1^3 + gamma_J2p + gamma_J3p + gamma_J4p + gamma_J5p + gamma_J6p)*(X(1) + mu) + (-mu/r2^3 + gamma_J2s + gamma_J3s + gamma_J4s + gamma_J5s + gamma_J6s)*(X(1) - 1 + mu);
+ddy = -2*prms.n*X(4) + (prms.n^2)*X(2) + X(2)*(-(1-mu)/r1^3 - mu/r2^3 + gamma_J2p + gamma_J2s + gamma_J3p + gamma_J3s + gamma_J4p + gamma_J4s + gamma_J5p + gamma_J5s + gamma_J6p + gamma_J6s);
 ddz = X(3)*(-(1-mu)/r1^3 - mu/r2^3) + az_J2p + az_J2s + az_J3p + az_J3s + az_J4p + az_J4s + az_J5p + az_J5s + az_J6p + az_J6s;
 
 %%% Output the derivative of the state

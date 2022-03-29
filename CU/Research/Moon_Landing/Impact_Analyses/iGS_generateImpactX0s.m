@@ -13,6 +13,9 @@ ticWhole = tic;
 % ========================================================================
 %%% Run Switches
 % ========================================================================
+%%% For saving all X0s regardless of impact (skips integration)
+saveAllX0s             = 1; % 0 if you want it to only save the impact trajs
+
 %%% Testing?
 testCaseOn             = 0;
 
@@ -60,8 +63,10 @@ bodies = getBodyData(mbinPath);
 colors = get_colors();
 
 %%% 3B system
-primary   = bodies.saturn;
-secondary = bodies.enceladus;
+primary   = bodies.jupiter;
+secondary = bodies.europa;
+% primary   = bodies.saturn;
+% secondary = bodies.enceladus;
 
 %%% Normalizing constants
 rNorm = secondary.a;         % n <-> km
@@ -76,15 +81,18 @@ secondaryName = secondary.name;
 J21 = primary.J2;
 J22 = 0;
 
+prms.u = MR;
+prms.n = 1;
+
 % -------------------------------------------------
 % Grid-search settings
 % -------------------------------------------------
 %%% Collinear lagrange point of interest
-Lpoint = 2;  % 1 or 2
+Lpoint = 1;  % 1 or 2
 
 %%% Acquire Collinear Lagrange points
 if on_J21 == 0
-    L123 = EquilibriumPoints(secondary.MR,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
+    L123 = EquilibriumPoints(secondary.MR, prms.n,1:3); % [3x3] of L1, L2, L3 normalized BCR coordinates
 elseif on_J21 == 1
     L123 = EquilibriumPoints_J2(secondary.MR,J21,J22,R1_n,R2_n,1:3);
 end
@@ -95,20 +103,18 @@ Lpoint_x = L123(Lpoint,1);
 % dvLp_mps = 50; % Meters per second - Enceladus
 % dvLp_mps = 50; % Meters per second
 
-% for dvLp_mps = [50, 100, 150, 200, 250, 300, 350] % Europa
-for dvLp_mps = [13, 26, 39, 52, 65, 78] % Enceladus
+for dvLp_mps = [50] % Europa
+% for dvLp_mps = [50,100,150] % Europa
+% for dvLp_mps = [13, 26, 39, 52, 65, 78] % Enceladus
 % for dvLp_mps = [407.3] % Titan
-
-
-
-
-
-
 
 
 if isequal(secondary.name,'europa')
     %%% Spacing of initial positions within 3D neck
     r0GridSpacing_km = 250; % km
+%     r0GridSpacing_km = 125; % km
+% 989
+%     r0GridSpacing_km = 5; % km
     %%% Spacing between azimuths and elevations of v0s per r0
     n_v0s_per_r0_target = 20;
 elseif isequal(secondary.name,'enceladus')
@@ -173,10 +179,13 @@ binColors_NeckSections = [colors.sch.d4_1(2,:);colors.sch.d4_1(1,:);...
 % Finding initial JC of spacecraft
 % -------------------------------------------------
 %%% Jacobi constant of Lagrange point
+prms.u = MR;
 if on_J21 == 0
-    [JC_Lp] = JacobiConstantCalculator(secondary.MR,L123(Lpoint,:),[0,0,0]);
+    JC_L1 = getJacobiConstant_ZH([L123(1,:),0,0,0],prms);
+    JC_L2 = getJacobiConstant_ZH([L123(2,:),0,0,0],prms);
 elseif on_J21 == 1
-    [JC_Lp] = JacobiConstantCalculator_J2(secondary.MR,L123(Lpoint,:),[0,0,0], R1_n, R2_n, J21, J22);
+    [JC_L1] = JacobiConstantCalculator_J2(secondary.MR,L123(1,:),[0,0,0], R1_n, R2_n, J21, J22);
+    [JC_L2] = JacobiConstantCalculator_J2(secondary.MR,L123(2,:),[0,0,0], R1_n, R2_n, J21, J22);
 end
 
 dJC_vel_kps = dvLp_mps/1000;
@@ -184,7 +193,7 @@ dJC_Lp = (dJC_vel_kps/vNorm)^2;
     
 %%% s/c starting JC (JC_scDesired) is lower than JC_Lp because the dJC_Lp is accounted for
 %%% in velocity
-JC_scInitial = JC_Lp-dJC_Lp;
+JC_scInitial = JC_L2-dJC_Lp;
 
 % -------------------------------------------------
 % Finding upper-y-value of neck at L-point
@@ -271,7 +280,8 @@ for yk = 1:size(Y_yz,1)
     for zk = 1:size(Y_yz,2)
         %%% Zero-Velocity Curve
         if on_J21 == 0
-            zv = JacobiConstantCalculator(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+%             zv = JacobiConstantCalculator(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)] ,[0, 0, 0]);
+            zv = getJacobiConstant_ZH([L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk), 0, 0, 0], prms);
         elseif on_J21 == 1
             zv = JacobiConstantCalculator_J2(secondary.MR,[L123(Lpoint,1), Y_yz(yk,zk), Z_yz(yk,zk)],[0,0,0], R1_n, R2_n, J21, J22);
         end
@@ -304,7 +314,7 @@ for yk = 1:size(Y_yz_r0s,1)
     for zk = 1:size(Z_yz_r0s,2)
         if inpolygon(Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk),yzContourPoints4(1,:),yzContourPoints4(2,:)) == 1
             if Z_yz_r0s(yk,zk) >= 0 % dynamics are symmetric about z=0, so only need to check one side of that
-                r0s = [r0s; L123(2,1), Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk)];
+                r0s = [r0s; L123(Lpoint,1), Y_yz_r0s(yk,zk), Z_yz_r0s(yk,zk)];
             end
         end
     end
@@ -386,10 +396,12 @@ parfor ii = 1:n_r0s
     prms.R2_n = R2_n;
     prms.L1x = L123mat(1,1);
     prms.L2x = L123mat(2,1);
+    prms.n = 1;
     
     if on_J21 == 1
         prms.R1_n = R1_n;
         prms.J21  = J21;
+        warning('fix prms.n')
     end
 
     % -------------------------------------------------
@@ -404,7 +416,8 @@ parfor ii = 1:n_r0s
     %%% we must calculate the JC of the stationary starting position
     JC_initialPos = [];
     if on_J21 == 0
-        JC_initialPos = JacobiConstantCalculator(MR,r0_i,[0,0,0]);
+%         JC_initialPos = JacobiConstantCalculator(MR,r0_i,[0,0,0]);
+        JC_initialPos = getJacobiConstant_ZH([r0_i, 0, 0, 0], prms);
     elseif on_J21 == 1
         JC_initialPos = JacobiConstantCalculator_J2(MR,r0_i, [0,0,0], R1_n, R2_n, J21, J22);
     end
@@ -458,123 +471,126 @@ parfor ii = 1:n_r0s
         
         %%% Setting X0
         X0_n = [r0_i, v0_i];
-
-        % ---------------------------------------
-        % Integrating
-        % ---------------------------------------
-        %%% Propagating trajectory
-        time_n            = [];
-        X_BCR_n           = [];
-        time_eventImpact  = [];
-        X_eventImpact     = [];
-        index_eventImpact = [];
-        if on_J21 == 0
-            [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
-                time0_n, X0_n, options_ImpactEscape, prms);
-        elseif on_J21 == 1
-            [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn_ZH,...
-                time0_n, X0_n, options_ImpactEscape, prms);
-        end
         
-        % ---------------------------------------
-        % Determining end conditions
-        % ---------------------------------------
-        impact1_escape2_orbit3 = []; % 1-impact, 2-escape, 3-still in orbit
-        if isempty(X_eventImpact) == 0
-            if abs(norm(X_eventImpact(1:3)-[1-MR,0,0])-R2_n) < 1e-9 % impact
-                impact1_escape2_orbit3 = 1;
-            elseif X_eventImpact(1) <= prms.L1x || X_eventImpact(1) >= prms.L2x % escape
-                impact1_escape2_orbit3 = 2;
+        if saveAllX0s == 0
+            % ---------------------------------------
+            % Integrating
+            % ---------------------------------------
+            %%% Propagating trajectory
+            time_n            = [];
+            X_BCR_n           = [];
+            time_eventImpact  = [];
+            X_eventImpact     = [];
+            index_eventImpact = [];
+            if on_J21 == 0
+                [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn,...
+                    time0_n, X0_n, options_ImpactEscape, prms);
+            elseif on_J21 == 1
+                [time_n, X_BCR_n, time_eventImpact, X_eventImpact, index_eventImpact] = ode113(@Int_CR3Bn_ZH,...
+                    time0_n, X0_n, options_ImpactEscape, prms);
             end
-        elseif isempty(X_eventImpact) == 1 % No event yet, still in orbit
-            impact1_escape2_orbit3 = 3;
-        end
-        
-        % ---------------------------------------
-        % Determining azimuth and elevation of v0
-        % ---------------------------------------
-        [Az,El,Rad] = cart2sph(X0_n(4), X0_n(5), X0_n(6))
-        v0AzEl = [Az, El];
-        
-        % ---------------------------------------
-        % Determining lat/lon, speed, and angle of impact
-        % ---------------------------------------
-        if impact1_escape2_orbit3 == 1
-            % --------------------------
-            % Impact lat/lon
-            % --------------------------
-            %%% Creating SCR position
-            rImpact_SCR = X_eventImpact(1,1:3) - [1-MR, 0, 0];
 
-            %%% Finding lat/lon of impact site
-            [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
-            impactLatLon = [lat, lon];
+            % ---------------------------------------
+            % Determining end conditions
+            % ---------------------------------------
+            impact1_escape2_orbit3 = []; % 1-impact, 2-escape, 3-still in orbit
+            if isempty(X_eventImpact) == 0
+                if abs(norm(X_eventImpact(1:3)-[1-MR,0,0])-R2_n) < 1e-9 % impact
+                    impact1_escape2_orbit3 = 1;
+                elseif X_eventImpact(1) <= prms.L1x || X_eventImpact(1) >= prms.L2x % escape
+                    impact1_escape2_orbit3 = 2;
+                end
+            elseif isempty(X_eventImpact) == 1 % No event yet, still in orbit
+                impact1_escape2_orbit3 = 3;
+            end
 
-            % --------------------------
-            % Impact speed
-            % --------------------------
-            impactSpeed = norm(X_eventImpact(end,4:6));
+            % ---------------------------------------
+            % Determining azimuth and elevation of v0
+            % ---------------------------------------
+            [Az,El,Rad] = cart2sph(X0_n(4), X0_n(5), X0_n(6));
+            v0AzEl = [Az, El];
 
-            % --------------------------
-            % Impact Angle
-            % --------------------------
-            %%% Creating SCR position vector
-            rImpact_SCR_n = X_eventImpact(end,1:3) - [1-MR,0,0];
-            rImpact_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
+            % ---------------------------------------
+            % Determining lat/lon, speed, and angle of impact
+            % ---------------------------------------
+            if impact1_escape2_orbit3 == 1
+                % --------------------------
+                % Impact lat/lon
+                % --------------------------
+                %%% Creating SCR position
+                rImpact_SCR = X_eventImpact(1,1:3) - [1-MR, 0, 0];
 
-            %%% Velocity unit vector at impact
-            vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
+                %%% Finding lat/lon of impact site
+                [lat, lon] = ECEF2latlon(rImpact_SCR,'degrees','stupidMoon');
+                impactLatLon = [lat, lon];
 
-            %%% Angle between velocity and surface
-            [impactAngle] = calcImpactAngle(rImpact_SCR_n,vHatImpact_n,'degrees');
-            
-            %%% Storing endTime
-            endTime = time_n(end);
-        elseif impact1_escape2_orbit3 == 2 % escape
-            impactLatLon = [NaN, NaN];
-            impactSpeed  = NaN;
-            impactAngle  = NaN;     
-            endTime      = NaN;
-        elseif impact1_escape2_orbit3 == 3 % orbit
-            impactLatLon = [NaN, NaN];
-            impactSpeed  = NaN;
-            impactAngle  = NaN; 
-            endTime      = NaN;
-        end
-            
+                % --------------------------
+                % Impact speed
+                % --------------------------
+                impactSpeed = norm(X_eventImpact(end,4:6));
+
+                % --------------------------
+                % Impact Angle
+                % --------------------------
+                %%% Creating SCR position vector
+                rImpact_SCR_n = X_eventImpact(end,1:3) - [1-MR,0,0];
+                rImpact_SCR_n = rImpact_SCR_n./norm(rImpact_SCR_n);
+
+                %%% Velocity unit vector at impact
+                vHatImpact_n = X_eventImpact(end,4:6)./norm(X_eventImpact(end,4:6));
+
+                %%% Angle between velocity and surface
+                [impactAngle] = calcImpactAngle(rImpact_SCR_n,vHatImpact_n,'degrees');
+
+                %%% Storing endTime
+                endTime = time_n(end);
+            elseif impact1_escape2_orbit3 == 2 % escape
+                impactLatLon = [NaN, NaN];
+                impactSpeed  = NaN;
+                impactAngle  = NaN;     
+                endTime      = NaN;
+            elseif impact1_escape2_orbit3 == 3 % orbit
+                impactLatLon = [NaN, NaN];
+                impactSpeed  = NaN;
+                impactAngle  = NaN; 
+                endTime      = NaN;
+            end
+        end % saveAllX0s == 0
         % =======================================
         % Storing results of trajectory
         % ---------------------------------------
         trajIDs_ii(vi)      = trajID;
         X0s_ii(vi,:)        = X0_n;
-        latLons_ii(vi,:)    = impactLatLon;
-        impactSpeeds_ii(vi) = impactSpeed;
-        impactAngles_ii(vi) = impactAngle;
-        endTimes_ii(vi)     = endTime;
-        v0AzEls_ii(vi,:)    = v0AzEl;
-
-        % ---------------------------------------
-        % Assigning impact-angle bin
-        % ---------------------------------------
-        %%% Bin - Impact Angle
-        bin_impactAngles_ii(vi) = discretize(impactAngle, bins_impactAngles);
+        if saveAllX0s == 0
+            latLons_ii(vi,:)    = impactLatLon;
+            impactSpeeds_ii(vi) = impactSpeed;
+            impactAngles_ii(vi) = impactAngle;
+            endTimes_ii(vi)     = endTime;
+            v0AzEls_ii(vi,:)    = v0AzEl;
         
-        % ---------------------------------------
-        % Assigning neck-section bin
-        % ---------------------------------------
-        %%% Bin - Neck Section
-        if inpolygon(X0_n(2),X0_n(3),yzContourPoints11(1,:),yzContourPoints11(2,:)) == 1
-            bin_neckSections_ii(vi) = 1;
-        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints22(1,:),yzContourPoints22(2,:)) == 1
-            bin_neckSections_ii(vi) = 2;
-        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints33(1,:),yzContourPoints33(2,:)) == 1
-            bin_neckSections_ii(vi) = 3;
-        elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints44(1,:),yzContourPoints44(2,:)) == 1
-            bin_neckSections_ii(vi) = 4;
-        else % In case it was just missed by the resolution of the outer-most polygon
-            bin_neckSections_ii(vi) = 4;
-        end
+            % ---------------------------------------
+            % Assigning impact-angle bin
+            % ---------------------------------------
+            %%% Bin - Impact Angle
+            bin_impactAngles_ii(vi) = discretize(impactAngle, bins_impactAngles);
+
+            % ---------------------------------------
+            % Assigning neck-section bin
+            % ---------------------------------------
+            %%% Bin - Neck Section
+            if inpolygon(X0_n(2),X0_n(3),yzContourPoints11(1,:),yzContourPoints11(2,:)) == 1
+                bin_neckSections_ii(vi) = 1;
+            elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints22(1,:),yzContourPoints22(2,:)) == 1
+                bin_neckSections_ii(vi) = 2;
+            elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints33(1,:),yzContourPoints33(2,:)) == 1
+                bin_neckSections_ii(vi) = 3;
+            elseif inpolygon(X0_n(2),X0_n(3),yzContourPoints44(1,:),yzContourPoints44(2,:)) == 1
+                bin_neckSections_ii(vi) = 4;
+            else % In case it was just missed by the resolution of the outer-most polygon
+                bin_neckSections_ii(vi) = 4;
+            end
             
+        end % saveAllX0s
 %         if inpolygon(Y_yz(yk,zk), Z_yz(yk,zk),yzContourPoints4(1,:),yzContourPoints4(2,:)) == 1
     end
     
@@ -583,13 +599,15 @@ parfor ii = 1:n_r0s
     % -------------------------------------------------
     r0Data{ii}.trajIDs          = trajIDs_ii;
     r0Data{ii}.X0s              = X0s_ii;
-    r0Data{ii}.latLons          = latLons_ii;
-    r0Data{ii}.impactSpeeds     = impactSpeeds_ii;
-    r0Data{ii}.impactAngles     = impactAngles_ii;
-    r0Data{ii}.endTimes         = endTimes_ii;
-    r0Data{ii}.bin_neckSections = bin_neckSections_ii;
-    r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
-    r0Data{ii}.v0AzEls          = v0AzEls_ii; 
+    if saveAllX0s == 0
+        r0Data{ii}.latLons          = latLons_ii;
+        r0Data{ii}.impactSpeeds     = impactSpeeds_ii;
+        r0Data{ii}.impactAngles     = impactAngles_ii;
+        r0Data{ii}.endTimes         = endTimes_ii;
+        r0Data{ii}.bin_neckSections = bin_neckSections_ii;
+        r0Data{ii}.bin_impactAngles = bin_impactAngles_ii;
+        r0Data{ii}.v0AzEls          = v0AzEls_ii; 
+    end
     
 end
 
@@ -627,9 +645,25 @@ elseif testCaseOn == 1
     end
 end
 
+if saveAllX0s == 1
+    f_allTraj = fopen(filename_allTraj, 'wt');
+    fprintf(f_allTraj,'trajID,x0_n,y0_n,z0_n,xd0_n,yd0_n,zd0_n\n');  % header
+    
+    for kk = 1:n_r0s
+        if isempty(r0Data{kk}) == 0
+            for jj = 1:n_v0s_per_r0
+                fprintf(f_allTraj,'%1d,%1.15f,%1.15f,%1.15f,%1.15f,%1.15f,%1.15f\n',r0Data{kk}.trajIDs(jj),r0Data{kk}.X0s(jj,1:6));
+            end
+        end
+    end
+    fclose(f_allTraj);
+
+
+elseif saveAllX0s == 0
+
 %%% Opening files and writing header
 f_allTraj = fopen(filename_allTraj, 'wt');
-fprintf(f_allTraj,'trajID,latitude,longitude,impactAngle,endTime,y0_n,z0_n,xd0_n,yd0_n,zd0_n\n');  % header
+fprintf(f_allTraj,'trajID,x0_n,y0_n,z0_n,xd0_n,yd0_n,zd0_n,latitude,longitude,impactAngle,endTime\n');  % header
 
 %%% Writing data (and finding maximum latitudes)
 maxLat    = 0;
@@ -641,8 +675,8 @@ for kk = 1:n_r0s
         for jj = 1:n_v0s_per_r0
             %%% If this trajectory impacted, write impact data
             if isnan(r0Data{kk}.bin_impactAngles(jj)) == 0
-                fprintf(f_allTraj,'%1d,%2.1f,%2.1f,%2.1f,%1.7f,%1.15f,%1.15f,%1.15f,%1.15f,%1.15f\n',r0Data{kk}.trajIDs(jj),...
-                    r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2), r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj),r0Data{kk}.X0s(jj,2:6));
+                fprintf(f_allTraj,'%1d,%1.15f,%1.15f,%1.15f,%1.15f,%1.15f,%1.15f,%2.1f,%2.1f,%2.1f,%1.7f\n',r0Data{kk}.trajIDs(jj),...
+                    r0Data{kk}.X0s(jj,1:6),r0Data{kk}.latLons(jj,1),r0Data{kk}.latLons(jj,2), r0Data{kk}.impactAngles(jj),r0Data{kk}.endTimes(jj));
                 if abs(maxLat) < abs(r0Data{kk}.latLons(jj,1))
                     maxLat = abs(r0Data{kk}.latLons(jj,1));
                 end
@@ -683,6 +717,9 @@ fprintf(f_runData,'maxLowLat:%1.2f\n',maxLowLat);
 
 %%% Close file
 fclose(f_runData);
+
+
+end % saveAllX0s == 0
 
 finalToc = toc(ticWhole);
 

@@ -21,7 +21,7 @@ function [PO_ICs] = get_PO_ICs()
 %%% Earth-Moon
 % ========================================================================
 %%% L2 Lyapunov
-PO_ICs.EarthMoon.CR3BP.L2_Lyapunov = [1.155656895105045;...
+PO_ICs.Earth_Moon.CR3BP.L2_Lyapunov = [1.155656895105045;...
                                 0;
                                 0;
                                 0;
@@ -29,7 +29,7 @@ PO_ICs.EarthMoon.CR3BP.L2_Lyapunov = [1.155656895105045;...
                                 0;
                                 3.373237818307939];
 %%% L2 Northern Halo
-PO_ICs.EarthMoon.CR3BP.L2_NHalo    = [1.180888549172871;...
+PO_ICs.Earth_Moon.CR3BP.L2_NHalo    = [1.180888549172871;...
                                 -0.000000000000002;
                                 -0.000137978545959;
                                 0.000000000000128;
@@ -37,7 +37,7 @@ PO_ICs.EarthMoon.CR3BP.L2_NHalo    = [1.180888549172871;...
                                 0;
                                 3.415510771287679];                                    
 %%% L2 Southern Halo
-PO_ICs.EarthMoon.CR3BP.L2_SHalo    = [1.180888549172871;...
+PO_ICs.Earth_Moon.CR3BP.L2_SHalo    = [1.180888549172871;...
                                 -0.000000000000002;
                                 0.000137978545959;
                                 0.000000000000128;
@@ -49,63 +49,200 @@ PO_ICs.EarthMoon.CR3BP.L2_SHalo    = [1.180888549172871;...
 %%% Jupiter-Europa
 % ========================================================================
 %%% L2 Lyapunov
-PO_ICs.JupiterEuropa.CR3BP.L2_Lyapunov = [1.020387259845193;...
-                                    0.000000000000080;
-                                    0;
-                                    0.000000000000051;
-                                    0.000479945028703;
-                                    0;
-                                    3.076504388783907];
-                                
+PO_ICs.Jupiter_Europa.CR3BP.L2_Lyapunov = [1.020459895890721;
+ 0.000000000000000;
+ 0.000000000000000;
+ 0.000000000000000;
+ 0.000009635298385;
+ 0.000000000000000;
+ 3.076475285474523];
+
 %%% L2 Vertical
-PO_ICs.JupiterEuropa.CR3BP.L2_Vertical = [1.020461555840290;...
-                                    0.000000000000006;
-                                    0;
-                                    0.000000000000002;
-                                    -0.000000295384993;
-                                    -0.000288955625123;
-                                    3.189373028060691];
-                                
+PO_ICs.Jupiter_Europa.CR3BP.L2_Vertical = [1.020461385925891;
+ 0.000000000000000;
+ -0.000000000007952;
+ -0.000000000000001;
+ -0.000000000112984;
+ -0.000005651234504;
+ 3.189360701907498];
+
 %%% L2 Northern Halo
-PO_ICs.JupiterEuropa.CR3BP.L2_NHalo    = [1.017028544429315;...
-                                    0;
-                                    0.000023895588445;
-                                    0;
-                                    0.020011714717120;
-                                    0;
-                                    3.124212848627294];                                    
+PO_ICs.Jupiter_Europa.CR3BP.L2_NHalo = [1.022942960111908;
+ 0.000004378579524;
+ 0.000003583903498;
+ 0.000004092114377;
+ -0.018253039876809;
+ 0.000000002596782;
+ 3.124212428613199];
+
 %%% L2 Southern Halo
-PO_ICs.JupiterEuropa.CR3BP.L2_SHalo    = [1.017028544062047;...
-                                    0;
-                                    -0.000024035651262;
-                                    0;
-                                    0.020011715941382;
-                                    0;
-                                    3.124212845842041];   
+PO_ICs.Jupiter_Europa.CR3BP.L2_SHalo = [1.022942960111908;
+ 0.000004378579524;
+ -0.000003583903498;
+ 0.000004092114377;
+ -0.018253039876809;
+ -0.000000002596782;
+ 3.124212428613199];
 
 %%% L2 Eastern Axial
-PO_ICs.JupiterEuropa.CR3BP.L2_EasternAxial = [1.016217903229837;...
-                                        0;
-                                        -0.000000000000001;
-                                        -0.000000000000001;
-                                        -0.019672042942108;
-                                        -0.055607116759711;
-                                        4.266381393079572];   
+PO_ICs.Jupiter_Europa.CR3BP.L2_EasternAxial = [1.015763201614761;
+ 0.000000000000000;
+ -0.000000111034399;
+ 0.000000123589484;
+ -0.017687567079120;
+ 0.056673542874249;
+ 4.265575046735450];
 
 %%% L2 Western Axial
-PO_ICs.JupiterEuropa.CR3BP.L2_WesternAxial = [1.003798418598181;...
-                                        0;
-                                        -0.031825036366238;
-                                        -0.002599833461840;
-                                        0.013105232571822;
-                                        -0.005032273682898;
-                                        4.266374845956528];  
+PO_ICs.Jupiter_Europa.CR3BP.L2_WesternAxial = [1.015763201614761;
+ 0.000000000000000;
+ 0.000000111034399;
+ 0.000000123589484;
+ -0.017687567079120;
+ -0.056673542874249;
+ 4.265575046735450];
+
+%%% From 2nd tangent bifurcation of lyapunovs (axials)
+PO_ICs.Jupiter_Europa.CR3BP.L2_L_2T = [1.022059095708268;
+ -0.012807627693618;
+ -0.008440427807959;
+ -0.016084171763860;
+ -0.038994463594750;
+ -0.027045753171900;
+ 4.200974193607145];
+
+
+%%% L2_L_P2
+PO_ICs.Jupiter_Europa.CR3BP.L2_L_P2 = [1.035814515716520;
+ 0.000000000000000;
+ -0.000000000000000;
+ -0.000000000000060;
+ -0.072061864993549;
+ -0.000090897680128;
+ 11.313906907575308];
+
+%%% L2_L_T_P2
+PO_ICs.Jupiter_Europa.CR3BP.L2_L_T_P2 = [1.016708478729289;
+ 0.000000000000000;
+ -0.023202008350762;
+ -0.000000000000002;
+ -0.030492235825115;
+ -0.000000000000116;
+ 5.431770239773249];
+
+%%% L2_L_T_2P2
+PO_ICs.Jupiter_Europa.CR3BP.L2_L_T_2P2 = [1.016655218063621;
+ 0.000000000000000;
+ -0.023245618836043;
+ -0.000023681433157;
+ -0.030535012007184;
+ -0.000451118861358;
+ 5.416052566686873];
+
+%%% L2_L_T_P3
+PO_ICs.Jupiter_Europa.CR3BP.L2_L_T_P3 = [1.019185580574558;
+ 0.000000000000000;
+ -0.019637282581925;
+ -0.000007663107033;
+ -0.029934927543261;
+ -0.000060100060376;
+ 8.810715577747724];
+
+
+% %%% L2 Lyapunov
+% PO_ICs.Jupiter_Europa.CR3BP.L2_Lyapunov = [1.020387259845193;...
+%                                     0.000000000000080;
+%                                     0;
+%                                     0.000000000000051;
+%                                     0.000479945028703;
+%                                     0;
+%                                     3.076504388783907];
+%                                 
+% %%% L2 Lyapunov (J2pJ4pJ6pJ2s)
+% PO_ICs.Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_Lyapunov = [1.020405922833006;
+%  0.000000000000000;
+%  0.000000000000000;
+%  0.000000000000000;
+%  0.000000085710577;
+%  0.000000000000000;
+%  3.067315364405425];
+%                                 
+%                                 
+% %%% L2 Vertical
+% PO_ICs.Jupiter_Europa.CR3BP.L2_Vertical = [1.020461555840290;...
+%                                     0.000000000000006;
+%                                     0;
+%                                     0.000000000000002;
+%                                     -0.000000295384993;
+%                                     -0.000288955625123;
+%                                     3.189373028060691];
+% %%% L2 Vertical (J2pJ4pJ6pJ2s)
+% PO_ICs.Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_Vertical = [1.020405918754488;
+%  0.000000004302910;
+%  0.000013661679493;
+%  0.000000027355801;
+%  -0.000000025530175;
+%  -0.000089228467234;
+%  3.179132199098817];
+%                                 
+% %%% L2 Northern Halo
+% PO_ICs.Jupiter_Europa.CR3BP.L2_NHalo    = [1.017028544429315;...
+%                                     0;
+%                                     0.000023895588445;
+%                                     0;
+%                                     0.020011714717120;
+%                                     0;
+%                                     3.124212848627294];                                    
+% %%% L2 Northern Halo (J2pJ4pJ6pJ2s)
+% PO_ICs.Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_NHalo = [   1.018512424625264
+%   -0.009099230249752
+%                    -0
+%   -0.005457364572291
+%    0.003391138133776
+%    -0.000022559690337
+%    3.114279296302991];  
+% 
+% %%% L2 Southern Halo
+% PO_ICs.Jupiter_Europa.CR3BP.L2_SHalo    = [1.017028544062047;...
+%                                     0;
+%                                     -0.000024035651262;
+%                                     0;
+%                                     0.020011715941382;
+%                                     0;
+%                                     3.124212845842041];   
+%                                 
+% %%% L2 Southern Halo (J2pJ4pJ6pJ2s)
+% PO_ICs.Jupiter_Europa.CR3BP_J2pJ4pJ6pJ2s.L2_SHalo = [   1.018512424625264
+%   -0.009099230249752
+%                    0
+%   -0.005457364572291
+%    0.003391138133776
+%    0.000022559690337
+%    3.114279296302991];   
+%                                 
+% %%% L2 Eastern Axial
+% PO_ICs.Jupiter_Europa.CR3BP.L2_EasternAxial = [1.016217903229837;...
+%                                         0;
+%                                         -0.000000000000001;
+%                                         -0.000000000000001;
+%                                         -0.019672042942108;
+%                                         -0.055607116759711;
+%                                         4.266381393079572];   
+% 
+% %%% L2 Western Axial
+% PO_ICs.Jupiter_Europa.CR3BP.L2_WesternAxial = [1.003798418598181;...
+%                                         0;
+%                                         -0.031825036366238;
+%                                         -0.002599833461840;
+%                                         0.013105232571822;
+%                                         -0.005032273682898;
+%                                         4.266374845956528];  
 
 % ========================================================================
 %%% Saturn-Enceladus
 % ========================================================================
 %%% L2 Lyapunov
-PO_ICs.SaturnEnceladus.CR3BP.L2_Lyapunov = [1.003963326025942;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_Lyapunov = [1.003963326025942;...
                                       -0.000000000000001;
                                       0;
                                       -0.000000000000001;
@@ -113,8 +250,17 @@ PO_ICs.SaturnEnceladus.CR3BP.L2_Lyapunov = [1.003963326025942;...
                                       0;
                                       3.041677197603882];
 
-%%% L2 Lyapunov
-PO_ICs.SaturnEnceladus.CR3BP.L1_Lyapunov = [0.996033085409493;
+%%% L2 Lyapunov (J2pJ4pJ6pJ2s)                             
+PO_ICs.Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_Lyapunov = [1.004070928285829;
+ 0.000000000000000;
+ 0.000000000000000;
+ 0.000000000000000;
+ 0.000000085426800;
+ 0.000000000000000;
+ 3.104629404771333];
+                                  
+%%% L1 Lyapunov
+PO_ICs.Saturn_Enceladus.CR3BP.L1_Lyapunov = [0.996033085409493;
                                             -0.000000000000000;
                                             0.000000000000000;
                                             0.000000000004301;
@@ -123,16 +269,24 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_Lyapunov = [0.996033085409493;
                                             3.024489705865199]; 
                                 
 %%% L2 Vertical
-PO_ICs.SaturnEnceladus.CR3BP.L2_Vertical = [1.003991359461843;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_Vertical = [1.003991359461843;...
                                       0.000000000000001;
                                       0;
                                       -0.000000000000001;
                                       -0.000000172368141;
                                       -0.000099389248238;
                                       3.151015108553384];
-
+%%% L2 Vertical (J2pJ4pJ6pJ2s)  
+PO_ICs.Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_Vertical = [1.004070837628601;
+ 0.000000031638218;
+ 0.000020125705800;
+ 0.000000196819899;
+ -0.000000112644199;
+ -0.000089008095335;
+ 3.217602110068210];
+                                  
 %%% L1 Vertical
-PO_ICs.SaturnEnceladus.CR3BP.L1_Vertical = [0.996019267540287;...
+PO_ICs.Saturn_Enceladus.CR3BP.L1_Vertical = [0.996019267540287;...
                                       0.000000000000002;
                                       0;
                                       0;
@@ -140,25 +294,41 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_Vertical = [0.996019267540287;...
                                       0.000240920423191;
                                       3.132417557725700];
 %%% L2 Northern Halo
-PO_ICs.SaturnEnceladus.CR3BP.L2_NHalo  = [1.004446422097840;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_NHalo  = [1.004446422097840;...
                                     0;
                                     -0.000777541208133;
                                     0.000000000000305;
                                     -0.003759817746713;
                                     -0.000000000000041;
                                     3.086351054759526];                                
-
+%%% L2 Northern Halo (J2pJ4pJ6pJ2s) 
+PO_ICs.Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_NHalo  = [1.003712194007286;
+ -0.001795021148248;
+ -0.000000000000000;
+ -0.001081370695029;
+ 0.000641151535347;
+ -0.000021675313878;
+ 3.156940984741035]; 
+                                
 %%% L2 Southern Halo
-PO_ICs.SaturnEnceladus.CR3BP.L2_SHalo  = [1.004446422097840;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_SHalo  = [1.004446422097840;...
                                     0;
                                     0.000777541208133;
                                     0.000000000000305;
                                     -0.003759817746713;
                                     0.000000000000041;
                                     3.086351054759526];    
+%%% L2 Southern Halo (J2pJ4pJ6pJ2s) 
+PO_ICs.Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_SHalo  = [1.003712194007286;
+ -0.001795021148248;
+ 0.000000000000000;
+ -0.001081370695029;
+ 0.000641151535347;
+ 0.000021675313878;
+ 3.156940984741035];  
                                 
-%%% L2 Northern Halo
-PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo  = [0.995560588991134;
+%%% L1 Northern Halo
+PO_ICs.Saturn_Enceladus.CR3BP.L1_NHalo  = [0.995560588991134;
                                           0.000000000000000;
                                           -0.000482688805533;
                                           0.000000000000728;
@@ -167,7 +337,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo  = [0.995560588991134;
                                           3.071808037967654];                           
 
 %%% L2 Southern Halo
-PO_ICs.SaturnEnceladus.CR3BP.L1_SHalo  = [0.995560588991134;
+PO_ICs.Saturn_Enceladus.CR3BP.L1_SHalo  = [0.995560588991134;
                                           0.000000000000000;
                                           0.000482688805533;
                                           0.000000000000728;
@@ -176,7 +346,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_SHalo  = [0.995560588991134;
                                           3.071808037967654];
                                                                 
 %%% DRO
-PO_ICs.SaturnEnceladus.CR3BP.DRO  = [0.998312974740448;...
+PO_ICs.Saturn_Enceladus.CR3BP.DRO  = [0.998312974740448;...
                                     0;
                                     0;
                                     -0.000000000000460;
@@ -185,7 +355,7 @@ PO_ICs.SaturnEnceladus.CR3BP.DRO  = [0.998312974740448;...
                                     0.885611959509138];     
                                        
 %%% L2 Eastern Axial
-PO_ICs.SaturnEnceladus.CR3BP.L2_EasternAxial = [1.000817566039729;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_EasternAxial = [1.000817566039729;...
                                         0;
                                         0.006260935119950;
                                         -0.000135997227746;
@@ -194,7 +364,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L2_EasternAxial = [1.000817566039729;...
                                         4.248655828819825];  
                                     
 %%% L2 Western Axial
-PO_ICs.SaturnEnceladus.CR3BP.L2_WesternAxial = [1.003125755237350;...
+PO_ICs.Saturn_Enceladus.CR3BP.L2_WesternAxial = [1.003125755237350;...
                                         0;
                                         0;
                                         0.000000000000004;
@@ -204,7 +374,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L2_WesternAxial = [1.003125755237350;...
                                     
 %%% Unlabeled 1 Trailing (south - kind of like a Halo, but rotated 90 
 %%% degrees and centered about the secondary
-PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingS = [1.007302090959311;...
+PO_ICs.Saturn_Enceladus.CR3BP.unlabeled1TrailingS = [1.007302090959311;...
                                                     0;
                                                     -0.004886898788232;
                                                     0.009376480285938;
@@ -214,7 +384,7 @@ PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingS = [1.007302090959311;...
                                 
 %%% Unlabeled 1 Leading (south) - kind of like a Halo, but rotated 90 
 %%% degrees and centered about the secondary
-PO_ICs.SaturnEnceladus.CR3BP.unlabeled1LeadingS = [0.993453790361993;...
+PO_ICs.Saturn_Enceladus.CR3BP.unlabeled1LeadingS = [0.993453790361993;...
                                                    0;
                                                    -0.004042085896919;
                                                    -0.008637622615002;
@@ -224,7 +394,7 @@ PO_ICs.SaturnEnceladus.CR3BP.unlabeled1LeadingS = [0.993453790361993;...
                                        
 % From unlabeled1TrailingS Biffurcation ... this is symmetric with that
 % about z = 0 plane
-PO_ICs.SaturnEnceladus.CR3BP.unlabeled1LeadingN = [0.996374878694517;
+PO_ICs.Saturn_Enceladus.CR3BP.unlabeled1LeadingN = [0.996374878694517;
                                                    0.000000000000000;
                                                    0.001349243394813;
                                                    0.007526745713117;
@@ -234,7 +404,7 @@ PO_ICs.SaturnEnceladus.CR3BP.unlabeled1LeadingN = [0.996374878694517;
 
 %%% Unlabeled 1 Trailing (North - kind of like a Halo, but rotated 90 
 %%% degrees and centered about the secondary
-PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingN = [0.996374878694517;
+PO_ICs.Saturn_Enceladus.CR3BP.unlabeled1TrailingN = [0.996374878694517;
                                                     0.000000000000000;
                                                     0.001349243394813;
                                                     -0.007526745713117;
@@ -243,7 +413,7 @@ PO_ICs.SaturnEnceladus.CR3BP.unlabeled1TrailingN = [0.996374878694517;
                                                     4.257566451624301];    
 
 %%% Some kind of double-period L1 Halo at Enceladus
-PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999996805811347;
+PO_ICs.Saturn_Enceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999996805811347;
                                                       -0.000000000000000;
                                                       0.000971423431191;
                                                       0.000000000000002;
@@ -254,7 +424,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999996805811347;
                                                   
 %%% Some kind of L1 Northern Pretzel orbit at Enceladus
 %* May have useful manifolds for landing on Enceladus south pole
-PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999949172678353;
+PO_ICs.Saturn_Enceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999949172678353;
                                                       -0.000011913400115;
                                                       0.001050500079262;
                                                       -0.000018452263800;
@@ -264,7 +434,7 @@ PO_ICs.SaturnEnceladus.CR3BP.L1_NHalo_DoublePeriod = [0.999949172678353;
                                                   
 %%% Double period solution from bifurcation of unlabeled1LeadingS near 
 %%% enceladus             
-PO_ICs.SaturnEnceladus.CR3BP.SLeadingSneakerToe = [1.003278945892397;
+PO_ICs.Saturn_Enceladus.CR3BP.SLeadingSneakerToe = [1.003278945892397;
                                                    -0.000000000000000;
                                                    -0.001160178622759;
                                                    -0.008518652394546;
@@ -273,7 +443,7 @@ PO_ICs.SaturnEnceladus.CR3BP.SLeadingSneakerToe = [1.003278945892397;
                                                    8.797668183419933];      
 %%% Double period solution from bifurcation of unlabeled1LeadingS near 
 %%% enceladus             
-PO_ICs.SaturnEnceladus.CR3BP.SLeadingSneakerHeel = [1.003216735533549;
+PO_ICs.Saturn_Enceladus.CR3BP.SLeadingSneakerHeel = [1.003216735533549;
                                                     -0.000000000000000;
                                                     -0.001405927038742;
                                                     -0.008312954460291;
@@ -283,7 +453,7 @@ PO_ICs.SaturnEnceladus.CR3BP.SLeadingSneakerHeel = [1.003216735533549;
 
 %%% Double period solution from bifurcation of unlabeled1LeadingS near 
 %%% enceladus             
-PO_ICs.SaturnEnceladus.CR3BP.unknown1 = [0.939388822542880;
+PO_ICs.Saturn_Enceladus.CR3BP.unknown1 = [0.939388822542880;
                                        -0.409996929538443;
                                        0.077223984876444;
                                        -0.099807452215460;
@@ -296,7 +466,7 @@ PO_ICs.SaturnEnceladus.CR3BP.unknown1 = [0.939388822542880;
 %%% Saturn-Titan
 % ========================================================================
 %%% L2 Lyapunov
-PO_ICs.SaturnTitan.CR3BP.L2_Lyapunov = [1.043225594807153;...
+PO_ICs.Saturn_Titan.CR3BP.L2_Lyapunov = [1.043225594807153;...
                                       0;
                                       0;
                                       0;
@@ -305,25 +475,13 @@ PO_ICs.SaturnTitan.CR3BP.L2_Lyapunov = [1.043225594807153;...
                                       3.124245125264076];
 
 %%% L2 Vertical
-PO_ICs.SaturnTitan.CR3BP.L2_Vertical = [1.043254890948189;...
+PO_ICs.Saturn_Titan.CR3BP.L2_Vertical = [1.043254890948189;...
                                       -0.000000000000002;
                                       0;
                                       -0.000000000000001;
                                       -0.000000062689698;
                                       -0.000188867650859;
                                       3.241966380524457];   
-
-
-
-% ========================================================================
-%%% Formatting Structures
-% ========================================================================
-% -------------------------------------------------
-%%% 
-% -------------------------------------------------
-% --------------------------
-% 
-% --------------------------
 
 
 end % function

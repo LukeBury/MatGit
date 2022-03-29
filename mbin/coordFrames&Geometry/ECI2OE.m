@@ -14,20 +14,14 @@ R = norm(r);
 V = norm(v);
 % Semi Major Axis (km)
 a = 1 / (2/R - (V^2)/u);
-% Mean Motion (rad/s)
-n = sqrt(u/(a^3));
+
 % Eccentricity vector
 e_vec = ((V^2 - u/R) * r - dot(r,v) * v) / u;
 % Eccentricity
 e = norm(e_vec);
-% Radius of apoapsis and periapsis (km)
-ra = a * (1 + e);
-rp = a * (1 - e);
 % Angular momentum vector (m^2/s)
 h = cross(r,v);
 % Defining axes
-I = [1;0;0];
-J = [0;1;0];
 K = [0;0;1];
 % Inclination (rad)
 i = acos(dot(K,h)/norm(h));

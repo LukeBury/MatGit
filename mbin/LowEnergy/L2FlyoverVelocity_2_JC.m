@@ -1,4 +1,4 @@
-function [JC_sc] = L2FlyoverVelocity_2_JC(L2FlyoverVelocity_mps, mu, L2_BCR, vNorm)
+function [JC_sc] = L2FlyoverVelocity_2_JC(L2FlyoverVelocity_mps, mu, L2_BCR, vNorm, n)
 %%% Description
 %       Calculates a Jacobi Constant from an L2 flyover velocity       
 %       (0 => JC_L2)
@@ -9,6 +9,7 @@ function [JC_sc] = L2FlyoverVelocity_2_JC(L2FlyoverVelocity_mps, mu, L2_BCR, vNo
 %       mu - [1x1] Mass ratio of CR3BP system 
 %       L2_BCR - [1x3] Position coordinates of L2 in normalized CR3BP
 %       vNorm - [1x1] Velocity normalizing factor (km/s)
+%       n - [1x1] normalized mean motion
 % --------------------------------------------------------------
 %%% Outputs
 %       JC_sc - [1x1] Jacobi constant corresponding to L2 flyover velocity
@@ -23,7 +24,10 @@ L2FlyoverVelocity_kps = L2FlyoverVelocity_mps/1000;
 dJC_L2 = (L2FlyoverVelocity_kps/vNorm)^2;
 
 %%% Calculate Jacobi constant of L2
-[JC_L2] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
+% [JC_L2] = JacobiConstantCalculator(mu, L2_BCR, [0,0,0]);
+prms.u = mu;
+prms.n = n;
+[JC_L2] = getJacobiConstant_ZH([L2_BCR, 0, 0, 0],prms);
 
 %%% Calculate Jacobi constant corresponding to L2 flyover velocity
 JC_sc = JC_L2-dJC_L2;

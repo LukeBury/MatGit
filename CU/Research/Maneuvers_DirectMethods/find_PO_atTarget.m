@@ -20,6 +20,7 @@ savePath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Fa
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
+
 % ========================================================================
 %%% Importing Data
 % ========================================================================
@@ -44,7 +45,8 @@ savePrettyFamily = 0;
 
 plot_surface_reconstruction = 0;
 
-plot_secondary = 0;
+plot_secondary = 1;
+plot_L2 = 1;
 
 if (spaceByJC + spaceByTp) == 2
     warning('These are mututally exclusive')
@@ -99,7 +101,7 @@ end
 
 %%% Jupiter-Europa
 % famName = 'Jupiter_Europa.CR3BP.L2_Lyapunov';
-% famName = 'Jupiter_Europa.CR3BP.L2_Vertical';
+famName = 'Jupiter_Europa.CR3BP.L2_Vertical';
 % famName = 'Jupiter_Europa.CR3BP.L2_NHalo';
 % famName = 'Jupiter_Europa.CR3BP.L2_SHalo';
 % famName = 'Jupiter_Europa.CR3BP.L2_EasternAxial';
@@ -117,10 +119,11 @@ end
 
 
 %%% Saturn-Enceladus
-famName = 'Saturn_Enceladus.CR3BP.L2_Lyapunov';
+% famName = 'Saturn_Enceladus.CR3BP.L2_Lyapunov';
 % famName = 'Saturn_Enceladus.CR3BP.L2_Vertical';
 % famName = 'Saturn_Enceladus.CR3BP.L2_SHalo';
 % famName = 'Saturn_Enceladus.CR3BP.SLeadingSneakerToe';
+
 % famName = 'Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_Lyapunov';
 % famName = 'Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_Vertical';
 % famName = 'Saturn_Enceladus.CR3BP_J2pJ4pJ6pJ2s.L2_SHalo';
@@ -159,7 +162,7 @@ maxTp = max(POFamilyData(:,c_Tp_n));
 % -------------------------------------------------
 %%% Set vector of target values to find POs at
 % -------------------------------------------------
-n_Solutions = 500;
+n_Solutions = 20;
 
 if spaceByJC     == 1
     target_vec = linspace(minJC, maxJC, n_Solutions);
@@ -177,26 +180,21 @@ if spaceByJC     == 1
     % 3.001926680861342
 elseif spaceByTp == 1
     target_vec = linspace(minTp, maxTp, n_Solutions);
-
-%     target_vec = linspace(3.0815, 3.4747, n_Solutions); % For comparing vanilla to ZH Europa L2 Lyapunovs
-%     target_vec = linspace(3.2, 6.0413, n_Solutions); % For comparing vanilla to ZH Europa L2 Verticals
-%     target_vec = linspace(2.1952, 3.1242, n_Solutions); % For comparing vanilla to ZH Europa L2 SHalos
-%     target_vec = linspace(2.1952, 3.128, n_Solutions); % For comparing vanilla to ZH Europa L2 SHalos
+%     target_vec = linspace(3.09, 5.51, n_Solutions); % Jupiter_Europa, Lyapunov
+%     target_vec = linspace(3.22, 6.18, n_Solutions); % Jupiter_Europa, Vertical
+%     target_vec = linspace(1.81, 3.114, n_Solutions); % Jupiter_Europa, SHalo
     
-%     target_vec = linspace(3.185, 3.8947, n_Solutions); % For comparing vanilla to ZH Enceladus L2 Lyapunovs
-%     target_vec = linspace(3.32, 6.2537, n_Solutions); % For comparing vanilla to ZH Enceladus L2 Verticals
-%     target_vec = linspace(2.0559, 3.091, n_Solutions); % For comparing vanilla to ZH Enceladus L2 SHalos
+%     target_vec = linspace(3.11, 4.29, n_Solutions); % Saturn_Enceladus, Lyapunov
+%     target_vec = linspace(3.24, 6.0, n_Solutions); % Saturn_Enceladus, Vertical
+%     target_vec = linspace(2.30, 3.089, n_Solutions); % Saturn_Enceladus, SHalo
+
 end
 
 % target_vec = fliplr(target_vec);
 
-n_Solutions = 20;
+% n_Solutions = 20;
 % target_vec = linspace(target_vec(1), target_vec(3), n_Solutions);
 % target_vec = linspace(3.1675396043512030, 3.1675271565021674, n_Solutions);
-
-target_vec = linspace(3.0424294837044816, 3.0437044881280650, n_Solutions);
-% n_Solutions = 20;
-% target_vec = linspace(target_vec(1), target_vec(8), n_Solutions);
 
 
 % ------------------------------------------------- 
@@ -206,6 +204,8 @@ target_vec = linspace(3.0424294837044816, 3.0437044881280650, n_Solutions);
 
 %%% Error tolerance for constraint vector in multiple shooter
 error_tol = 1e-13; 
+% 989
+% error_tol = 1e-9; 
 
 %%% Number of nodes for multiple shooter
 n_Nodes = 13; 
@@ -230,16 +230,20 @@ vNorm = rNorm / tNorm;       % n <-> km/sec
 
 %%% Setting parameter structure
 prms.u  = secondary.MR;
+prms.n  = 1;
 prms.R1 = primary.R / rNorm;
 prms.R2 = secondary.R_n;
 
 if contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; prms.J4p = primary.J4; prms.J6p = primary.J6; prms.J2s = secondary.J2;
+    
+    tNorm = sqrt((rNorm^3)/(bodies.constants.G*(primary.mass + secondary.mass)));
+    prms.n = secondary.meanMot * tNorm;
 end
 
 %%% Equillibrium Points
 if contains(famName,'.CR3BP.')
-    rLPs_n = EquilibriumPoints(prms.u);
+    rLPs_n = EquilibriumPoints(prms.u,prms.n);
 elseif contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     rLPs_n = collinearEquilibriumPoints_ZH(prms);
 end
@@ -269,7 +273,7 @@ stm0_colVec = reshape(stm0,36,1);
 %%% Loop through desired JC values and find PO at each
 % -------------------------------------------------
 solutionIndex = 0;
-for target_i = target_vec
+for target_i = target_vec(1:15)
     if spaceByJC     == 1
         if target_i < minJC
             warning('Requested JC value is below minimum value from family')
@@ -406,16 +410,17 @@ for target_i = target_vec
     monodromy                           = stm_tf_t0;
     [eigenVectors_new, eigenValues_new] = eig(monodromy);
     [S1, S2]                            = getStabilityIndices(diag(eigenValues_new));
-    stabilityIndices(solutionIndex,:)          = [S1, S2];
+    stabilityIndices(solutionIndex,:)   = [S1, S2];
     
     % ------------------------------------------------- 
     %%% Store other important data
     % -------------------------------------------------
     jacobiConstants(solutionIndex)        = getJacobiConstant_ZH(F_new(1:6)', prms);
     L2ExcessVelocities_mps(solutionIndex) = JC_2_L2FlyoverVelocity(jacobiConstants(solutionIndex), prms, rLPs_n(2,:), vNorm);
-    landingVelocities_mps(solutionIndex)  = JC_2_LandingVelocity(jacobiConstants(solutionIndex), prms, vNorm);
+    landingVelocities_mps(solutionIndex)  = JC_2_approxLandingVelocity(jacobiConstants(solutionIndex), prms, vNorm);
         
 end
+
 
 % ========================================================================
 %%% Plotting Results
@@ -425,16 +430,20 @@ end
 % -------------------------------------------------
 figure(100); hold all
 axis equal
-PlotBoi3('$X_n$','$Y_n$','$Z_n$',20,'LaTex')
+PlotBoi3_CR3Bn(26)
 
 if plot_secondary
     if isfield(secondary,'img') == 1
-        plotSecondary(secondary, 0.8)
+        plotSecondary(secondary)
     elseif isfield(secondary,'color') == 1
         plotBody3(secondary.R_n,[1-secondary.MR,0,0],secondary.color,0.8)
     else
-        plotBody3(secondary.R_n,[1-secondary.MR,0,0],colors.std.grn,0.8)
+        plotBody3(secondary.R_n,[1-secondary.MR,0,0],colors.grn,0.8)
     end
+end
+
+if plot_L2
+    plot3(rLPs_n(2,1),0,0,'^','markeredgecolor',colors.grn,'markerfacecolor',colors.ltgrn)
 end
 
 allTrajs_CR3BP    = [];
@@ -449,14 +458,18 @@ for kk = 1:n_Solutions
         
         %%% Plot
         p_CR3BP = plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'r','linewidth',1.5);
+%         p_CR3BP = plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'k','linewidth',2);
     elseif contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
         [~, X_PO] = ode113(@Int_CR3Bn_J2pJ4pJ6pJ2s, [0, POs(kk,7)], POs(kk,1:6)', options, prms);
         allTrajs_CR3BP_ZH = [allTrajs_CR3BP_ZH; X_PO];
         
         %%% Plot
         p_CR3BP_ZH = plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'b','linewidth',1.5);
-    end    
+    end  
     
+%     legend([p_CR3BP], 'CR3BP')
+%     legend([p_CR3BP_ZH], 'CR3BP w ZH')
+%     legend([p_CR3BP, p_CR3BP_ZH], 'CR3BP', 'CR3BP w ZH')
 end
 
 % -------------------------------------------------
@@ -468,8 +481,8 @@ S2 = stabilityIndices(:,2);
 
 figure('position',[209 322 948 302])
 subplot(1,2,1); hold all
-p1 = plot(jacobiConstants, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-p2 = plot(jacobiConstants, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+p1 = plot(jacobiConstants, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+p2 = plot(jacobiConstants, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 % plot(unique([min([jacobiConstants, jacobiConstants]) max([jacobiConstants, jacobiConstants])]),[2 2],'k','linewidth',1)
 plot([min(jacobiConstants), max(jacobiConstants)],[2 2],'k','linewidth',1)
 PlotBoi2('Jacobi Constant','Stability Indices',18,'LaTex')
@@ -478,8 +491,8 @@ legend([p1 p2],'S_1','S_2')
 xlim([min(jacobiConstants), max(jacobiConstants)])
 
 subplot(1,2,2); hold all
-p1 = plot(jacobiConstants, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-p2 = plot(jacobiConstants, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+p1 = plot(jacobiConstants, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+p2 = plot(jacobiConstants, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
 % plot(unique([min([jacobiConstants, jacobiConstants]) max([jacobiConstants, jacobiConstants])]),[2 2],'k','linewidth',1)
 plot([min(jacobiConstants), max(jacobiConstants)],[2 2],'k','linewidth',1)
 PlotBoi2('Jacobi Constant','',18,'LaTex')
@@ -557,7 +570,7 @@ if plot_surface_reconstruction
         elseif isfield(secondary,'color') == 1
             plotBody3(secondary.R_n,[1-secondary.MR,0,0],secondary.color,0.8)
         else
-            plotBody3(secondary.R_n,[1-secondary.MR,0,0],colors.std.grn,0.8)
+            plotBody3(secondary.R_n,[1-secondary.MR,0,0],colors.grn,0.8)
         end
     end
 end % plot_surface_reconstruction
@@ -566,7 +579,7 @@ end % plot_surface_reconstruction
 
 
 
-%% =======================================================================
+% ========================================================================
 %%% Clean up the data
 % ========================================================================
 % -------------------------------------------------

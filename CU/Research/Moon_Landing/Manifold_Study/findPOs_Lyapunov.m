@@ -201,8 +201,10 @@ L2FlyoverVelocities_mps = NaN(n_POs_max,1);
 POs(1,:) = [X0_guess_n', T_guess_n];
 
 %%% Storing energy of first PO
-JC_PO_i = JacobiConstantCalculator(mu,X0_guess_n(1:3)',X0_guess_n(4:6)');
-L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,mu,rLPs_n(LP,:),vNorm);
+% JC_PO_i = JacobiConstantCalculator(mu,X0_guess_n(1:3)',X0_guess_n(4:6)');
+JC_PO_i = getJacobiConstant_ZH(X0_guess_n(1:6)',prms);
+L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i, prms, rLPs_n(LP,:), vNorm);
+% L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,mu,rLPs_n(LP,:),vNorm);
 L2FlyoverVelocities_mps(1) = L2_FlyoverVelocity_PO_i_mps;
 989
 return

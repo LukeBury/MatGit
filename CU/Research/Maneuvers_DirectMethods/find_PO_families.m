@@ -69,7 +69,7 @@ end
 % --------------------------
 % Jupiter-Europa
 % --------------------------
-% myPO_ICs = PO_ICs.Jupiter_Europa.CR3BP.L2_Lyapunov; famName = 'Jupiter_Europa.CR3BP.L2_Lyapunov';
+myPO_ICs = PO_ICs.Jupiter_Europa.CR3BP.L2_Lyapunov; famName = 'Jupiter_Europa.CR3BP.L2_Lyapunov';
 % myPO_ICs = PO_ICs.Jupiter_Europa.CR3BP.L2_Vertical; famName = 'Jupiter_Europa.CR3BP.L2_Vertical';
 % myPO_ICs = PO_ICs.Jupiter_Europa.CR3BP.L2_NHalo; famName = 'Jupiter_Europa.CR3BP.L2_NHalo';
 % myPO_ICs = PO_ICs.Jupiter_Europa.CR3BP.L2_SHalo; famName = 'Jupiter_Europa.CR3BP.L2_SHalo';
@@ -133,7 +133,7 @@ end
 % --------------------------
 % Neptune - Triton
 % --------------------------
-myPO_ICs = PO_ICs.Neptune_Triton.CR3BP.L2_Lyapunov; famName = 'Neptune_Triton.CR3BP.L2_Lyapunov';
+% myPO_ICs = PO_ICs.Neptune_Triton.CR3BP.L2_Lyapunov; famName = 'Neptune_Triton.CR3BP.L2_Lyapunov';
 % myPO_ICs = PO_ICs.Neptune_Triton.CR3BP.L2_Vertical; famName = 'Neptune_Triton.CR3BP.L2_Vertical';
 % myPO_ICs = PO_ICs.Neptune_Triton.CR3BP.L2_SHalo; famName = 'Neptune_Triton.CR3BP.L2_SHalo';
 
@@ -159,15 +159,18 @@ prms.u    = mu;
 prms.R2   = R2_n; 
 prms.R1   = primary.R / rNorm;
 
+
 %%% Equillibrium Points
 if contains(famName,'.CR3BP.')
-    rLPs_n = EquilibriumPoints(mu);
+    prms.n = 1;
+    rLPs_n = EquilibriumPoints(mu, prms.n);
 elseif contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; 
     prms.J4p = primary.J4; 
     prms.J6p = primary.J6; 
     prms.J2s = secondary.J2;
     rLPs_n = collinearEquilibriumPoints_ZH(prms);
+    warning('Need prms.n')
 end
 
 % ------------------------------------------------- 
@@ -181,7 +184,7 @@ t0 = 0;
 %%% Other options
 % -------------------------------------------------
 %%% Maximum number of POs to find in family, regardless of step size
-n_POs_max = 1000;
+n_POs_max = 10;
 
 %%% Lagrange point? 
 if contains(famName,'.L1_')
@@ -195,8 +198,8 @@ end
 %%% based on performance as the algorithm runs
 % ds_PO = 1e-2;
 % ds_PO = 7e-3; %  
-% ds_PO = 1e-3; % Europa 
-ds_PO = 1e-4; % Enceladus sneaker
+ds_PO = 1e-3; % Europa 
+% ds_PO = 1e-4; % Enceladus sneaker
 % ds_PO = 1e-5;
 % ds_PO = 1e-6; % Enceladus 
 % ds_PO = 1e-7;
@@ -210,20 +213,24 @@ error_tol = 1e-12;
 % error_tol = 1e-9;
 
 %%% Continue family in or out
-familyDirection = -1; % 1 or -1
+familyDirection = 1; % 1 or -1
 
 %%% Number of nodes for multiple shooter
-n_Nodes = 12; % 3
+n_Nodes = 4; % 3
 
 %%% Artificial scalar for increasing or decreasing the step size for 
 % guessing at the state of the 2nd family member. 1 has no effect, 2 and 
-% 3 are somewhat common
+% 3 can be helpful in certain regions
 stepSize = 1;
 
 %%% Maximum number of multiple-shooter iterations for any given family
 %%% member before kicking out of the loop and adjusting the tuning
 %%% parameters
-iterMax = 350;
+iterMax = 500;
+
+%%% Maximum number of times the alorithm can try to relocate the family if
+%%% it jumps to a different family/equilibrium 
+lostFamilyCounter_max = 5;
 
 % ------------------------------------------------- 
 %%% Preparing to find family
@@ -248,7 +255,7 @@ JC_PO_i                        = getJacobiConstant_ZH(POs(1,1:6), prms);
 L2_FlythroughVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,prms,rLPs_n(2,:),vNorm);
 jacobiConstants(1)             = JC_PO_i;
 L2ExcessVelocities_mps(1)      = L2_FlythroughVelocity_PO_i_mps;
-landingVelocities_mps(1)       = JC_2_LandingVelocity(JC_PO_i, prms, vNorm);
+landingVelocities_mps(1)       = JC_2_approxLandingVelocity(JC_PO_i, prms, vNorm);
 
 %%% Initialize STM
 stm0        = eye(6);
@@ -271,7 +278,8 @@ end
 
 %%% Integrate again to discretize into nodes evenly spaced in time
 if contains(famName,'.CR3BP.')
-    [T_nodes, X_nodes] = ode113(@Int_CR3BnSTM, linspace(0, myPO_ICs(7),n_Nodes+1), [myPO_ICs(1:6); stm0_colVec], options, prms);
+%     [T_nodes, X_nodes] = ode113(@Int_CR3BnSTM, linspace(0, myPO_ICs(7),n_Nodes+1), [myPO_ICs(1:6); stm0_colVec], options, prms);
+    [T_nodes, X_nodes] = get_nodes(myPO_ICs(1:6), [0, myPO_ICs(7)], n_Nodes+1, @Int_CR3Bn, options, prms);
 elseif contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     [T_nodes, X_nodes] = ode113(@Int_CR3BnSTM_J2pJ4pJ6pJ2s, linspace(0, myPO_ICs(7),n_Nodes+1), [myPO_ICs(1:6); stm0_colVec], options, prms);
 end
@@ -319,6 +327,10 @@ while PO_i <= n_POs_max
     %%% Set free variable vector
     F_new = Fs(PO_i,:)';
     
+%     if PO_i == 2
+%         return
+%     end
+    
     % -------------------------------------------------
     % Run pseudo-arclength continuation with multiple shooting to find the
     % next orbit
@@ -335,8 +347,9 @@ while PO_i <= n_POs_max
             error_tol, iterMax, n_Nodes, F_new, @Int_CR3BnSTM_J2pJ4pJ6pJ2s, options, prms, PO_i, stepSize, nullVecDF, ds_PO);
     end
     
+    
     if print_PO_index == 1
-        fprintf('PO_i = %1d ... iterations: %1d ... ds_PO = %1.2e\n',PO_i, counter, ds_PO)
+        fprintf('PO_i = %1d ... iterations: %1.3d ... ds_PO = %1.2e ... Elapsed time: %1.1f seconds\n',PO_i, counter, ds_PO, toc(ticWhole))
     end % print_PO_index
     
     % --------------------------
@@ -353,7 +366,7 @@ while PO_i <= n_POs_max
         %%% Compute null space of DF
         if PO_i == 1
             nullVecDF = null(DF).*familyDirection;
-
+        
         %%% If PO_i > 1, make sure null space hasn't flipped sign
         elseif PO_i > 1
             nullVecDFPrevious = nullVecDF;
@@ -361,7 +374,7 @@ while PO_i <= n_POs_max
             
             %%% Check continuity of null space dimension and quit if it has
             %%% changed
-            if isequal(size(nullVecDFPrevious),size(nullVecDF)) == 0
+            if ~isequal(size(nullVecDFPrevious),size(nullVecDF))
                 warning('Null space changed dimensions')
                 break
             end
@@ -380,7 +393,7 @@ while PO_i <= n_POs_max
         %%% Check for family continuity (no jumps to other equilibria)
         percentChangePosition = norm(F_new(1:3) - Fs(PO_i,1:3)')/norm(Fs(PO_i,1:3)');
         if (percentChangePosition > 0.1) || (norm(F_new(1:3) - rLPs_n(LP,:)') < 1e-14)
-            if lostFamilyCounter < 5
+            if lostFamilyCounter < lostFamilyCounter_max
                 %%% Count the lost family iteration
                 lostFamilyCounter = lostFamilyCounter + 1;
 
@@ -388,7 +401,7 @@ while PO_i <= n_POs_max
                 ds_PO = ds_PO * 0.9;
                 continue
             
-            %%% If algorithm repeated`ly fails to continue family, then end
+            %%% If algorithm repeatedly fails to continue family, end
             %%% the search
             elseif lostFamilyCounter >= 5
                 warning('Lost track of family ... It possibly ended')
@@ -402,7 +415,6 @@ while PO_i <= n_POs_max
         %%% Store converged F
         Fs(PO_i+1,:) = F_new';
         POs(PO_i+1,:) = [F_new(1:6)', F_new(end)];
-        
         
         % --------------------------
         % Integrate the converged trajectory and store the stability
@@ -440,8 +452,7 @@ while PO_i <= n_POs_max
         
         jacobiConstants(PO_i+1)        = JC_PO_new;
         L2ExcessVelocities_mps(PO_i+1) = L2_FlythroughVelocity_mps_new;
-        landingVelocities_mps(PO_i+1)    = JC_2_LandingVelocity(JC_PO_new, prms, vNorm);
-        
+        landingVelocities_mps(PO_i+1)  = JC_2_approxLandingVelocity(JC_PO_new, prms, vNorm);
         % --------------------------
         % Adjust step size
         % --------------------------
@@ -510,6 +521,7 @@ while PO_i <= n_POs_max
         end
     end
     
+    
 end % while PO_i < n_POs_max
 
 %% =======================================================================
@@ -564,16 +576,16 @@ if plot_stability == 1
     
     figure('position',[209 322 948 302])
     subplot(1,2,1); hold all
-    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
     PlotBoi2('Jacobi Constant','Stability Indices',18,'LaTex')
     legend([p1 p2],'S_1','S_2')
     xlim(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]))
     
     subplot(1,2,2); hold all
-    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue);
-    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(JC_temp1, abs(S1),'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue);
+    p2 = plot(JC_temp2, abs(S2),'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     plot(unique([min([JC_temp2, JC_temp1]) max([JC_temp2, JC_temp1])]),[2 2],'k','linewidth',1)
     PlotBoi2('Jacobi Constant','',18,'LaTex')
     ylim([1.9 2.1])
@@ -586,18 +598,18 @@ end
 if plot_energy
 %     figure; hold all
 %     yyaxis left
-%     plot(jacobiConstants,'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue)
+%     plot(jacobiConstants,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
 %     PlotBoi2('','Jacobi Constant',18,'LaTex')
 %     yyaxis right
-%     plot(L2ExcessVelocities_mps,'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred)
+%     plot(L2ExcessVelocities_mps,'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred)
 %     PlotBoi2('PO Index','$L_2$ Excess Velocity, $m/s$',18,'LaTex')
     
     figure; hold all
     yyaxis left
-    plot(jacobiConstants,'o','markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue)
+    plot(jacobiConstants,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
     PlotBoi2('','Jacobi Constant',18,'LaTex')
     yyaxis right
-    plot(landingVelocities_mps,'o','markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred)
+    plot(landingVelocities_mps,'o','markeredgecolor',colors.red,'markerfacecolor',colors.ltred)
     PlotBoi2('PO Index','+$x$ Landing Velocity, $m/s$',18,'LaTex')
     
 end
@@ -648,9 +660,6 @@ if save_PO_X0_database == 1
 
     %%% Close file
     fclose(datafile);
-
-
-
 end
 
 % ========================================================================

@@ -44,23 +44,28 @@ store_and_plot_manifold_trajectories  = 1;
 %%% Options
 % -------------------------------------------------
 %%% Number of manifolds per PO
-% n_nodes = 200;
-989
-n_nodes = 20;
+n_nodes = 200;
+% 989
+% n_nodes = 2000;
 
 %%% Scale the perturbation of the manifold node in the unstable direction
-pertScale = 1e-8;
+% pertScale = 1e-8;
+pertScale = 1e-4;
 
 %%% Set propagation time for unstable manifolds
-% Tf_manifolds_n = 4*pi;
-989
-Tf_manifolds_n = 2*pi;
+Tf_manifolds_n = 4*pi;
+% 989
+% Tf_manifolds_n = 2*pi;
 
 %%% Bins and colors for impact angles
 impactAngleBins_deg = [0, 3, 10, 20, 45, 90];
 
 n_impactAngleBins = length(impactAngleBins_deg) - 1;
-impactAngleColors = colorScale([colors.std.cyan; colors.std.mag], n_impactAngleBins);
+impactAngleColors = colorScale([colors.cyan; colors.mag], n_impactAngleBins);
+
+% 989
+% impactAngleColors = [colors.cyan;...
+%     colorScale([colors.blue; colors.red], n_impactAngleBins-1)];
 
 %%% 3B System
 % famName_bodies = 'Earth_Moon';
@@ -73,9 +78,9 @@ famName_bodies = 'Jupiter_Europa';
 % famName_PO_Family = 'L1_Lyapunov';
 % famName_PO_Family = 'L1_Vertical';
 % famName_PO_Family = 'L1_SHalo';
-famName_PO_Family = 'L2_Lyapunov';
+% famName_PO_Family = 'L2_Lyapunov';
 % famName_PO_Family = 'L2_Vertical';
-% famName_PO_Family = 'L2_SHalo';
+famName_PO_Family = 'L2_SHalo';
 
 % -------------------------------------------------
 %%% Set up System 
@@ -96,9 +101,12 @@ prms.u     = secondary.MR;
 prms.rNorm = rNorm;
 prms.R1    = primary.R / rNorm;
 prms.R2    = secondary.R_n;
+prms.n     = 1;
 
 if contains(famName,'.CR3BP_J2pJ4pJ6pJ2s.')
     prms.J2p = primary.J2; prms.J4p = primary.J4; prms.J6p = primary.J6; prms.J2s = secondary.J2;
+    warning('Find prms.n')
+    return
 end
 
 %%% Equillibrium Points
@@ -161,11 +169,11 @@ elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_Vertical') % max - 511
 %     PO_indicies = [2, 3, 5, 10, 14, 15, 17, 20, 25, 30, 50, 100]; % interesting things between 15 and 18 .. the manifold first grazes off the moon
 %     *** Should be integrating for 6 pi to get extra set of intersections
 %     *** Around 100 can be used for shallow landings at poles
-    PO_indicies = [101];
+    PO_indicies = [20, 50, 101];
 elseif isequal(famName, 'Jupiter_Europa.CR3BP.L2_SHalo') % max - 525
     %%% Impacts appear to stop after 226
     PO_indicies = [5, 10, 15, 20, 25, 30, 35, 45, 60, 92, 100, 140, 155, 175, 210, 220, 226];
-    PO_indicies = [45, 500];
+%     PO_indicies = [45, 500];
     
 elseif isequal(famName, 'Jupiter_Ganymede.CR3BP.L2_Lyapunov') % max - 583
     %%% around 350 has large regions of shallow landing angles (4 different areas)
@@ -539,7 +547,7 @@ for PO_i = 1:length(PO_indicies)
 %         if ~isnan(latLons_deg{PO_i}(kk,2))
 % 
 %             plot(latLons_deg{PO_i}(kk,2), latLons_deg{PO_i}(kk,1),...
-%                 'o','markersize',6,'markeredgecolor',colors.std.black,'markerfacecolor',impactColors{PO_i}(kk,:))
+%                 'o','markersize',6,'markeredgecolor',colors.black,'markerfacecolor',impactColors{PO_i}(kk,:))
 %             
 %             quiver(latLons_deg{PO_i}(kk,2), latLons_deg{PO_i}(kk,1), ...
 %                 latLonHeadingHats{PO_i}(kk,2), latLonHeadingHats{PO_i}(kk,1),...
@@ -549,7 +557,7 @@ for PO_i = 1:length(PO_indicies)
     for bin_i = n_impactAngleBins:-1:1
         if ~isempty(PObins_latLons_deg{PO_i}{bin_i})
             plot(PObins_latLons_deg{PO_i}{bin_i}(:,2), PObins_latLons_deg{PO_i}{bin_i}(:,1),...
-                '.','markersize',17,'markeredgecolor',colors.std.black,'markerfacecolor',impactAngleColors(bin_i,:))
+                '.','markersize',17,'markeredgecolor',colors.black,'markerfacecolor',impactAngleColors(bin_i,:))
 
             for quiver_i = 1:size(PObins_latLons_deg{PO_i}{bin_i},1)
                 quiver(PObins_latLons_deg{PO_i}{bin_i}(quiver_i,2), PObins_latLons_deg{PO_i}{bin_i}(quiver_i,1), ...

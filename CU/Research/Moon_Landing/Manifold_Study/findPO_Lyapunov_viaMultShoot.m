@@ -47,10 +47,10 @@ end
 % -------------------------------------------------
 %%% Choose bodies
 % primary = bodies.earth;     secondary = bodies.moon;
-% primary = bodies.jupiter;   secondary = bodies.europa;
+primary = bodies.jupiter;   secondary = bodies.europa;
 % primary = bodies.jupiter;   secondary = bodies.ganymede;
 % primary = bodies.jupiter;   secondary = bodies.callisto;
-primary = bodies.saturn;    secondary = bodies.enceladus;
+% primary = bodies.saturn;    secondary = bodies.enceladus;
 % primary = bodies.saturn;    secondary = bodies.titan;
 % primary = bodies.neptune;   secondary = bodies.triton;
 % primary = bodies.uranus;    secondary = bodies.cordelia;
@@ -61,9 +61,7 @@ primary = bodies.saturn;    secondary = bodies.enceladus;
 LP = 2;
 
 %%% Normalizing constants
-rNorm = secondary.a;         % n <-> km
-tNorm = 1/secondary.meanMot; % n <-> sec
-vNorm = rNorm / tNorm;       % n <-> km/sec
+[rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
 
 %%% Shortcut variables
 mu   = secondary.MR;
@@ -80,7 +78,8 @@ prms.R2  = secondary.R_n;
 
 %%% Equillibrium Points
 if run_CR3BP == 1
-    rLPs_n = EquilibriumPoints(mu);
+    prms.n = 1;
+    rLPs_n = EquilibriumPoints(mu, prms.n);
 elseif run_CR3BP_J2pJ4pJ6pJ2s == 1
     rLPs_n = collinearEquilibriumPoints_ZH(prms);
 end
@@ -92,7 +91,7 @@ end
 error_tol = 1e-13;
 
 %%% Number of nodes for multiple shooter
-n_Nodes = 20; 
+n_Nodes = 2; 
 
 %%% Maximum number of iterations for multiple shooter
 iterMax = 500;
@@ -109,17 +108,18 @@ options  = odeset('RelTol',tol,'AbsTol',tol);
 % ------------------------------------------------- 
 %%% Guess at initial state
 % -------------------------------------------------
-% x0         = rLPs_n(LP,1) - 5/rNorm;
-% r0         = [x0; 0; 0];
-% v0_guess_n = [0; 0.0001275; 0];
-% X0_guess_n = [r0; v0_guess_n];
-x0         = 1.0040019600000001;
+x0         = rLPs_n(LP,1) - 1/rNorm;
 r0         = [x0; 0; 0];
-v0_guess_n = [0; -0.0000696586977203; 0];
+v0_guess_n = [0; 0.000009635; 0];
 X0_guess_n = [r0; v0_guess_n];
+% x0         = 1.0040019600000001;
+% r0         = [x0; 0; 0];
+% v0_guess_n = [0; -0.0000696586977203; 0];
+% X0_guess_n = [r0; v0_guess_n];
 
-T_guess_n = 3.0415795008451285;
-
+T_guess_n = 3.14;
+warning('Haven''t coded this yet, but look at the A matrix evaluated at L2. There should be two pairs of complex eigenvalues. These two numbers can be used to find the periods of infinitely small Lyapunov and vertical orbits via the equation Tp = 2*pi / imag(eigenvalue)')
+warning('The corresponding eigenvector has step directions, so you can determine which is the lyap')
 
 
 % ------------------------------------------------- 
@@ -140,9 +140,12 @@ end
 figure; hold all
 plot3(X_guess_n(:,1),X_guess_n(:,2),X_guess_n(:,3),'r','linewidth',1.5)
 PlotBoi3('$X_n$','$Y_n$','$Z_n$',20,'LaTex')
-plot3(rLPs_n(LP,1), rLPs_n(LP,2), rLPs_n(LP,3), '^', 'markersize', 8, 'markerfacecolor', colors.std.ltgrn, 'markeredgecolor', colors.std.blue)
+plot3(rLPs_n(LP,1), rLPs_n(LP,2), rLPs_n(LP,3), '^', 'markersize', 8, 'markerfacecolor', colors.ltgrn, 'markeredgecolor', colors.blue)
 view(0,90)
-
+% 
+% xlim([1.02045, 1.020475])
+% % ylim([-1, 1].*3e-4)
+% axis equal
 % 989
 % return
 % ========================================================================
@@ -229,7 +232,7 @@ plot3(X_sol_n(:,1),X_sol_n(:,2),X_sol_n(:,3),'r','linewidth',1.5)
 PlotBoi3('$X_n$','$Y_n$','$Z_n$',20,'LaTex')
 axis equal
 
-plot3(rLPs_n(LP,1), rLPs_n(LP,2), rLPs_n(LP,3), '^', 'markersize', 8, 'markerfacecolor', colors.std.ltgrn, 'markeredgecolor', colors.std.blue)
+plot3(rLPs_n(LP,1), rLPs_n(LP,2), rLPs_n(LP,3), '^', 'markersize', 8, 'markerfacecolor', colors.ltgrn, 'markeredgecolor', colors.blue)
 
 % plotSecondary(secondary)
 

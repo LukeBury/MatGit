@@ -48,30 +48,29 @@ save_PO_X0s    = 0; % Save the initial conditions?
 % -------------------------------------------------
 %%% Choose bodies
 % primary = bodies.earth;     secondary = bodies.moon;
-% primary = bodies.jupiter;   secondary = bodies.europa;
+primary = bodies.jupiter;   secondary = bodies.europa;
 % primary = bodies.jupiter;   secondary = bodies.ganymede;
 % primary = bodies.jupiter;   secondary = bodies.callisto;
 % primary = bodies.saturn;    secondary = bodies.enceladus;
-primary = bodies.saturn;    secondary = bodies.titan;
+% primary = bodies.saturn;    secondary = bodies.titan;
 % primary = bodies.neptune;   secondary = bodies.triton;
 
 %%% Normalizing constants
-rNorm = secondary.a;         % n <-> km
-tNorm = 1/secondary.meanMot; % n <-> sec
-vNorm = rNorm / tNorm;       % n <-> km/sec
+[rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
 
 %%% Shortcut variables
 mu   = secondary.MR;
 R2_n = secondary.R_n;
 
 %%% Equillibrium Points
-rLPs_n = EquilibriumPoints(mu);
+prms.n = 1;
+rLPs_n = EquilibriumPoints(mu, prms.n);
 % ------------------------------------------------- 
 %%% Periodic Orbit options
 % -------------------------------------------------
-n_POs_max    = 20;
+n_POs_max    = 5;
 LP           = 2;    % Lagrange Point of interest
-PO_plot_skip = 1;
+PO_plot_skip = 100;
 
 %%% Secondary-specific
 if isequal(secondary.name,'europa')
@@ -81,7 +80,7 @@ if isequal(secondary.name,'europa')
     end 
     
     %%% Step size for finding PO family
-    familyStepSize = .0001; % dS_PO
+    familyStepSize = .001; % dS_PO
     
 elseif isequal(secondary.name,'enceladus')
     if limitEnergy == 1
@@ -130,7 +129,9 @@ prms.R2_n = R2_n;
 rLP_n = rLPs_n(LP,:);
 
 %%% Evaluate jacobian of EOM and state at equillibrium point
-[A_LP] = get_Amat_CR3BP(mu, rLP_n);
+[A_LP] = get_Amat_CR3BP(mu, rLP_n, prms.n);
+warning('Haven''t coded this yet, but look at the A matrix evaluated at L2. There should be two pairs of complex eigenvalues. These two numbers can be used to find the periods of infinitely small Lyapunov and vertical orbits via the equation Tp = 2*pi / imag(eigenvalue)')
+warning('The corresponding eigenvector has step directions, so you can determine which is the lyap')
 
 % ------------------------------------------------- 
 %%% Eigenvectors and Eigenvalues
@@ -201,8 +202,8 @@ L2FlyoverVelocities_mps = NaN(n_POs_max,1);
 POs(1,:) = [X0_guess_n', T_guess_n];
 
 %%% Storing energy of first PO
-JC_PO_i = JacobiConstantCalculator(mu,X0_guess_n(1:3)',X0_guess_n(4:6)');
-L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,mu,rLPs_n(LP,:),vNorm);
+JC_PO_i = getJacobiConstant_ZH(X0_guess_n',prms);
+L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,prms,rLPs_n(LP,:),vNorm);
 L2FlyoverVelocities_mps(1) = L2_FlyoverVelocity_PO_i_mps;
 
 % ------------------------------------------------- 
@@ -254,8 +255,8 @@ for PO_i = 1:n_POs_max
     end
     
     %%% Calculate energy
-    JC_PO_i = JacobiConstantCalculator(mu,X0_guess_n(1:3)',X0_guess_n(4:6)');
-    L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,mu,rLPs_n(LP,:),vNorm);
+    JC_PO_i = getJacobiConstant_ZH(X0_guess_n', prms);
+    L2_FlyoverVelocity_PO_i_mps = JC_2_L2FlyoverVelocity(JC_PO_i,prms,rLPs_n(LP,:),vNorm);
     
     if limitEnergy == 1    
         if L2_FlyoverVelocity_PO_i_mps > ub_L2FlyoverVelocity_mps
@@ -309,7 +310,7 @@ end
 % -------------------------------------------------
 if plot_POs == 1
     figure(1); hold all; grid on;
-    plot3(rLPs_n(LP,1),rLPs_n(LP,2),rLPs_n(LP,3),'^','markeredgecolor',colors.std.black,'markerfacecolor','k')
+    plot3(rLPs_n(LP,1),rLPs_n(LP,2),rLPs_n(LP,3),'^','markeredgecolor',colors.black,'markerfacecolor','k')
     PlotBoi3('$X_n$','$Y_n$','$Z_n$',20,'LaTex')
     view(0,90)
     axis equal
@@ -320,7 +321,7 @@ end % if plot_POs == 1
 % -------------------------------------------------
 if plot_PO_energy == 1
     figure; hold all
-    plot(L2FlyoverVelocities_mps,'o','markersize',6,'markeredgecolor',colors.std.blue,'markerfacecolor',colors.std.ltblue)
+    plot(L2FlyoverVelocities_mps,'o','markersize',6,'markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
     PlotBoi2('PO Index','$L_2$ Flyover Velocity, $m/s$',18,'LaTex')
 end % plot_PO_energy
 
@@ -330,15 +331,15 @@ end % plot_PO_energy
 if plot_stability == 1
     figure
     subplot(1,2,1); hold all
-    p1 = plot(stabilityIndices(:,1),'o','markersize',6,'markeredgecolor',colors.std.purp,'markerfacecolor',colors.std.ltpurp);
-    p2 = plot(stabilityIndices(:,2),'o','markersize',6,'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(stabilityIndices(:,1),'o','markersize',6,'markeredgecolor',colors.purp,'markerfacecolor',colors.ltpurp);
+    p2 = plot(stabilityIndices(:,2),'o','markersize',6,'markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     PlotBoi2('PO Index','Stability Index',18,'LaTex')
     xlim([0 size(stabilityIndices,1)])
     legend([p1 p2],'S1','S2')
     
     subplot(1,2,2); hold all
-    p1 = plot(stabilityIndices(:,1),'o','markersize',6,'markeredgecolor',colors.std.purp,'markerfacecolor',colors.std.ltpurp);
-    p2 = plot(stabilityIndices(:,2),'o','markersize',6,'markeredgecolor',colors.std.red,'markerfacecolor',colors.std.ltred);
+    p1 = plot(stabilityIndices(:,1),'o','markersize',6,'markeredgecolor',colors.purp,'markerfacecolor',colors.ltpurp);
+    p2 = plot(stabilityIndices(:,2),'o','markersize',6,'markeredgecolor',colors.red,'markerfacecolor',colors.ltred);
     plot([0 size(stabilityIndices,1)],[2 2],'k','linewidth',1)
     PlotBoi2('PO Index','',18,'LaTex')
     legend([p1 p2],'S1','S2')
