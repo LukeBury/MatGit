@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath('../../bin')
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 
 % ------------------------------------------------------------------------
@@ -15,11 +16,11 @@ devOn = 1; % Turn on deviation from ref trajectory
 J3On = 0; % Turn on J3 for truth trajectory
 
 %%% Filter on?
-runCKF = 0;
+runCKF = 1;
 runEKF = 0;
 
 %%% Filter Results
-BatchPlots = 1;
+BatchPlots = 0;
 CKFPlots = 0;
 EKFPlots = 0;
 
@@ -28,7 +29,7 @@ fprintf('Turn on J3 and deviation!\n')
 % ------------------------------------------------------------------------
 %%% Determining Equations of Motion
 % ------------------------------------------------------------------------
-syms x y z dx dy dz u RE J2 J3
+syms x y z dx dy dz mu RE J2 J3
 
 r = sqrt(x^2 + y^2 + z^2);
 U_J2J3 = -(3*u*RE*RE*J2*z*z)/(2*(r^5))...
@@ -45,6 +46,7 @@ EQM = [dx; dy; dz; diff(Utot_uJ2J3, x); diff(Utot_uJ2J3, y); diff(Utot_uJ2J3,z)]
 state = [x; y; z; dx; dy; dz];
 Asym = jacobian(EQM, state);
 
+return
 % ------------------------------------------------------------------------
 %%% Givens
 % ------------------------------------------------------------------------

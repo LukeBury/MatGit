@@ -1,8 +1,12 @@
 clear
 clc
 close all
-addpath('../ProjectBin')
-
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+moonFuncsPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Moon_Landing/Moon_Landing_funcs';
+projectPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/CU/Research/Europa_HopperAnalysis2/ProjectBin';
+addpath(genpath(mbinPath))
+addpath(genpath(moonFuncsPath))
+addpath(genpath(projectPath))
 % ------------------------------------------------------------------------
 %%% System Parameters
 % ------------------------------------------------------------------------

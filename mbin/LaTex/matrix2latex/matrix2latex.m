@@ -1,4 +1,6 @@
 function matrix2latex(matrix, filename, varargin)
+% Usage:
+% matrix2late(matrix, filename, varargs)
 
 % function: matrix2latex(...)
 % Author:   M. Koehler

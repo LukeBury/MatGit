@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath('../../bin')
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 
 % ------------------------------------------------------------------------

@@ -720,7 +720,7 @@ end
 % can fix the feature. :)
 
 % ===== DISABLE THE UPDATE FEATURE BY SETTING THIS VALUE TO false =========
-Update = true;
+Update = false;
 % ===== DISABLE THE UPDATE FEATURE BY SETTING THIS VALUE TO false =========
 
 if (Update)
@@ -819,12 +819,13 @@ if (Update)
 	catch Error %#ok<NASGU>
 		% ===== Error handling ============================================
 		try
-			Path_Error = [Path(1:end-numel('\distFig_Update.txt')),'\distFig_Error.mat'];
-			fprintf([
-				'There was an error in distFig when checking for updates.',...
-				'\nPlease report this to AndersSSimonsen@GMail.com by sending the error-file "distFig_Error.mat" located in %s. :)\n\n'],Path_Error);
-			AppData = getappdata(0); %#ok<NASGU>
-			save(Path_Error);
+            fprintf('Error in distFig\n')
+% 			Path_Error = [Path(1:end-numel('\distFig_Update.txt')),'\distFig_Error.mat'];
+% 			fprintf([
+% 				'There was an error in distFig when checking for updates.',...
+% 				'\nPlease report this to AndersSSimonsen@GMail.com by sending the error-file "distFig_Error.mat" located in %s. :)\n\n'],Path_Error);
+% 			AppData = getappdata(0); %#ok<NASGU>
+% 			save(Path_Error);
 		catch
 		end
 	end

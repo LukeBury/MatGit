@@ -1,8 +1,10 @@
 clear
 clc
 close all
-addpath(genpath('/Users/CU_Google_Drive/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
+
 % ========================================================================
 %%% Run/Plot Switches
 % ========================================================================
@@ -11,7 +13,7 @@ tic
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -41,8 +43,10 @@ for kk = 1:length(primaries)
     
 end
 
-
+dataMat = zeros(length(systems),2);
+counter = 0;
 for sys_i = systems
+    counter = counter + 1;
     sys = sys_i{1};
     
     %%% Acquire Collinear Lagrange points
@@ -50,45 +54,65 @@ for sys_i = systems
     L1 = L123(1,:);
     L2 = L123(2,:);
     
+    %%% Normalizing constants
+    rNorm = sys.secondary.a;         % n <-> km
+    tNorm = 1/sys.secondary.meanMot; % n <-> sec
+    vNorm = rNorm / tNorm;       % n <-> km/sec
+    
     %%% Jacobi constant of Lagrange points
+%     [JC_L1] = JacobiConstantCalculator(sys.secondary.MR,L1,[0,0,0]) - (1/vNorm)^2;
+%     [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]) - (1/vNorm)^2;
     [JC_L1] = JacobiConstantCalculator(sys.secondary.MR,L1,[0,0,0]);
-    [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]);
+    [JC_L2] = JacobiConstantCalculator(sys.secondary.MR,L2,[0,0,0]); 
     
     %%% Jacobi constant of surface points
-    [JC_sPX] = JacobiConstantCalculator(sys.secondary.MR,[1-sys.secondary.MR+sys.secondary.R_n,0,0],[0,0,0]);
+%     [JC_sPX] = JacobiConstantCalculator(sys.secondary.MR,[1-sys.secondary.MR+sys.secondary.R_n,0,0],[0,0,0]);
     [JC_sNX] = JacobiConstantCalculator(sys.secondary.MR,[1-sys.secondary.MR-sys.secondary.R_n,0,0],[0,0,0]);
+    [JC_sY] = JacobiConstantCalculator(sys.secondary.MR,[1-sys.secondary.MR,sys.secondary.R_n,0],[0,0,0]);
     
-    %%% Caculating differences in JC
-    d_L1sPX = abs(JC_L1 - JC_sPX);
-    d_L1sNX = abs(JC_L1 - JC_sNX);
-    d_L2sPX = abs(JC_L2 - JC_sPX);
-    d_L2sNX = abs(JC_L2 - JC_sNX);
+% % %     fprintf('-------------\n') % ** Difference is between 2-5 orders of magnitude
+% % %     JC_L1 - JC_L2
+% % %     JC_sNX - JC_sPX
+% % %     JC_sY - JC_sPX
+% % %     JC_sY - JC_sNY
+
+%     %%% Caculating differences in JC
+%     d_L1sNX = JC_sNX - JC_L1;
+%     d_L1sY  = JC_sY  - JC_L1;
+%     d_L2sNX = JC_sNX - JC_L2;
+%     d_L2sY  = JC_sY  - JC_L2;
     
     %%% Calculating minimum necessary DV to stop on surface
-    sys.dV_L1sPX_mps = sqrt(d_L1sPX)*1000;
-    sys.dV_L1sNX_mps = sqrt(d_L1sNX)*1000;
-    sys.dV_L2sPX_mps = sqrt(d_L2sPX)*1000;
-    sys.dV_L2sNX_mps = sqrt(d_L2sNX)*1000;
+    sys.dV_L1sNX_mps = sqrt(JC_sNX - JC_L1)*vNorm*1000; % m/s
+    sys.dV_L1sY_mps  = sqrt(JC_sY  - JC_L1)*vNorm*1000; % m/s
+    sys.dV_L2sNX_mps = sqrt(JC_sNX - JC_L2)*vNorm*1000; % m/s
+    sys.dV_L2sY_mps  = sqrt(JC_sY  - JC_L2)*vNorm*1000; % m/s
+    
+    sys.dV_minLanding = sys.dV_L1sY_mps;
     
     %%% Calculating differences between L1 and L2
-    sys.diff = sys.dV_L2sPX_mps - sys.dV_L1sPX_mps;
-    
+    sys.diff_sNX_mps = sys.dV_L2sNX_mps - sys.dV_L1sNX_mps;
+    sys.diff_sY_mps  = sys.dV_L2sY_mps  - sys.dV_L1sY_mps;
+
     %%% Printing
     fprintf('------------------------------\n')
     fprintf('%s - %s\n',sys.primary.name,sys.secondary.name)
-    fprintf('dV - L1 to sPX: %2.2f (m/s)\n',sys.dV_L1sPX_mps)
-    fprintf('dV - L1 to sNX: %2.3f (m/s)\n',sys.dV_L1sNX_mps)
-    fprintf('dV - L2 to sPX: %2.3f (m/s)\n',sys.dV_L2sPX_mps)
-    fprintf('dV - L2 to sNX: %2.3f (m/s)\n\n',sys.dV_L2sNX_mps)
-    fprintf('L1 savings: %2.3f (m/s)\n\n',sys.diff)
+%     fprintf('dV - L1 to sNX: %2.3f (m/s)\n',sys.dV_L1sNX_mps)
+%     fprintf('dV - L2 to sNX: %2.3f (m/s)\n\n',sys.dV_L2sNX_mps)
+    fprintf('Minimum \x0394V to land:\t %2.1f (m/s)\n',sys.dV_minLanding)
+    fprintf('L1 savings at (-x):\t %2.5f (m/s)\n',sys.diff_sNX_mps)
+    fprintf('L1 savings at (+-y):\t %2.5f (m/s)\n\n',sys.diff_sY_mps)
     
     figure(1); hold all
-    plot(sys.secondary.MR, sys.dV_L1sPX_mps,'bx')
-    plot(sys.secondary.MR, sys.dV_L2sPX_mps,'bx')
+    plot(sys.secondary.MR, sys.dV_L1sNX_mps,'r.','markersize',30)
+    plot(sys.secondary.MR, sys.dV_L2sNX_mps,'b.','markersize',30)
     
     figure(2); hold all
-    plot(sys.secondary.MR, sys.diff,'bx')
+    plot(sys.secondary.MR, sys.diff_sY_mps,'b.','markersize',30)
     
+    %%% Storing values for matrix to be printed to LaTex
+    dataMat(counter,1) = round(sys.dV_minLanding,2);
+    dataMat(counter,2) = round(sys.diff_sY_mps,2);
     
 end
 
@@ -98,10 +122,14 @@ PlotBoi2('System Mass Ratio', 'Minimum $\Delta$V for Lander (m/s)', 14, 'LaTex')
 
 figure(2)
 set(gca,'xscale','log')
-PlotBoi2('System Mass Ratio', 'L$_1$ $\Delta$V Savings (m/s)', 14, 'LaTex')
+PlotBoi2('System Mass Ratio', 'L$_1$ $\Delta$V Savings at surface +-y (m/s)', 14, 'LaTex')
 
 
-
+fprintf('================================================\n')
+fprintf('Results correlated with MR, but also dependent on Rn\n')
+fprintf('L1 will save you 15.6 m/s at the moon, but tops around 2 m/s for outer-moons\n')
+fprintf('Low MR moons like Enceledus barely see savings\n')
+fprintf('Easiest places to land are +-y, Hardest is -x, closely followed by +x\n\n')
 
 
 

@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath('../../bin')
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 
 % ------------------------------------------------------------------------
@@ -22,8 +23,8 @@ runCKF        = 1;
 CKFPlots      = 1;
 
 %%% EKF Options
-runEKF        = 1;
-EKFPlots      = 1;
+runEKF        = 0;
+EKFPlots      = 0;
 
 %%% Setting time period
 t0 = 0; % (sec)
@@ -812,19 +813,19 @@ fprintf('EKF Finished: %3.1f\n',toc)
 end
 
 
-figure
-subplot(3,2,1)
-plot(Times(2:end),error_EKF(:,1) - error_CKF(:,1))
-subplot(3,2,3)
-plot(Times(2:end),error_EKF(:,2) - error_CKF(:,2))
-subplot(3,2,5)
-plot(Times(2:end),error_EKF(:,3) - error_CKF(:,3))
-subplot(3,2,2)
-plot(Times(2:end),error_EKF(:,4) - error_CKF(:,4))
-subplot(3,2,4)
-plot(Times(2:end),error_EKF(:,5) - error_CKF(:,5))
-subplot(3,2,6)
-plot(Times(2:end),error_EKF(:,6) - error_CKF(:,6))
+% figure
+% subplot(3,2,1)
+% plot(Times(2:end),error_EKF(:,1) - error_CKF(:,1))
+% subplot(3,2,3)
+% plot(Times(2:end),error_EKF(:,2) - error_CKF(:,2))
+% subplot(3,2,5)
+% plot(Times(2:end),error_EKF(:,3) - error_CKF(:,3))
+% subplot(3,2,2)
+% plot(Times(2:end),error_EKF(:,4) - error_CKF(:,4))
+% subplot(3,2,4)
+% plot(Times(2:end),error_EKF(:,5) - error_CKF(:,5))
+% subplot(3,2,6)
+% plot(Times(2:end),error_EKF(:,6) - error_CKF(:,6))
 
 
 

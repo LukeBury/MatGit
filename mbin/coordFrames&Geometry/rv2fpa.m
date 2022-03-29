@@ -1,4 +1,4 @@
-function [ fpa ] = rv2fpa( r, v)
+function [ fpa_rad ] = rv2fpa( r, v)
 %%% Inputs:
 % 1) r - [nx3] Position vectors 
 % 2) v - [nx3] Velocity vectors
@@ -15,14 +15,14 @@ elseif size(r,2) ~=3
 end
 
 %%% Preallocating fpa
-fpa = zeros(size(r,1),1);
+fpa_rad = zeros(size(r,1),1);
 
 %%% Calculating fpa
 for kk = 1:size(r,1)
     rhat = r(kk,:)./norm(r(kk,:)); % unit vector of r
     v_r_scalar = dot(v(kk,:),rhat); % magnitude of radial component of v
     v_r = v_r_scalar.*rhat; % radial component of v
-    fpa(kk,1) = asin(norm(v_r)/norm(v(kk,:))); % rad
+    fpa_rad(kk,1) = asin(norm(v_r)/norm(v(kk,:))); % rad
     
     %%% Alternative method for fpa
 %     fpa(kk,1) = acos(norm(cross(r,v))/(norm(r)*norm(v))); % This is another method for fpa

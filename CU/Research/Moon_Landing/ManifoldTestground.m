@@ -1,20 +1,22 @@
 clear
 clc
 % close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
+
+% ========================================================================
+%%% Importing Data
+% ========================================================================
+%%% General data on solar system bodies
+bodies = getBodyData(mbinPath);
+
+%%% Color options/schemes
+colors = get_colors();
 
 % ========================================================================
 %%% Run switches
 % ========================================================================
 run_symbollicWork = 0;
-% ========================================================================
-%%% Importing Data
-% ========================================================================
-%%% General data on solar system bodies
-bodies = getBodyData();
-
-%%% Color options/schemes
-colors = get_colors();
 
 % ========================================================================
 %%% Setup
@@ -61,9 +63,7 @@ colors = get_colors();
 % ----------------------
 %%% Jupiter-Europa
 % ----------------------
-primary = bodies.jupiter;
-secondary = bodies.europa;
-
+% primary = bodies.jupiter; secondary = bodies.europa;
 % %%% L1 - Planar (jupiter-europa) (POs-30, from n = 100)
 % T0 = 2.990191959077223;
 % X0 = [0.979372439622443;...
@@ -114,15 +114,15 @@ secondary = bodies.europa;
 %      -0.017437037466781];
 % T_man = 2*T0*1.5; % Manifold propagation time
 
-%%% L2 - Clamshell-10000 (jupiter-europa)
-T0 = 3.283922417064763;
-X0 = [1.019430611934981;...
-   0.000000000457065;...
-   0.000000004888444;...
-   0.000000002816334;...
-  -0.002279148538495;...
-  -0.024446534776545];
-T_man = 2*T0*1.4; % Manifold propagation time
+% %%% L2 - Clamshell-10000 (jupiter-europa)
+% T0 = 3.283922417064763;
+% X0 = [1.019430611934981;...
+%    0.000000000457065;...
+%    0.000000004888444;...
+%    0.000000002816334;...
+%   -0.002279148538495;...
+%   -0.024446534776545];
+% T_man = 2*T0*1.4; % Manifold propagation time
 
 % %%% L3 - Planar (jupiter-europa)
 % T0 = 6.283046325015956;
@@ -134,18 +134,42 @@ T_man = 2*T0*1.4; % Manifold propagation time
 %                       0];
 % T_man = 15*T0; % Manifold propagation time
 
+
+%%% 
+% primary = bodies.saturn; secondary = bodies.enceladus;
+% T0 = 3.788744200831664;
+% X0 = [1.002960736195548;...
+%       0;...
+%       -0.000922335931683;...
+%       0.008111398588096;...
+%       -0.009221448191527;...
+%       0.005090911186711];
+% T_man = 15*T0; % Manifold propagation time
+
+primary = bodies.saturn; secondary = bodies.enceladus;
+T0 = 4.257875322097243;
+X0 = [0.999949172678353;
+ -0.000011913400115;
+ 0.001050500079262;
+ -0.000018452263800;
+ -0.017998820732015;
+ -0.000114268319427];
+T_man = 30*T0; % Manifold propagation time
+
+
 % ------------------------------------------------- 
 %%% Manifold options
 % -------------------------------------------------
 %%% Manifold options
-nMan = 100; % Number of manifolds to compute
+nMan = 70; % Number of manifolds to compute
 % eVec_n = 1;
 manPert = 5e-8;
 
-stable_yin    = 0;
+stable_yin    = 1;
 unstable_yin  = 1;
-stable_yang   = 0;
-unstable_yang = 0;
+stable_yang   = 1;
+unstable_yang = 1;
+
 
 plot_PO = 0;
 
@@ -157,19 +181,18 @@ rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
 
-%%% Mass ratio of system
-u = secondary.MR;
-
 % ------------------------------------------------- 
 %%% Integration Options
 % -------------------------------------------------
 tol = 1e-9;
 options = odeset('RelTol',tol,'AbsTol',tol);
+options_ImpactStop = odeset('Event',@event_Impact_CR3Bn, 'RelTol',tol,'AbsTol',tol);
 
 % ------------------------------------------------- 
 %%% Finding Equilibrium Points
 % -------------------------------------------------
 Ls_n = EquilibriumPoints(secondary.MR);
+
 
 % ========================================================================
 %%% Periodic Orbit Integration
@@ -190,26 +213,36 @@ time = [0, T0];
 %%% Integrating initial periodic orbit
 % -------------------------------------------------
 %%% Find Periodic Orbit with ode45
-[T_PO, X_PO] = ode45(@int_CR3BnSTM, time, X0, options, u);
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
+prms.L1x = Ls_n(1,1);
+prms.L2x = Ls_n(2,1);
+[T_PO, X_PO] = ode45(@Int_CR3BnSTM, time, X0, options, prms);
 
 %%% Seperating monodromy matrix and getting eigenvalues and vectors
 monodromy = reshape(X_PO(end,7:end),6,6);
 [eVecs, eVals] = eig(monodromy);
 
 %%% Defining eigenvalues and vectors associated with unstable and stable perturbations
-eVal_S = min(real(diag(eVals)));
+warning('This probably isn''t right')
+eVal_S = min(abs(real(diag(eVals))));
 eVal_U = max(real(diag(eVals)));
-eVec_S = eVecs(:,find(diag(eVals)==eVal_S));
-eVec_U = eVecs(:,find(diag(eVals)==eVal_U));
+eVec_S = eVecs(:,find(diag(abs(real(eVals)))==eVal_S));
+eVec_U = eVecs(:,find(diag(abs(real(eVals)))==eVal_U));
 
+if isequal(size(eVec_S),[6,1]) == 0
+    eVec_S = real(eVec_S(:,1));
+end
 % ========================================================================
 %%% Finding manifolds
 % ========================================================================
 %%% Looping through manifolds
+storedEvents_BCR = [];
+
 for kk = 1:nMan
     %%% Integrating PO for some fraction of its total period
     time = [T0*kk/nMan 0];
-    [T_start, X_start] = ode45(@int_CR3BnSTM, time, X0, options, u);
+    [T_start, X_start] = ode45(@Int_CR3BnSTM, time, X0, options, prms);
     stm = reshape(X_start(end,7:end),6,6);
     
     % ----------------------------------------- 
@@ -224,12 +257,13 @@ for kk = 1:nMan
         time = [T_man, 0];
         
         %%% Integrate stable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+%         [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, secondary.MR);
+        [T_int, X, time_event, X_event, index_event] = ode45(@Int_CR3BnSTM, time, IC, options_ImpactStop,prms);
         
         %%% Plot stable manifold
-        figure(1); hold all
-        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.black);
-        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.black)
+        figure(73649); hold all
+        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.grn);
+        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.grn)
     end
     
     % ----------------------------------------- 
@@ -244,12 +278,16 @@ for kk = 1:nMan
         time = [0, T_man];
 
         %%% Integrate unstable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+%         [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options,prms);
+        [T_int, X, time_event, X_event, index_event] = ode45(@Int_CR3BnSTM, time, IC, options_ImpactStop,prms);
+        if isempty(X_event) == 0
+            storedEvents_BCR = [storedEvents_BCR; X_event(:,1:6)];
+        end
         
         %%% Plot unstable manifold
-        figure(1); hold all
-        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.black);
-        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.black)
+        figure(73649); hold all
+        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.red);
+        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.red)
     end
     
     % ----------------------------------------- 
@@ -264,12 +302,12 @@ for kk = 1:nMan
         time = [T_man, 0];
         
         %%% Integrate stable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options, prms);
         
         %%% Plot stable manifold
-        figure(1); hold all
-        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.black);
-        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.black)
+        figure(73649); hold all
+        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.grn);
+        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.grn)
     end
     
     % ----------------------------------------- 
@@ -284,25 +322,25 @@ for kk = 1:nMan
         time = [0, T_man];
 
         %%% Integrate unstable manifold
-        [T_int, X] = ode45(@int_CR3BnSTM, time, IC, options, u);
+        [T_int, X] = ode45(@Int_CR3BnSTM, time, IC, options, prms);
         
         %%% Plot unstable manifold
-        figure(1); hold all
-        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.black);
-        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.black)
+        figure(73649); hold all
+        plot3(X(:,1),X(:,2),X(:,3),'color',colors.std.red);
+        plot3(X(1,1),X(1,2),X(1,3),'o','markersize',5,'color',colors.std.red)
     end
     
     
 end
 
 %%% Plotting periodic orbit
-figure(1)
+figure(73649)
 plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'k','linewidth',2)
 
 %%% Plotting bodies
-plotBody2(secondary.R_n,[1-secondary.MR,0,0],secondary.color,colors.std.black,0.5,.5)
+% plotBody2(secondary.R_n,[1-secondary.MR,0,0],secondary.color,colors.std.black,0.5,.5)
 % plotBody2(primary.R/rNorm,[-secondary.MR,0,0],primary.color,colors.std.black,0.5)
-% % plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
+plotBodyTexture3(secondary.R_n,[1-secondary.MR,0,0],secondary.img)
 % % plotBodyTexture3(primary.R/rNorm,[-secondary.MR,0,0],primary.img)
 
 %%% Plotting lagrange points
@@ -310,13 +348,15 @@ plotBody2(secondary.R_n,[1-secondary.MR,0,0],secondary.color,colors.std.black,0.
 % plot3(Ls_n(2,1),Ls_n(2,2),Ls_n(2,3),'^','markerfacecolor',colors.std.red,'markeredgecolor',colors.std.black,'markersize',8)
 
 %%% Plot Options
-PlotBoi3('$x_n$','$y_n$','$z_n$',16,'LaTex')
+PlotBoi3('$X_n$','$Y_n$','$Z_n$',20,'LaTex')
 
 if plot_PO == 1
-    figure(2); hold all
+    figure; hold all
     plot3(X_PO(:,1),X_PO(:,2),X_PO(:,3),'k','linewidth',2)
     PlotBoi3('X','Y','Z',16)
 end
+
+axis equal 
 
 [JC_L1]   = JacobiConstantCalculator(secondary.MR,Ls_n(1,:),[0,0,0])
 [JC_L2]   = JacobiConstantCalculator(secondary.MR,Ls_n(2,:),[0,0,0])
@@ -324,8 +364,18 @@ end
 [JC_PO]   = JacobiConstantCalculator(secondary.MR,X_PO(1,1:3),X_PO(1,4:6))
 
 
-
-
+if isempty(storedEvents_BCR) == 0
+    latLons = [];
+    for kk = 1:size(storedEvents_BCR,1)
+        [lat_deg, lon_deg] = BCR2latlon(storedEvents_BCR(kk,1:3), 'secondary', secondary.MR);
+        latLons = [latLons; [lat_deg, lon_deg]];
+    end
+    figure; hold all
+    plot(latLons(:,2),latLons(:,1),'rx','markersize',10,'linewidth',2)
+    PlotBoi2('Longitude, $^\circ$','Latitude, $^\circ$',18,'LaTex')
+    xlim([-180 180])
+    ylim([-90 90])
+end
 
 
 

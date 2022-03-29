@@ -1,9 +1,11 @@
 clear
 clc
 close all
-addpath('../../bin')
-addpath('../../bin/FilterPlots')
-addpath('../../bin/FilterFuncs')
+% addpath('../../bin')
+% addpath('../../bin/FilterPlots')
+% addpath('../../bin/FilterFuncs')
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 
 % ------------------------------------------------------------------------
@@ -31,7 +33,7 @@ runCKF   = 1;
 CKFPlots = 1;
 
 %%% SRIF Options
-runSRIF = 1;
+runSRIF = 0;
 
 %%% RMS Options
 rmsPlotsOn = 0;
@@ -73,8 +75,8 @@ Asym = jacobian(EQM, state);
 diff(-U_J2J3,x)
 diff(-U_J2J3,y)
 diff(-U_J2J3,z)
-989
-return
+% 989
+% return
 % ------------------------------------------------------------------------
 %%% Givens
 % ------------------------------------------------------------------------

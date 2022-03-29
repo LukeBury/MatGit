@@ -1,7 +1,8 @@
 clear
 clc
 close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 tic
 % ========================================================================
 %%% Run/Plot Switches
@@ -16,7 +17,7 @@ plot_postBurnTrajectories = 0;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -38,6 +39,9 @@ Lpoint = 2;  % 1 or 2
 rNorm = secondary.a;         % n <-> km
 tNorm = 1/secondary.meanMot; % n <-> sec
 vNorm = rNorm / tNorm;       % n <-> km/sec
+
+prms.u = secondary.MR;
+prms.R2_n = secondary.R_n;
 % -------------------------------------------------
 % Equilibrium Points and Jacobi Constants
 % -------------------------------------------------
@@ -112,7 +116,7 @@ options_Impact = odeset('Events',@event_Impact_CR3Bn,'RelTol',tol,'AbsTol',tol);
 % Integrating reference trajectory
 % -------------------------------------------------
 %%% Propagating Pre-Burn States
-[time_n_ref, X_BCR_n_ref] = ode45(@Int_CR3Bn, time0_n, X0_n, options_Impact, secondary.MR, secondary.R_n);
+[time_n_ref, X_BCR_n_ref] = ode45(@Int_CR3Bn, time0_n, X0_n, options_Impact, prms);
 
 if plot_referenceTrajectory == 1
     figure
@@ -195,7 +199,7 @@ X0_postdV_n = [X_predV_n(1:3), X_predV_n(4:6)+dV_n];
 %%% Propagating the post-burn States with Apsis event
 if run_apsesAnalysis == 1
     [time_n_Apsis, X_BCR_n_Apsis, time_eventApsis, X_eventApsis, index_eventApsis] = ode45(@Int_CR3Bn, [t_dV:dt:t_f], X0_postdV_n,...
-                                                           options_Apsis, secondary.MR, secondary.R_n);
+                                                           options_Apsis, prms);
     %%% Storing periapses and apoapses
     X_apses_SCR_n = [X_apses_SCR_n; X_eventApsis];
     time_apses = [time_apses; time_eventApsis];
@@ -203,7 +207,7 @@ end
 
  %%% Propagating the post-burn States with Impact event
 [time_n_postBurn, X_BCR_n_postBurn, time_eventImpact, X_eventImpact, index_eventImpact] = ode45(@Int_CR3Bn, [t_dV:dt:t_f], X0_postdV_n,...
-                                                       options_Impact, secondary.MR, secondary.R_n);
+                                                       options_Impact, prms);
 % % figure(1)
 % % subplot(2,4,[1 2]); hold all
 % % plot3(X_BCR_n_postBurn(:,1),X_BCR_n_postBurn(:,2),X_BCR_n_postBurn(:,3),'color',colors.std.black)

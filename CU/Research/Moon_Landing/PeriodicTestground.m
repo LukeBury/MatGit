@@ -1,7 +1,8 @@
 clear
 clc
-% close all
-addpath(genpath('/Users/lukebury/Documents/MATLAB/mbin'))
+close all
+mbinPath = '/Users/lukebury/CU_Google_Drive/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
 
 % ========================================================================
 %%% Run switches
@@ -11,7 +12,7 @@ run_symbollicWork = 0;
 %%% Importing Data
 % ========================================================================
 %%% General data on solar system bodies
-bodies = getBodyData();
+bodies = getBodyData(mbinPath);
 
 %%% Color options/schemes
 colors = get_colors();
@@ -37,6 +38,7 @@ A = jacobian(EOM, state);
 989
 return
 end % run_symbollic work
+
 % ========================================================================
 %%% Setup
 % ========================================================================
@@ -57,7 +59,7 @@ u = secondary.MR;
 % ------------------------------------------------- 
 %%% Periodic Orbit options
 % -------------------------------------------------
-n = 300;
+n = 1000;
 L_Point = 2;
 dS_PO = .0001;
 % dS_PO = .000001;
@@ -69,6 +71,7 @@ PO_plot_skip = 50;
 % -------------------------------------------------
 tol = 1e-9;
 options = odeset('RelTol',tol,'AbsTol',tol);
+prms.u = secondary.MR;
 
 % ------------------------------------------------- 
 %%% Finding Equilibrium Points
@@ -112,7 +115,7 @@ A(6,3) = (u - 1)/((u + xL)^2 + yL^2 + zL^2)^(3/2) + zL*((3*u*zL)/((u + xL - 1)^2
 %%% Finding center manifold (purely imaginary eigenvalue) ... or maybe not
 for ev_i = 1:size(eVals,1)
     if abs(real(eVals(ev_i,ev_i))) < 5e-16 && abs(imag(eVals(ev_i,ev_i))) > 5e-16 % If real() == 0 and imag() ~= 0
-        ev_i = 3
+        ev_i = 5
         warning('eigenvalue not dynamic')
         eVal_CM = eVals(ev_i,ev_i);
         eVec_CM = eVecs(:,ev_i);
@@ -169,7 +172,7 @@ for PO_i = 1:n
         time = [0,T_guess];
         
         %%% Integrating
-        [T, X] = ode45(@int_CR3BnSTM, time, X, options, secondary.MR);
+        [T, X] = ode45(@Int_CR3BnSTM, time, X, options, prms);
         
         %%% Retreiving updated STM
         stm = reshape(X(end,7:end),6,6);
@@ -261,7 +264,7 @@ axis square
 
 [JC_L1]   = JacobiConstantCalculator(secondary.MR,Ls_n(1,:),[0,0,0])
 [JC_L2]   = JacobiConstantCalculator(secondary.MR,Ls_n(2,:),[0,0,0])
-[JC_Surf] = JacobiConstantCalculator(secondary.MR,[1-secondary.MR-secondary.R_n,0,0],[0,0,0])
+[JC_sNX] = JacobiConstantCalculator(secondary.MR,[1-secondary.MR-secondary.R_n,0,0],[0,0,0])
 % 
 JCs_PO = zeros(1,size(POs,2));
 for kk = 1:size(POs,2)

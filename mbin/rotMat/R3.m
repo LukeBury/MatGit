@@ -1,4 +1,4 @@
-function [vector_out] = R3(vector_in,theta)
+function [vector_out] = R3(vector_in,theta_rad)
 %%% Descrip: Writes body-vectors in inertial frame: v_N = R3 * v_B ...
 %%% so [sqrt(2)/2, sqrt(2)/2, 0] = R3(pi/4) * [1, 0, 0]
 %%% ***************************************************
@@ -10,7 +10,7 @@ function [vector_out] = R3(vector_in,theta)
 %%% Outputs:
 % 1) Rotated vector with same dimensions as input
 % =========================================================================
-R = [cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1]; % Rot Matrix
+R = [cos(theta_rad) -sin(theta_rad) 0; sin(theta_rad) cos(theta_rad) 0; 0 0 1]; % Rot Matrix
 if any(size(vector_in) == [3 1]) % If vector_in is column vector
     vector_out = R*vector_in; % Return rotated column vector
 

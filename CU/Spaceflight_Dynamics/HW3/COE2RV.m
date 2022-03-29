@@ -1,6 +1,5 @@
 % Input angles in DEGREES
 function [r, v] = COE2RV(a, e, i, raan, w, ta, u)
-d2r = pi/180;
 % Semiparameter (km)
 p = a * (1 - e^2);
 
@@ -10,7 +9,7 @@ h = sqrt(p*u);
 r1_pqw = p * cos(ta) / (1 + e * cos(ta));
 r2_pqw = p * sin(ta) / (1 + e * cos(ta));
 r3_pqw = 0;
-r_pqw = [r1_pqw; r2_pqw; r3_pqw]
+r_pqw = [r1_pqw; r2_pqw; r3_pqw];
 % v_pqw (km/s)
 v1_pqw = -sqrt(u/p) * sin(ta);
 v2_pqw = sqrt(u/p) * (e + cos(ta));
