@@ -13,9 +13,9 @@ function PlotBoi3_CR3B_km(fs)
 %       Luke Bury, luke.bury@colorado.edu
 % ===============================================================
 %%% Set labels, font size, and interpreter  
-xlabel('$x$, $km$','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
-ylabel('$y$, $km$','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
-zlabel('$z$, $km$','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
+xlabel('$x$ ($km$)','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
+ylabel('$y$ ($km$)','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
+zlabel('$z$ ($km$)','FontName','Times New Roman','Fontsize',fs,'Interpreter','LaTex')
 
 
 %%% Make background of plot white

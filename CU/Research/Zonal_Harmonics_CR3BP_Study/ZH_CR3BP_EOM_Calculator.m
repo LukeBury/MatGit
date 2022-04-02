@@ -42,7 +42,7 @@ ticWhole = tic;
 % primaryZHRange   = [2, 4, 6];
 % secondaryZHRange = [2, 4];
 
-primaryZHRange   = [2, 4, 6];
+primaryZHRange   = [8];
 secondaryZHRange = [2];
 
 %%% Choose whether to include C22 of secondary body (true/false)
@@ -392,7 +392,7 @@ fprintf('\n')
 fprintf('------------------------------------------------------------------------------------------------------------\n')
 fprintf('Key:\n')
 fprintf('mu               = CR3BP mass ratio\n')
-fprintf('[x,y,z,xd,yd,zd] = Classical barycentric CR3BP state\n')
+fprintf('[x;y;z;xd;yd;zd] = Classical barycentric CR3BP state\n')
 fprintf('n                = Normalized (dimensionless) mean motion\n')
 fprintf('Jnb              = Zonal harmonic term where n = zonal harmonic term number, b = ''p'' for primary body or ''s'' for secondary body\n')
 fprintf('a                = semimajor axis (km)\n')

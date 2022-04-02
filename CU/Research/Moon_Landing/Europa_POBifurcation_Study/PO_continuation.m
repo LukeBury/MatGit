@@ -12,8 +12,10 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
-savePath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
+% mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+% savePath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
+mbinPath = '~/Documents/MatGit/mbin';
+savePath = '~/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -45,12 +47,12 @@ run_y0xd0Fixed                      = false; % PSEUDO-ARCLENGTH
 run_y0zd0Fixed                      = false; % PSEUDO-ARCLENGTH
     artificially_set_zd0_equal_0    = false; % ---
     
-run_y0xd0zd0Fixed                   = true; % PSEUDO-ARCLENGTH
+run_y0xd0zd0Fixed                   = false; % PSEUDO-ARCLENGTH
     artificially_set_xd0zd0_equal_0 = false; % ---
     
 run_y0TpFixed                       = false; % NATURAL PARAMETER
 run_y0xd0TpFixed                    = false; % NATURAL PARAMETER
-run_y0xd0zd0TpFixed                 = false; % NATURAL PARAMETER
+run_y0xd0zd0TpFixed                 = true; % NATURAL PARAMETER
 %     artificially_set_xd0zd0_equal_0 = true;
 
 %%% Correct initial guess before continuation?
@@ -119,13 +121,14 @@ famName = [systemName, '.', modelName, '.', POName];
 % %  12.562542503358495];
 
 
-myPO_ICs = [0.9996089237235344;
+myPO_ICs = [0.9993717587301753;
  0.0000000000000000;
- -0.0010119159834818;
+ -0.0020449173737114;
  0.0000000000000000;
- -0.0159510343992014;
+ -0.0098111982600568;
  0.0000000000000000;
- 4.9083805631699802];
+ 5.7662488228513933];
+
 
 
 % ------------------------------------------------- 
@@ -214,7 +217,7 @@ ds_PO = 1e-3; % Good guess for Europa
 if run_y0TpFixed || run_y0xd0zd0TpFixed || run_y0xd0TpFixed
 %     Tp_range = linspace(myPO_ICs(7),   4.8851085903170466, 50); 
     
-    Tp_range = myPO_ICs(7):5e-4:50; 
+    Tp_range = myPO_ICs(7):5e-3:50; 
 %     Tp_range = myPO_ICs(7):-2e-3:0; 
 
 
@@ -286,11 +289,11 @@ options = odeset('RelTol',tol,'AbsTol',tol);
 % --------------------------
 [primary, secondary] = assignPrimaryAndSecondary_CR3BP(famName, bodies);
 
-% % % secondary.MR = 1.898884589251784e-07
-% % % 989
-% % % 989
-% % % 989
-% % % 989
+secondary.MR = 1.898884589251784e-07
+989
+989
+989
+989
 % --------------------------
 %%% System
 % --------------------------
