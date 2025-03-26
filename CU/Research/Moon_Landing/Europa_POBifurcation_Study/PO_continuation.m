@@ -12,10 +12,15 @@
 clear
 clc
 close all
-% mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
-% savePath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
-mbinPath = '~/Documents/MatGit/mbin';
-savePath = '~/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
+[ret, name] = system('hostname');
+if isequal(strip(name), 'Lukes-MacBook-Pro.local')
+    mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+    savePath = '~/CU_Google_Drive/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
+elseif isequal(strip(name), 'MT-315800')
+    mbinPath = '~/Documents/MatGit/mbin';
+    savePath = '~/Documents/MatGit/mbin/Data/InitialConditions/PO_Families/';
+end
+clear ret name
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -47,12 +52,12 @@ run_y0xd0Fixed                      = false; % PSEUDO-ARCLENGTH
 run_y0zd0Fixed                      = false; % PSEUDO-ARCLENGTH
     artificially_set_zd0_equal_0    = false; % ---
     
-run_y0xd0zd0Fixed                   = false; % PSEUDO-ARCLENGTH
+run_y0xd0zd0Fixed                   = true; % PSEUDO-ARCLENGTH
     artificially_set_xd0zd0_equal_0 = false; % ---
-    
+
 run_y0TpFixed                       = false; % NATURAL PARAMETER
 run_y0xd0TpFixed                    = false; % NATURAL PARAMETER
-run_y0xd0zd0TpFixed                 = true; % NATURAL PARAMETER
+run_y0xd0zd0TpFixed                 = false;  % NATURAL PARAMETER
 %     artificially_set_xd0zd0_equal_0 = true;
 
 %%% Correct initial guess before continuation?
@@ -110,27 +115,51 @@ famName = [systemName, '.', modelName, '.', POName];
 
 % ----------------------------------------
 
-% Test
-% % %%% Crazy one that's big
-% % myPO_ICs = [1.493091065609089;
-% %  0.000000000000000;
-% %  0.000000000000000;
-% %  -0.396739350276297;
-% %  -0.750049037320416;
-% %  -0.000000000000000;
-% %  12.562542503358495];
+% % LoPo_2P2_1T_1P2
+% myPO_ICs = [0.9881429921097894;
+%  0.0000000000000000;
+%  -0.0168009447543154;
+%  -0.0001472770814337;
+%  -0.0037486681593408;
+%  -0.0036975741485523;
+%  8.4466284490437697];
+% 
+% % LoPo_2P2_1T_1P4
+% myPO_ICs = [0.9880527618112726;
+%  0.0001678966225297;
+%  -0.0165774424501420;
+%  0.0003441728839180;
+%  -0.0080025945400490;
+%  -0.0013914655050917;
+%  18.4399317273488990];
 
 
-myPO_ICs = [0.9993717587301753;
+% % LoPo_2P2_1T_2P2
+% myPO_ICs = [0.9898823799977838;
+%  0.0002052969811691;
+%  -0.0167987690106750;
+%  0.0003645405375266;
+%  -0.0166596033295380;
+%  -0.0009082198829498;
+%  10.5268289895202258];
+
+
+% myPO_ICs = [0.9974595122588154;
+%  0.0000000000000000;
+%  0.0027264618900674;
+%  0.0001095395146051;
+%  0.0079600369911830;
+%  -0.0008897089849824;
+%  9.9089663274682032];
+
+
+myPO_ICs = [1.0005536305394183;
  0.0000000000000000;
- -0.0020449173737114;
+ -0.0004908425778832;
  0.0000000000000000;
- -0.0098111982600568;
+ 0.0222895921273076;
  0.0000000000000000;
- 5.7662488228513933];
-
-
-
+ 8.2891234965283349];
 % ------------------------------------------------- 
 %%% Continuation options
 % -------------------------------------------------
@@ -168,13 +197,14 @@ lostFamilyPenalty = 0.9;
 
 %%% If the multiple shooter required less iterations than this number, then
 %%% scale up the continuation step size for the next PO
-iterLimitForStepSizeIncrease = 100;
+% iterLimitForStepSizeIncrease = 100;
+iterLimitForStepSizeIncrease = 150;
 
 %%% Scale the continuation step size up by this amount if the iteration
 %%% limit for step size increase was met
 % iterLimitStepSizeReward = 1;
-% iterLimitStepSizeReward = 1.01; % slow
-iterLimitStepSizeReward = 1.02; % medium
+iterLimitStepSizeReward = 1.01; % slow
+% iterLimitStepSizeReward = 1.02; % medium
 % iterLimitStepSizeReward = 1.05; % fast
 % iterLimitStepSizeReward = 1.1; % real fast
 
@@ -202,10 +232,11 @@ ds_PO_minimumValue = 1e-8;
 % ds_PO = 2e-2;
 % ds_PO = 1e-2;
 % ds_PO = 5e-3; % 
-ds_PO = 1e-3; % Good guess for Europa
-% ds_PO = 5e-4;
-% ds_PO = 2e-4;
-% ds_PO = 1e-4; 
+% ds_PO = 2e-3; % 
+ds_PO = 1e-3; % Good starting guess
+% ds_PO = 5e-4; % Good starting guess
+% ds_PO = 2e-4; % Good starting guess
+% ds_PO = 1e-4; % Good starting guess
 % ds_PO = 5e-5;
 % ds_PO = 1e-5;
 % ds_PO = 4e-6;
@@ -215,10 +246,10 @@ ds_PO = 1e-3; % Good guess for Europa
 
 %%% If continuing over time period, choose time period range
 if run_y0TpFixed || run_y0xd0zd0TpFixed || run_y0xd0TpFixed
-%     Tp_range = linspace(myPO_ICs(7),   4.8851085903170466, 50); 
+%     Tp_range = linspace(myPO_ICs(7),   2.922316288956021, 50); 
     
-    Tp_range = myPO_ICs(7):5e-3:50; 
-%     Tp_range = myPO_ICs(7):-2e-3:0; 
+    Tp_range = myPO_ICs(7):5e-5:50; 
+%     Tp_range = myPO_ICs(7):-1e-4:0; 
 
 
     n_POs_max = length(Tp_range);
@@ -236,32 +267,31 @@ warning('on')
 %%% Error tolerance for constraint vector norm in multiple shooter
 % error_tol = 1e-8; 
 % error_tol = 1e-9; 
-% error_tol = 1e-10; 
+% error_tol = 1e-10; 989
 % error_tol = 5e-11; 
 error_tol = 1e-11; 
 % error_tol = 5e-12; 
-% error_tol = 1e-12; 
+error_tol = 1e-12; 
 % error_tol = 5e-13; 
-% error_tol = 1e-13; %
-% error_tol = 5e-14; 
-% error_tol = 1e-14; 
+error_tol = 1e-13; %
+
 
 %%% Number of nodes for multiple shooter. Generally, higher for bigger POs,
 %%% but also be aware that more nodes increase inherent error, so you may
 %%% need to lower error tolerances for the shooter
 % n_Nodes = 1; 
-% n_Nodes = 2;
+n_Nodes = 2;
 n_Nodes = 3;
 % n_Nodes = 4;
-% n_Nodes = 5; %
+n_Nodes = 5; %
 % n_Nodes = 6; % %
 % n_Nodes = 7;
 % n_Nodes = 8; 
 % n_Nodes = 9;
-% n_Nodes = 10;
+% n_Nodes = 10;  %
 % n_Nodes = 11;
-% n_Nodes = 12;
-% n_Nodes = 13;
+% n_Nodes = 12; %
+% n_Nodes = 13;%%%%%%%%%
 % n_Nodes = 14;
 % n_Nodes = 15;
 % n_Nodes = 16;
@@ -289,11 +319,9 @@ options = odeset('RelTol',tol,'AbsTol',tol);
 % --------------------------
 [primary, secondary] = assignPrimaryAndSecondary_CR3BP(famName, bodies);
 
-secondary.MR = 1.898884589251784e-07
-989
-989
-989
-989
+% warning('Manually overriding the mass ratio')
+% secondary.MR = 1.898884589251784e-07
+
 % --------------------------
 %%% System
 % --------------------------
@@ -497,7 +525,7 @@ nullSpaceDimensionChangeCounter = 0;
 
 if plot_reference_PO
 %     figure(100); hold all
-    hFig = figure(100); set( hFig, 'Position', [2785 154 560 420]); hold all
+    hFig = figure(100); set( hFig, 'Position', [-1671 59 560 420]); hold all
 
     plot3(Xref_n(:,1),Xref_n(:,2),Xref_n(:,3),'m','linewidth',2)
     PlotBoi3_CR3Bn(26)
@@ -660,7 +688,7 @@ while PO_i <= n_POs_max
                         nullVecDF = nullVecDFPrevious;
                         continue
                     else
-                        warning('Null space seems to have definitely changed dimensions')
+                        warning('Null space seems to have changed dimensions')
                         break
                     end
 

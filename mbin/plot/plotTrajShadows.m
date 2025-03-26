@@ -5,8 +5,7 @@ function plotTrajShadows(Xin, lw, color, varargin)
 % the shadows (color). After that, separated by commas, list any desired
 % axes for a shadow along with a position along that axis for the shadow to
 % appear. A full call to this function may look like:
-%   plotTrajShadows(X_traj, lw, color, 'x', 1.01, 'y', 0.02, 'z', 0.025)
-%       
+%   plotTrajShadows(X_traj, lw, color, 'x', 0.965, 'y', 0.035, 'z', -2.7e-2, 'bodyshadow', [1-prms.u, prms.R2])
 % ------------------------------------------------------------------------
 %%% Inputs
 % Xin      - [nx6 or nx3] state history of trajectory
@@ -76,13 +75,6 @@ end
 
 end % function
 
-
-
-
-
-
-% 
-% 
 
 
 

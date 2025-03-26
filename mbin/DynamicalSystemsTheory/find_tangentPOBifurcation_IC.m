@@ -12,7 +12,13 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+[ret, name] = system('hostname');
+if isequal(strip(name), 'Lukes-MacBook-Pro.local')
+    mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+elseif isequal(strip(name), 'MT-315800')
+    mbinPath = '~/Documents/MatGit/mbin';
+end
+clear ret name
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -52,38 +58,56 @@ systemName = 'Saturn_Enceladus';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-
-% 
-% 
-% 3P4 - 568
-PO_0 = [0.9990984652798989;
+PO_0 = [0.9974404396657051;
  0.0000000000000000;
- -0.0027774454190227;
- -0.0000000000000019;
- -0.0073273546776289;
- 0.0000000000000011;
- 6.0800228609930249];
+ 0.0027408259279775;
+ 0.0000000000000000;
+ 0.0079823529719943;
+ 0.0000000000000000;
+ 9.9082741168209729];
+
+PO_0 = [1.0004251698088420;
+ 0.0000000000000000;
+ 0.0014010438226987;
+ 0.0000000000000000;
+ 0.0146622541517789;
+ 0.0000000000000000;
+ 4.2086754707533087];
+
+
 
 % -------------------------------------------------
 %%% Bifurcation guess setup
 % -------------------------------------------------
 %%% Scaling for bump-vector
+% bumpVec_scalar =5e-2;
+% bumpVec_scalar =2e-2;
+% bumpVec_scalar =1e-2;
+% bumpVec_scalar =5e-3;
 bumpVec_scalar =1e-3;
-
+% bumpVec_scalar =5e-4;
+bumpVec_scalar =3e-4;
+% bumpVec_scalar =1e-4;
+bumpVec_scalar =5e-5;
+bumpVec_scalar =3e-5;
+% bumpVec_scalar =8e-6;
+% bumpVec_scalar =3e-6;
+% bumpVec_scalar = 1e-6;
+% bumpVec_scalar = 1e-7;
+% bumpVec_scalar = 1e-8;
 % -------------------------------------------------
 %%% Shooter setup
 % -------------------------------------------------
 %%% Number of nodes to cut the initial guess into. Choose the one that
 %%% creates the smallest s_important
 % n_Nodes = 1; 
-% n_Nodes = 2;
-% n_Nodes = 3;
-% n_Nodes = 4;
+n_Nodes = 2;
+n_Nodes = 3;
+n_Nodes = 4;
 % n_Nodes = 5;
 % n_Nodes = 6; 
 % n_Nodes = 7; 
-n_Nodes = 8; 
+% n_Nodes = 8; 
 
 % -------------------------------------------------
 %%% Parameter setup
@@ -93,6 +117,10 @@ n_Nodes = 8;
 % --------------------------
 [primary, secondary] = assignPrimaryAndSecondary_CR3BP(systemName, bodies);
 
+% warning('Manually overriding the mass ratio')
+% secondary.MR = 1.898884589251784e-07;
+% pause
+
 % --------------------------
 %%% System
 % --------------------------
@@ -101,6 +129,7 @@ n_Nodes = 8;
 % tNorm:  n <-> sec
 % vNorm:  n <-> km/sec
 [rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
+
 
 %%% Setting parameters
 prms.u  = secondary.MR;
@@ -174,8 +203,11 @@ end
 %%% Use single-value decomposition to find tangent direction of new family
 s = svd(DF_mat); % s is equal to diag(S)
 s_important = s(end-1)
+
+
 [U,S,V] = svd(DF_mat);
 V_vec = V(:,n_Nodes*6-1);
+V_vec = V(:,n_Nodes*6-2);
 bumpVec = [V_vec(1); 0; V_vec(2:5); V_vec(end)]
 if PO_0(2) ~= 0
     warning('Problem here')
@@ -194,6 +226,10 @@ p2 = plot3(X_newPO(:,1),X_newPO(:,2),X_newPO(:,3),'b');
 PlotBoi3_CR3Bn(26)
 legend([p1, p2], 'Old PO', 'New PO Guess')
 
+if (abs(bumpVec(3)) + abs(bumpVec(6))) > 1e-10
+    view(0,0)
+end
+
 missDistance_norm = norm(X_newPO(end,1:3) - X_newPO(1,1:3))
 
 prettyColVec(newPO_guess)
@@ -206,10 +242,13 @@ monodromy                           = stm_tf_t0;
 [S1, S2]                            = getStabilityIndices(diag(eigenValues_new));
 fprintf('Stability Indices: [%1.1f, %1.1f]\n\n', S1, S2)
 
+if (abs(S1) + abs(S2)) > 10
+    warning('New orbit unstable')
+end
 
-
-
-
+if abs(s_important) > 5e-6 % At the bifurcation for LoPO_1P2 at Enceladus, when this was 1e-4 the split shows up as PLANAR, but when it's smaller than this value it reveals itself as SPATIAL
+    warning("should probably get closer to bifurcation point")
+end
 % ========================================================================
 %%% Formatting Structures
 % ========================================================================

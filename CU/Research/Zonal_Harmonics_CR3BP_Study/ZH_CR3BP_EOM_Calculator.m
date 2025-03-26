@@ -42,8 +42,8 @@ ticWhole = tic;
 % primaryZHRange   = [2, 4, 6];
 % secondaryZHRange = [2, 4];
 
-primaryZHRange   = [8];
-secondaryZHRange = [2];
+primaryZHRange   = [];
+secondaryZHRange = [];
 
 %%% Choose whether to include C22 of secondary body (true/false)
 use_C22s = false;
@@ -192,11 +192,16 @@ V = Vp + Vs;
 %%% Build position vectors and substitute into V
 r1 = ((x+mu)^2 + y^2 + z^2)^(1/2);
 r2 = ((x-1+mu)^2 + y^2 + z^2)^(1/2);
+% r1 = ((x+1)^2 + y^2 + z^2)^(1/2); % For SCR frame
+% r2 = (x^2 + y^2 + z^2)^(1/2); % For SCR frame
+% warning('989') % For SCR frame
 
 V = subs(V);
 
 %%% Create system gravitational potential
 U_CR3BP = (1/2)*(n^2)*(x^2 + y^2) + V;
+% U_CR3BP = (1/2)*(n^2)*((x+1-mu)^2 + y^2) + V; % For SCR frame
+% warning('989') % For SCR frame
 % U_2BI = V;
 
 %%% Create Jacobi Constant
@@ -421,5 +426,4 @@ fprintf('-----------------------------------------------------------------------
 % ========================================================================
 tocWhole = toc(ticWhole);
 fprintf('\n(Elapsed time: %1.4f seconds)\n',tocWhole)
-
 

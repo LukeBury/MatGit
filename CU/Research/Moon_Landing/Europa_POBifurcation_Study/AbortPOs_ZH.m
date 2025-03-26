@@ -12,7 +12,13 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+[ret, name] = system('hostname');
+if isequal(strip(name), 'Lukes-MacBook-Pro.local')
+    mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+elseif isequal(strip(name), 'MT-315800')
+    mbinPath = '~/Documents/MatGit/mbin';
+end
+clear ret name
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -25,29 +31,29 @@ run_L2_L_1T_4P2_1P3__ns1 = true;
 
 run_L2_L_1T_4P2_1P3__ns2 = true;
 
-run_DRO__s1              = true;
+run_DRO__s1              = false;
 
-run_DPO__s1              = true;
+run_DPO__s1              = false;
 
-run_DPO_2P3__ns1         = true;
+run_DPO_2P3__ns1         = false;
 
-run_DPO_2P4__ns1         = true;
+run_DPO_2P4__ns1         = false;
 
-run_Hg2__ns1             = true;
+run_Hg2__ns1             = false;
 
-run_Hg2_2P2__ns1         = true;
+run_Hg2_2P2__ns1         = false;
 
-run_Hg2_3T__ns2          = true;
+run_Hg2_3T__ns2          = false;
 
-run_Se7__s1              = true;
+run_Se7__s1              = false;
 
-run_Se7__ns1             = true;
+run_Se7__ns1             = false;
 
-run_LoPO__s1             = true;
+run_LoPO__s1             = false;
 
-run_LoPO_2P2_1T__ns1     = true;
+run_LoPO_2P2_1T__ns1     = false;
 
-run_LoPO_2P4__ns1        = true;
+run_LoPO_2P4__ns1        = false;
 
 % ========================================================================
 %%% Importing Data
@@ -608,7 +614,7 @@ ylim([-90 90])
 PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 26, 'LaTex')
 h = image(xlim, -ylim, bodies.europa.img);
 [lons_new_ZH] = convert_lon180_to_lon360(latLons_L2_L_1T_4P2_1P3__ns1_ZH(:,2));
-plot(lons_new_ZH,latLons_L2_L_1T_4P2_1P3__ns1_ZH(:,1),'.', 'color', colors.red2)
+plot(lons_new_ZH,latLons_L2_L_1T_4P2_1P3__ns1_ZH(:,1),'.', 'color', colors.blue2)
 [lons_new_impact_ZH] = convert_lon180_to_lon360(latLons_apses_L2_L_1T_4P2_1P3__ns1_ZH((apses_alts_ZH < 5/rNorm),2));
 p_landing_ZH = plot(lons_new_impact_ZH, latLons_apses_L2_L_1T_4P2_1P3__ns1_ZH((apses_alts_ZH < 5/rNorm),1), 'o','markersize',16, 'linewidth', 2, 'markeredgecolor', colors.black, 'markerfacecolor', colors.drkgrey);
 legend([p_landing_ZH], 'Tangent Impact', 'fontsize', 20, 'fontname', 'Times New Roman', 'location', 'northeast')
@@ -628,7 +634,7 @@ title('L2\_L\_1T\_4P2\_1P3 ... ns1 ... ZH','Interpreter', 'LaTex', 'Fontname', '
 
 figure; hold all
 % plot3(X_L2_L_1T_4P2_1P3__ns1_ZH(:,1),X_L2_L_1T_4P2_1P3__ns1_ZH(:,2),X_L2_L_1T_4P2_1P3__ns1_ZH(:,3), 'linewidth', 2, 'color', colors.red2)
-plot3(X_L2_L_1T_4P2_1P3__ns1_ZH(:,1),X_L2_L_1T_4P2_1P3__ns1_ZH(:,2),X_L2_L_1T_4P2_1P3__ns1_ZH(:,3), 'linewidth', 2, 'color', colors.mag)
+plot3(X_L2_L_1T_4P2_1P3__ns1_ZH(:,1),X_L2_L_1T_4P2_1P3__ns1_ZH(:,2),X_L2_L_1T_4P2_1P3__ns1_ZH(:,3), 'linewidth', 2, 'color', colors.blue2)
 plotTrajShadows(X_L2_L_1T_4P2_1P3__ns1_ZH, 2, colors.grey, 'x', 1.025, 'y', 2.9e-2, 'z', -2.8e-2, 'bodyshadow', [1-prms_ZH.u, prms_ZH.R2])
 plotSecondary(secondary)
 PlotBoi3_CR3Bn(26)
@@ -743,7 +749,7 @@ ylim([-90 90])
 PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 26, 'LaTex')
 h = image(xlim, -ylim, bodies.europa.img);
 [lons_new_ZH] = convert_lon180_to_lon360(latLons_L2_L_1T_4P2_1P3__ns2_ZH(:,2));
-plot(lons_new_ZH,latLons_L2_L_1T_4P2_1P3__ns2_ZH(:,1),'.', 'color', colors.red2)
+plot(lons_new_ZH,latLons_L2_L_1T_4P2_1P3__ns2_ZH(:,1),'.', 'color', colors.blue2)
 [lons_new_impact_ZH] = convert_lon180_to_lon360(latLons_apses_L2_L_1T_4P2_1P3__ns2_ZH((apses_alts_ZH < 5/rNorm),2));
 p_landing_ZH = plot(lons_new_impact_ZH, latLons_apses_L2_L_1T_4P2_1P3__ns2_ZH((apses_alts_ZH < 5/rNorm),1), 'o','markersize',16, 'linewidth', 2, 'markeredgecolor', colors.black, 'markerfacecolor', colors.drkgrey);
 legend([p_landing_ZH], 'Tangent Impact', 'fontsize', 20, 'fontname', 'Times New Roman', 'location', 'northeast')
@@ -764,7 +770,7 @@ title('L2\_L\_1T\_4P2\_1P3 ... ns2 ... ZH','Interpreter', 'LaTex', 'Fontname', '
 
 figure; hold all
 % plot3(X_L2_L_1T_4P2_1P3__ns2_ZH(:,1),X_L2_L_1T_4P2_1P3__ns2_ZH(:,2),X_L2_L_1T_4P2_1P3__ns2_ZH(:,3), 'linewidth', 2, 'color', colors.red2)
-plot3(X_L2_L_1T_4P2_1P3__ns2_ZH(:,1),X_L2_L_1T_4P2_1P3__ns2_ZH(:,2),X_L2_L_1T_4P2_1P3__ns2_ZH(:,3), 'linewidth', 2, 'color', colors.mag)
+plot3(X_L2_L_1T_4P2_1P3__ns2_ZH(:,1),X_L2_L_1T_4P2_1P3__ns2_ZH(:,2),X_L2_L_1T_4P2_1P3__ns2_ZH(:,3), 'linewidth', 2, 'color', colors.blue2)
 plotTrajShadows(X_L2_L_1T_4P2_1P3__ns2_ZH, 2, colors.grey, 'x', 1.025, 'y', 2.9e-2, 'z', -2.8e-2, 'bodyshadow', [1-prms_ZH.u, prms_ZH.R2])
 plotSecondary(secondary)
 PlotBoi3_CR3Bn(26)

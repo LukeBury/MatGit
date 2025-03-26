@@ -14,7 +14,13 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+[ret, name] = system('hostname');
+if isequal(strip(name), 'Lukes-MacBook-Pro.local')
+    mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+elseif isequal(strip(name), 'MT-315800')
+    mbinPath = '~/Documents/MatGit/mbin';
+end
+clear ret name
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -31,6 +37,7 @@ colors = get_colors();
 %%% Periodic orbit ICs
 PO_ICs = get_PO_ICs();
 
+
 % ========================================================================
 %%% Run Switches
 % ========================================================================
@@ -38,8 +45,9 @@ plot_family        = true;
 plot_energy        = true;
 plot_stability     = true;
     check_for_false_Stability_Indices = false; % Warning, this takes a while
-print_bifurcations = false;
-    plot_BrouckeDiagram = false;
+print_bifurcations = true;
+    plot_BrouckeDiagram = true;
+plot_minAltitudes  = true;
 
 check_Tp_monotonic = false;
 
@@ -63,6 +71,9 @@ study_missionUtility = false; % Warning, this takes a while
 % family = 'Earth_Moon.CR3BP.L2_L_1T_4P2.txt';
 % family = 'Earth_Moon.CR3BP.Apollo.txt';
 
+% family = 'Jupiter_Europa.CR3BP.L1_Lyapunov.txt';
+% family = 'Jupiter_Europa.CR3BP.L1_L_1T.txt';
+
 
 % family = 'Jupiter_Europa.CR3BP.L2_Lyapunov.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_NHalo.txt';
@@ -74,7 +85,7 @@ study_missionUtility = false; % Warning, this takes a while
 % family = 'Jupiter_Europa.CR3BP.L2_L_1T_3P2.txt'; 
 % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2.txt'; % Butterfly
 % % % % % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P4.txt';
-% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P3.txt'; % the end of this is the 2P2 bifurcation from LoPO_2P2_1T (so this is also LoPO_2P2_1T_2P2)
+% family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P3.txt'; % the end of this is the 2P2 from LoPO_2P2_1T (so this is also LoPO_2P2_1T_2P2)
 % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_1P2.txt';
 % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_2P2.txt'; 
 % % % family = 'Jupiter_Europa.CR3BP.L2_L_1T_4P2_2P3.txt'; 
@@ -84,7 +95,7 @@ study_missionUtility = false; % Warning, this takes a while
 % family = 'Jupiter_Europa.CR3BP.L2_L_1P2.txt'; 
 % family = 'Jupiter_Europa.CR3BP.L2_Vertical.txt';
 
-% family = 'Jupiter_Europa.CR3BP.DRO.txt'; 
+family = 'Jupiter_Europa.CR3BP.DRO.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DRO_1P4.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DRO_1P4_1P4.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DRO_1P4_1P4_1T.txt'; 
@@ -97,7 +108,7 @@ study_missionUtility = false; % Warning, this takes a while
 % family = 'Jupiter_Europa.CR3BP.DRO_2P4_1T.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DRO_2P4_2T.txt'; 
 
-family = 'Jupiter_Europa.CR3BP.DPO.txt'; 
+% family = 'Jupiter_Europa.CR3BP.DPO.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DPO_1P4.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DPO_1P4_1T.txt'; 
 % family = 'Jupiter_Europa.CR3BP.DPO_1P3.txt'; 
@@ -114,6 +125,8 @@ family = 'Jupiter_Europa.CR3BP.DPO.txt';
 % family = 'Jupiter_Europa.CR3BP.DPO_4P2.txt';  % THIS IS DPO_3P2 FROM THE OTHER SIDE
 % family = 'Jupiter_Europa.CR3BP.DPO_5P2.txt';  % THIS IS LoPO_3P2 FROM THE OTHER SIDE
 % family = 'Jupiter_Europa.CR3BP.DPO_2T.txt'; 
+% new
+% family = 'Jupiter_Europa.CR3BP.DPO_2P2_1T.txt'; 
 
 % family = 'Jupiter_Europa.CR3BP.LoPO.txt'; 
 % family = 'Jupiter_Europa.CR3BP.LoPO_1P4.txt'; 
@@ -124,6 +137,9 @@ family = 'Jupiter_Europa.CR3BP.DPO.txt';
 % family = 'Jupiter_Europa.CR3BP.LoPO_2P4.txt'; 
 % family = 'Jupiter_Europa.CR3BP.LoPO_3P3.txt'; 
 % family = 'Jupiter_Europa.CR3BP.LoPO_3P4.txt'; 
+% new
+% family = 'Jupiter_Europa.CR3BP.LoPO_2P2_1T_1P3.txt'; 
+
 
 % family = 'Jupiter_Europa.CR3BP.Hg1.txt'; 
 % family = 'Jupiter_Europa.CR3BP.Hg1_1P2.txt'; 
@@ -137,7 +153,7 @@ family = 'Jupiter_Europa.CR3BP.DPO.txt';
 % family = 'Jupiter_Europa.CR3BP.Hg2_2P2.txt';
 % family = 'Jupiter_Europa.CR3BP.Hg2_1P3.txt';
 % family = 'Jupiter_Europa.CR3BP.Hg2_2T.txt'; 
-% family = 'Jupiter_Europa.CR3BP.Hg2_3T.txt'; 
+% % family = 'Jupiter_Europa.CR3BP.Hg2_3T.txt'; 
 % family = 'Jupiter_Europa.CR3BP.Hg2_5T.txt';
 
 % family = 'Jupiter_Europa.CR3BP.Se7.txt'; 
@@ -152,9 +168,69 @@ family = 'Jupiter_Europa.CR3BP.DPO.txt';
 % family = 'Jupiter_Europa.CR3BP.Hg1_full?.txt'; 
 % family = 'Jupiter_Europa.CR3BP.Hg3.txt'; 
 
+% family = 'Saturn_Enceladus.CR3BP.L2_falseTripleHalo.txt';
+% family = 'Saturn_Enceladus.CR3BP.L1_L.txt';
+% family = 'Saturn_Enceladus.CR3BP.L1_L_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.L1_L_1T_1P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L1_L_1T_3P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L1_L_1T_1P2_1P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_1P4.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_1P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_2P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_3P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_3P2_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_3P2_1T_1P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_3P2_1T_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2.txt';  % Butterfly
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2_1P3.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2_1P3_2.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2_1P3_1T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2_1P3_3T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.L2_L_1T_4P2_1P3_4T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.DPO.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P4.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P4_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P4_2T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P4_2T_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P2_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DPO_2P2_1T_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.LoPO.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_1P4.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_1P3.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_1P3_other (i think it comes from DPO).txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P4.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P4_2T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_1P2.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P2.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P2_1T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P2_1T_1P3.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_2P3.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_3P2.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.LoPO_3P3_maybe1T.txt'; 
+% family = 'Saturn_Enceladus.CR3BP.DRO.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P4_2.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P4_3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P4_3_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P4_3_1T_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_1P3_1P2.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_2P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_2.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_2_1T.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_2_1T_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P4_2_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P3_1P3.txt';
+% family = 'Saturn_Enceladus.CR3BP.DRO_1P3_1P3_2.txt';
 
 
 % 50 mps l2 flythrough velocity => 3.003595836097908
+
+
 % --------------------------
 % Actually load family
 % --------------------------
@@ -163,11 +239,18 @@ dataPathFromMBin = '/Data/InitialConditions/PO_Families/';
 
 %%% PO data file
 PO_datafile = [mbinPath, dataPathFromMBin, family];
+
 % -------------------------------------------------
 %%% Set up parameters
 % -------------------------------------------------
 %%% Set primary and secondary bodies
 [primary, secondary] = assignPrimaryAndSecondary_CR3BP(family, bodies);
+
+% if contains(family, 'Saturn_Enceladus.') && contains(family, 'newMR.')
+%     warning('Manually editing the MR')
+%     secondary.MR = 1.898884589251784e-07;
+% end
+
 
 %%% Normalizing constants
 [rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
@@ -190,6 +273,11 @@ options = odeset('RelTol',tol,'AbsTol',tol);
 % -------------------------------------------------
 %%% Load the data file
 PO_data = dlmread(PO_datafile,',',1,0);
+
+if isequal(family, 'Saturn_Enceladus.CR3BP.L2_L_1T.txt')
+    warning('Trimming the datasize ... The last few hundred take a VERY long time to propagate')
+    PO_data = PO_data(1:2100,:);
+end
 
 %%% Grab header line
 fid = fopen(PO_datafile, 'rt');  %the 't' is important!
@@ -236,7 +324,7 @@ if plot_energy
     %%% Plot Jacobi constant and Tp
     figure; hold all
     plot3(PO_data(:, c_Tp), PO_data(:, c_JC), PO_indices,'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
-    PlotBoi2('$T_P$','Jacobi Constant',26,'LaTex')
+    PlotBoi2('${T_P}_n$','Jacobi Constant',26,'LaTex')
 end
 
 if plot_stability    
@@ -298,13 +386,6 @@ if plot_stability
     end
         
 end
-
-
-
-
-
-
-
 
 
 
@@ -415,7 +496,7 @@ if study_missionUtility
             traj_nearStable_POi{PO_i}.X = X_PO;
             traj_nearStable_POi{PO_i}.T = T_PO;
         end
-
+        
         parfor PO_i = 1:length(stable_PO_indices)
             index = stable_PO_indices(PO_i);
 
@@ -536,6 +617,32 @@ if study_missionUtility
 %     end
 end
 
+% ========================================================================
+%%% Look at minimum altitudes
+% ========================================================================
+if plot_minAltitudes
+    %%% Preallocate
+    minAlts_km = cell(n_POs,1);
+    
+
+    parfor PO_i = 1:n_POs
+        
+        [T_PO, X_PO] = ode113(@Int_CR3Bn, [0, PO_data(PO_i,c_Tp)], [PO_data(PO_i,c_x0:c_zd0)'], options, prms);
+        
+        rough_altitudes = rowNorm(X_PO(:,1:3) - [1-prms.u, 0, 0]) - prms.R2;
+        %%% Store data
+        minAlts_km{PO_i} = min(rough_altitudes)*rNorm;
+    end
+
+    figure; hold all
+    plot3(PO_data(:,c_Tp).*tNorm/86400, [minAlts_km{:}]', PO_indices, 'o','markeredgecolor',colors.blue,'markerfacecolor',colors.ltblue)
+    PlotBoi2('$T_P$ (days)', 'Minimum Altitude (km)', 26, 'LaTex')
+
+    plot([min(PO_data(:,c_Tp).*tNorm/86400) max(PO_data(:,c_Tp).*tNorm/86400)], [0, 0], 'k', 'linewidth', 1.5)
+    plot([min(PO_data(:,c_Tp).*tNorm/86400) max(PO_data(:,c_Tp).*tNorm/86400)], [1, 1].*-secondary.R, 'r', 'linewidth', 1.5)
+
+end
+
 
 % ========================================================================
 %%% Plot POs
@@ -550,36 +657,55 @@ if plot_family
 %     plot_PO_indices = n_POs;
 %     plot_PO_indices = [1, n_POs];
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 3);
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 4);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 5);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 6);
-%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 10);
+    plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 10);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 15);
-    plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 25);
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 20);
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 25);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 30);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 35);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 50);
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 75);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 100);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 150);
 %     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 300);
 
-    plot_PO_indices = 50;
-%     plot_PO_indices = 405; %                
-%     plot_PO_indices = 896:903; 
-%     plot_PO_indices = [1, 20, 40, 60, 80, 100];
-%     plot_PO_indices = [933];
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(1:493,c_Tp), PO_data(1:493,c_JC), 15);
+%     plot_PO_indices = [plot_PO_indices(1); 50; plot_PO_indices(2:end)];
+%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(1:637,c_Tp), PO_data(1:637,c_JC), 15);
+%     plot_PO_indices = plot_PO_indices(2:end);
+
+%     plot_PO_indices = [1];
+%     plot_PO_indices = 300; %    300 good for enceladus scorpion            
+%     plot_PO_indices = [1]; 
+%     plot_PO_indices = [110:1:140];
+%     plot_PO_indices = [n_POs];
 %     plot_PO_indices = [1, floor(n_POs/2), n_POs];
-%     plot_PO_indices = 336;
+%     plot_PO_indices = 517;%513
 %     989
-%     plot_PO_indices = 1665;
+%     plot_PO_indices = floor(n_POs/2);
+%     plot_PO_indices = [1250];
+%     plot_PO_indices = [1982];
+%     plot_PO_indices = [1020]; % the most stable triplehalo, S1+S2~=5
+%     plot_PO_indices = [392, 591, 988, 1476];
+%     plot_PO_indices(end) = 2900;
 % 
 % plot_PO_indices = [30; 60; plot_PO_indices];
 % plot_PO_indices = plot_PO_indices(1:end-15);989
 % plot_PO_indices = plot_PO_indices(2:end);989
 % plot_PO_indices = sort(plot_PO_indices);
+% plot_PO_indices = plot_PO_indices(1:40)
     
-    %%% optional color spectrum
-%     color_spectrum = colors.blue2;
+
+    %%% Set color spectrum
+    % Most used
     color_spectrum = colorScale([colors.blue2; colors.mag], length(plot_PO_indices));
+%     color_spectrum = colorScale([colors.sch.eighties.yellow; colors.sch.eighties.pink; colors.sch.eighties.cyan], length(plot_PO_indices)); % Miami Vice
+    
+    % Used in past
+%     color_spectrum = colors.blue2;
 %     color_spectrum = colorScale([colors.cyan; colors.mag], length(plot_PO_indices));
 %     color_spectrum = colorScale([colors.blue2; colors.red2], length(plot_PO_indices));
 %     color_spectrum = colorScale([colors.sch.d3_3(1,:); colors.sch.d3_3(2,:); colors.sch.d3_3(3,:)], length(plot_PO_indices));
@@ -588,7 +714,6 @@ if plot_family
 %     color_spectrum = colorScale([colors.sch.d5_1(5,:); colors.sch.eighties.yellow; colors.sch.eighties.pink], length(plot_PO_indices));
 %     color_spectrum = colorScale([colors.sch.d5_1(1,:); colors.sch.d5_1(2,:); colors.sch.d5_1(3,:); colors.sch.d5_1(4,:); colors.sch.d5_1(5,:)], length(plot_PO_indices));
 %     color_spectrum = colorScale([colors.sch.eighties.yellow; colors.sch.eighties.red], length(plot_PO_indices));
-%     color_spectrum = colorScale([colors.sch.eighties.yellow; colors.sch.eighties.pink; colors.sch.eighties.cyan], length(plot_PO_indices));
 %     color_spectrum = colorScale([colors.black; colors.cyan], length(plot_PO_indices));
 %     color_spectrum = colorScale(colors.sch.eighties.yellow, length(plot_PO_indices));
 %     color_spectrum = colorScale(colors.sch.d4_1, length(plot_PO_indices));
@@ -616,18 +741,27 @@ if plot_family
     for PO_i = 1:length(traj_POi)
 %         plot3(traj_POi{PO_i}.X(:,1), traj_POi{PO_i}.X(:,2), traj_POi{PO_i}.X(:,3), 'linewidth', lw, 'color', PO_color) % 0.1961    0.3922    0.7843
 %         plot3(traj_POi{PO_i}.X(:,1), traj_POi{PO_i}.X(:,2), traj_POi{PO_i}.X(:,3), 'linewidth', lw, 'color', colors.sch.eighties.yellow) % 0.1961    0.3922    0.7843
-        plot3(traj_POi{PO_i}.X(:,1), traj_POi{PO_i}.X(:,2), traj_POi{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)) % 0.1961    0.3922    0.7843
+%         plot3(traj_POi{PO_i}.X(:,1), traj_POi{PO_i}.X(:,2), traj_POi{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)) % 0.1961    0.3922    0.7843
+        plot3(traj_POi{PO_i}.X(:,1), traj_POi{PO_i}.X(:,2), traj_POi{PO_i}.X(:,3), 'linewidth', 3, 'color', color_spectrum(PO_i,:)) % 0.1961    0.3922    0.7843
     end
     ax = gca;
     ax.FontSize = 14;
     PlotBoi3_CR3Bn(28)
     axis equal
+    if length(plot_PO_indices) > 1
+        title('Blue -> Pink')
+    elseif length(plot_PO_indices) == 1
+        title(sprintf('PO Index: %1d', plot_PO_indices))
+    end
 %     plot3(rLPs_n(2,1),[0],[0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
     
-    plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
-%     set(gca, 'Color', colors.orccaPPT)
-%     set(gcf, 'Color', colors.orccaPPT)
-%     plotSecondary(secondary)
+%     plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+
+%     fig_color = colors.orccaPPT;
+%     fig_color = colors.black;
+%     set(gca, 'Color', fig_color, 'XColor', fig_color, 'YColor', fig_color, 'ZColor', fig_color)
+%     set(gcf, 'Color', fig_color)
+    plotSecondary(secondary)
 
     if sum(traj_POi{PO_i}.X(:,3) + traj_POi{PO_i}.X(:,6)) == 0
         view(0,90) % x-z view
@@ -638,10 +772,12 @@ if plot_family
 
 end
 
+
+% 1788, 1858
 if 1+1==1
     
     
-    newIndex = 100;
+    newIndex = 504;
     
     [T_PO_new, X_PO_new] = ode113(@Int_CR3BnSTM, [0, PO_data(newIndex,c_Tp)], [PO_data(newIndex,c_x0:c_zd0)'; stm0_colVec], options, prms);
     
@@ -661,8 +797,10 @@ if 1+1==1
 %     plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
     plotSecondary(secondary)
     
-    plot3(X_PO_new(:,1), X_PO_new(:,2), X_PO_new(:,3), 'linewidth', lw, 'color', colors.sch.eighties.pink) % 0.1961    0.3922    0.7843
-
+%     plot3(X_PO_new(:,1), X_PO_new(:,2), X_PO_new(:,3), 'linewidth', lw, 'color', colors.sch.eighties.pink) % 0.1961    0.3922    0.7843
+%     plot3(X_PO_new(:,1), X_PO_new(:,2), X_PO_new(:,3), 'linewidth', lw, 'color', colors.blue2) % 0.1961    0.3922    0.7843
+    plot3(X_PO_new(:,1), X_PO_new(:,2), X_PO_new(:,3), 'linewidth', lw, 'color', colors.sch.eighties.cyan) % 0.1961    0.3922    0.7843
+    
 
     latLons_PO = zeros(length(T_PO_new),2);
     for kk = 1:length(latLons_PO)
@@ -676,8 +814,10 @@ if 1+1==1
     PlotBoi2('Longitude, $^\circ$', 'Latitude, $^\circ$', 26, 'LaTex')
     h = image(xlim, -ylim, secondary.img);
     [lons_new] = convert_lon180_to_lon360(latLons_PO(:,2));
-    plot(lons_new,latLons_PO(:,1),'.', 'color', colors.blue2)
+%     plot(lons_new,latLons_PO(:,1),'.', 'color', colors.blue2)
+    plot(lons_new,latLons_PO(:,1),'.', 'color', colors.sch.eighties.cyan)
 
+    rough_altitudes = (rowNorm(X_PO_new(:,1:3) - [1-prms.u, 0, 0]) - prms.R2).*rNorm;
 
 end
 
@@ -726,7 +866,7 @@ end
 
 %%% Plot PO with Shadows
 if 1+1==1
-    index = 1480;
+    index = 400;
     
     PO_0 = PO_data(index, c_x0:c_Tp)';
     [T_PO, X_PO] = ode113(@Int_CR3BnSTM, [0, PO_0(7)], [PO_0(1:6); stm0_colVec], options, prms);
@@ -769,30 +909,135 @@ end
 
 %%% Progressively Draw
 if 1+1==1
-% %     plot_PO_indices = [270:285];
-%     plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 15);
-%     color_spectrum = colorScale([colors.blue2; colors.mag], length(plot_PO_indices));
-% 
-%     
-% %   %%% Loop and plot
-%     figure; hold all
-%     PlotBoi3_CR3Bn(26)
-%     axis equal
-%     plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
-% %     view(0, 90) % x-y
-% %     view(90,0) % y-z
-%     view(0,0) % x-z
-%     
-%     for PO_i = 1:length(plot_PO_indices)
-%         index = plot_PO_indices(PO_i);
-%         
-%         [T_PO, X_PO] = ode113(@Int_CR3BnSTM, [0, PO_data(index,c_Tp)], [PO_data(index,c_x0:c_zd0)'; stm0_colVec], options, prms);
-%         
-%         plot3(X_PO(:,1), X_PO(:,2), X_PO(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)) % 0.1961    0.3922    0.7843
-%         drawnow
-%         pause(0.2)
-%     end
+%     plot_PO_indices = [270:285];
+    plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 30);
+    color_spectrum = colorScale([colors.blue2; colors.mag], length(plot_PO_indices));
 
+    
+%   %%% Loop and plot
+    figure; hold all
+    PlotBoi3_CR3Bn(26)
+%     view(0, 90) % x-y
+%     view(90,0) % y-z
+%     view(0,0) % x-z
+    view(150,20)
+    axis equal
+
+    xlim([-1 1].*7e-3 + (1-prms.u))
+    ylim([-1 1].*7e-3)
+    zlim([-1 1].*7e-3)
+
+    plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+
+    
+    for PO_i = 1:length(plot_PO_indices)
+        index = plot_PO_indices(PO_i);
+        
+        [T_PO, X_PO] = ode113(@Int_CR3BnSTM, [0, PO_data(index,c_Tp)], [PO_data(index,c_x0:c_zd0)'; stm0_colVec], options, prms);
+        
+%         delete(p1)
+        p1 = plot3(X_PO(:,1), X_PO(:,2), X_PO(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)); % 0.1961    0.3922    0.7843
+
+        pause(0.05)
+    end
+
+
+end
+
+
+%%% Progressively Draw (subplots)
+if 1+1==1
+%     plot_PO_indices = [270:285];
+        plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), 400);
+        color_spectrum = colorScale([colors.blue2; colors.mag], length(plot_PO_indices));
+    
+        PO_Xs = cell(length(plot_PO_indices),1);
+        for PO_i = 1:length(plot_PO_indices)
+            index = plot_PO_indices(PO_i);
+            
+            [T_PO, X_PO] = ode113(@Int_CR3BnSTM, [0, PO_data(index,c_Tp)], [PO_data(index,c_x0:c_zd0)'; stm0_colVec], options, prms);
+            
+            PO_Xs{PO_i}.X = X_PO;
+        end
+
+%         box_length = 9e-3;
+        box_length = 2e-3;
+
+    %   %%% Loop and plot
+        figure('Position', [2630 196 1178 920])
+        subplot(2,2,1); hold all
+        PlotBoi3_CR3Bn(26)
+%         axis normal
+        axis equal
+        xlim([-1 1].*box_length + (1-prms.u))
+        ylim([-1 1].*box_length)
+        zlim([-1 1].*box_length)
+    %     axis equal
+        plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+        plotSecondary(secondary)
+    
+        subplot(2,2,2); hold all
+        PlotBoi3_CR3Bn(26)
+%         axis normal
+        axis equal
+        xlim([-1 1].*box_length + (1-prms.u))
+        ylim([-1 1].*box_length)
+        zlim([-1 1].*box_length)
+    %     axis equal
+        plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+        plotSecondary(secondary)
+    
+        subplot(2,2,3); hold all
+        PlotBoi3_CR3Bn(26)
+%         axis normal
+        axis equal
+        xlim([-1 1].*box_length + (1-prms.u))
+        ylim([-1 1].*box_length)
+        zlim([-1 1].*box_length)
+    %     axis equal
+        plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+        plotSecondary(secondary)
+    
+        subplot(2,2,4); hold all
+        PlotBoi3_CR3Bn(26)
+%         axis normal
+        axis equal
+        xlim([-1 1].*box_length + (1-prms.u))
+        ylim([-1 1].*box_length)
+        zlim([-1 1].*box_length)
+    %     axis equal
+        plot3(rLPs_n(1:2,1),[0,0],[0,0],'^','markeredgecolor',colors.black, 'markerfacecolor', colors.blue)
+        plotSecondary(secondary)
+    
+    
+    
+        for PO_i = 1:length(plot_PO_indices)
+    
+            if PO_i > 1
+                delete(p1)
+                delete(p2)
+                delete(p3)
+                delete(p4)
+            end
+            subplot(2,2,1)
+            view(0,-90)
+            p1 = plot3(PO_Xs{PO_i}.X(:,1), PO_Xs{PO_i}.X(:,2), PO_Xs{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)); % 0.1961    0.3922    0.7843
+            
+            subplot(2,2,2)
+            view(90,0)
+            p2 = plot3(PO_Xs{PO_i}.X(:,1), PO_Xs{PO_i}.X(:,2), PO_Xs{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)); % 0.1961    0.3922    0.7843
+            
+            subplot(2,2,3)
+            view(0,0)
+            p3 = plot3(PO_Xs{PO_i}.X(:,1), PO_Xs{PO_i}.X(:,2), PO_Xs{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)); % 0.1961    0.3922    0.7843
+
+            subplot(2,2,4)
+            view(-30, 15)
+            p4 = plot3(PO_Xs{PO_i}.X(:,1), PO_Xs{PO_i}.X(:,2), PO_Xs{PO_i}.X(:,3), 'linewidth', lw, 'color', color_spectrum(PO_i,:)); % 0.1961    0.3922    0.7843
+            
+%             pause(0.1)
+            pause(0.01)
+        end
 
 
 end

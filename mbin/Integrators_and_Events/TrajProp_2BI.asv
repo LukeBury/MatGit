@@ -1,0 +1,224 @@
+% ========================================================================
+%%% Description
+% ========================================================================
+% Propagate a trajectory in two-body inertial
+
+% Created: 1/22/2025
+% Author : Luke Bury, luke.bury@colorado.edu
+% ========================================================================
+%%% Initialization
+% ========================================================================
+clear
+clc
+close all
+mbinPath = '~/Documents/MatGit/mbin';
+addpath(genpath(mbinPath))
+ticWhole = tic;
+
+% ========================================================================
+%%% Importing Data
+% ========================================================================
+%%% General data on solar system bodies
+bodies = getBodyData(mbinPath);
+
+%%% Color options/schemes
+colors = get_colors();
+
+% ========================================================================
+%%% Run Switches
+% ========================================================================
+
+% ========================================================================
+%%% Setup
+% ========================================================================
+% -------------------------------------------------
+%%% Set up parameters
+% -------------------------------------------------
+%%% prms for integration
+prms.mu  = bodies.earth.u;
+
+%%% Set integrator handle
+integratorHandle = @Int_2BI;
+
+%%% Integration options
+tol = 1e-13;
+% options = odeset('RelTol',tol,'AbsTol',tol);
+options = odeset('Events', @event_Apsis_noStop_2BI, 'RelTol',tol,'AbsTol',tol);
+% event_Apsis.m				                event_xEqualsSecondary_nonTerminal.m
+% event_Apsis_2BI.m			                event_xEqualsSecondary_terminal.m
+% event_Apsis_CR3BP.m			            event_xyRegionEscape_CR3Bn.m
+% event_Apsis_noStop.m			            event_xyRegionEscape_CR3Bn.m~
+% event_Apsis_noStop_2BI.m		            event_yEqualsZero.m
+% event_ImpactEscape_CR3Bn.m		        event_yEqualsZeroPastL2.m
+% event_ImpactNoStop_EscapeStop_CR3Bn.m	    event_yEqualsZero_nonTerminal.m
+% event_Impact_CR3Bn.m			            event_yEqualsZero_positiveTerminal.m
+% event_Impact_CR3Bn_J2.m			        event_zEqualsZero.m
+% event_ImpactorL1Escape_CR3Bn.m		    event_zEqualsZero_inNeck.m
+% event_negativeXAxisRetrogradeCrossing.m	event_zEqualsZero_nonTerminal.m
+
+% -------------------------------------------------
+%%% IC
+% -------------------------------------------------
+%%% OE to RV
+a_km      = [3, 3,  3 ] .* bodies.earth.R;
+e         = [1, 1,  1 ] .* 0.5;
+i_deg     = [0, 45, 90];
+raan_deg  = zeros(1, length(a_km));
+w_deg     = zeros(1, length(a_km));
+ta_deg    = zeros(1, length(a_km));
+mu_km3_s2 = ones(1, length(a_km)).*prms.mu;
+
+X0 = nan(6,length(a_km));
+Tp_sec = nan(1,length(a_km));
+
+figure(90); hold all
+PlotBoi3(28)
+axis equal
+plotBodyTexture3(bodies.earth.R, [0,0,0], bodies.earth.img)
+
+% for kk = 1:length(a_km)
+for kk = 1:1
+    [r, v] = COE2RV(a_km(kk), e(kk), i_deg(kk), raan_deg(kk), w_deg(kk), ta_deg(kk), mu_km3_s2(kk));
+    X0(:,kk) = [r; v];
+    
+    Tp_sec(kk) = 2*pi*sqrt(a_km(kk)^3 / mu_km3_s2(kk));
+
+%     [T_out, X_out] = ode113(integratorHandle, [0, Tp_sec(kk)], X0(:,kk), options, prms);
+    [T_out, X_out, t_aps, x_aps, in_aps] = ode113(integratorHandle, [0, Tp_sec(kk)], X0(:,kk), options, prms);
+
+    plot3(X_out(:,1),X_out(:,2),X_out(:,3),'linewidth', 2, 'color', colors.black)
+
+end
+
+fprintf('Apses:\n')
+for kk = 1:size(x_aps,1)
+    fprintf('[%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f]\n', x_aps(kk,1:6))
+end
+
+
+%%% Showing effect of burning at apo vs peri
+dv_kmps = 1.11;
+X0_periBurn = [9567.000000000000000,   0.000000000000000, 0.000000000000000, -0.000000000000000, 7.905788048388315+dv_kmps,  0.000000000000000];
+X0_apoBurn  = [-28701.000000000458385, 0.000000000653529, 0.000000000000000, -0.000000000000032, -2.635262682796055-dv_kmps, 0.000000000000000];
+
+[a_periBurn,~,~,~,~,~] = RV2COE(X0_periBurn(1:3), X0_periBurn(4:6), prms.mu);
+Tp_periBurn = 2*pi*sqrt(a_periBurn^3 / prms.mu);
+E_periBurn = -prms.mu/(2*a_periBurn);
+[a_apoBurn,~,~,~,~,~] = RV2COE(X0_apoBurn(1:3), X0_apoBurn(4:6), prms.mu);
+Tp_apoBurn = 2*pi*sqrt(a_apoBurn^3 / prms.mu);
+E_apoBurn = -prms.mu/(2*a_apoBurn);
+
+[T_out_periBurn, X_out_periBurn, ~, ~, ~] = ode113(integratorHandle, [0, Tp_periBurn], X0_periBurn', options, prms);
+[T_out_apoBurn, X_out_apoBurn, ~, ~, ~] = ode113(integratorHandle, [0, Tp_apoBurn], X0_apoBurn', options, prms);
+
+p1 = plot3(X_out_periBurn(:,1),X_out_periBurn(:,2),X_out_periBurn(:,3),'linewidth', 2, 'color', colors.blue2);
+p2 = plot3(X_out_apoBurn(:,1),X_out_apoBurn(:,2),X_out_apoBurn(:,3),'linewidth', 2, 'color', colors.red2);
+
+legend([p1, p2], sprintf('E = %1.2f', E_periBurn), sprintf('E = %1.2f', E_apoBurn))
+
+%%% Showing that a "more negative" energy corresponds to a smaller, clearly less energetic orbit
+a_largerOrbit  = bodies.earth.R*4;
+a_smallerOrbit = bodies.earth.R*2;
+
+v_circ_largerOrbit  = sqrt(prms.mu / a_largerOrbit);
+v_circ_smallerOrbit = sqrt(prms.mu / a_smallerOrbit);
+
+X0_largerOrbit  = [a_largerOrbit; 0; 0; 0; v_circ_largerOrbit; 0];
+X0_smallerOrbit = [a_smallerOrbit; 0; 0; 0; v_circ_smallerOrbit; 0];
+
+Tp_largerOrbit  = 2*pi*sqrt(a_largerOrbit^3/prms.mu);
+Tp_smallerOrbit = 2*pi*sqrt(a_smallerOrbit^3/prms.mu);
+
+E_largerOrbit  = -prms.mu / (2*a_largerOrbit);
+E_smallerOrbit = -prms.mu / (2*a_smallerOrbit);
+ 
+[T_out_largerOrbit, X_out_largerOrbit, ~, ~, ~]   = ode113(integratorHandle, [0, Tp_largerOrbit],  X0_largerOrbit,  options, prms);
+[T_out_smallerOrbit, X_out_smallerOrbit, ~, ~, ~] = ode113(integratorHandle, [0, Tp_smallerOrbit], X0_smallerOrbit, options, prms);
+
+figure; hold all
+PlotBoi3(28)
+axis equal
+plotBodyTexture3(bodies.earth.R, [0,0,0], bodies.earth.img)
+p1 = plot3(X_out_largerOrbit(:,1),X_out_largerOrbit(:,2),X_out_largerOrbit(:,3),'linewidth', 2, 'color', colors.blue2);
+p2 = plot3(X_out_smallerOrbit(:,1),X_out_smallerOrbit(:,2),X_out_smallerOrbit(:,3),'linewidth', 2, 'color', colors.red2);
+legend([p1, p2], sprintf('E = %1.2f', E_largerOrbit), sprintf('E = %1.2f', E_smallerOrbit))
+
+%%
+%%% visualizing gravity assist
+a_circ_GA_body = 30*bodies.earth.R;
+rp_satPre      = 2*bodies.earth.R;
+
+v_circ_GA_body = sqrt(prms.mu / a_circ_GA_body);
+X0_GA_body = [a_circ_GA_body; 0; 0; 0; v_circ_GA_body; 0];
+Tp_GA_body = 2*pi*sqrt(a_circ_GA_body^3 / prms.mu);
+
+a_satPre = (rp_satPre + a_circ_GA_body) / 2;
+Tp_satPre = 2*pi*sqrt(a_satPre^3 / prms.mu);
+X0_sat_pre = [0; -rp_satPre; 0; sqrt(2*prms.mu/(rp_satPre) - prms.mu/a_satPre); 0; 0];
+
+[T_out_GA_body, X_out_GA_body, ~, ~, ~] = ode113(integratorHandle, [0, Tp_GA_body],  X0_GA_body,  options, prms);
+[T_out_satPre, X_out_satPre, t_aps_satPre, x_aps_satPre, in_aps_satPre]   = ode113(integratorHandle, [0, Tp_satPre],  X0_sat_pre,  options, prms);
+[T_out_satPre_half, X_out_satPre_half, ~, ~, ~]   = ode113(integratorHandle, [0, Tp_satPre/2+1],  X0_sat_pre,  options, prms);
+
+v_diff = v_circ_GA_body - norm(x_aps_satPre(2,4:6));
+turningAngle = atan2(v_diff, v_circ_GA_body);
+X0_satPost = [x_aps_satPre(2,1:3), x_aps_satPre(2,4), v_diff, 0];
+[a_satPost,~,~,~,~,~] = RV2COE(X0_satPost(1:3), X0_satPost(4:6), prms.mu);
+Tp_satPost = 2*pi*sqrt(a_satPost^3 / prms.mu);
+[T_out_satPost, X_out_satPost, ~, ~, ~] = ode113(integratorHandle, [0, Tp_satPost*.8],  X0_satPost,  options, prms);
+
+
+figure; hold all
+PlotBoi3(28)
+axis equal
+plotBody3(bodies.earth.R, [0;0;0], colors.orange, 1)
+plot3(X_out_GA_body(:,1),X_out_GA_body(:,2),X_out_GA_body(:,3),'linewidth', 2, 'color', colors.red2);
+plot3(X_out_satPre(:,1),X_out_satPre(:,2),X_out_satPre(:,3), '--', 'linewidth', 2, 'color', colors.ltblue);
+plot3(X_out_satPre_half(:,1),X_out_satPre_half(:,2),X_out_satPre_half(:,3),'linewidth', 2, 'color', colors.ltblue);
+plot3(X_out_satPost(:,1),X_out_satPost(:,2),X_out_satPost(:,3),'linewidth', 2, 'color', colors.blue2);
+view(0,90)
+
+
+
+
+
+
+
+X0_sat_parab_pre = X0_sat_pre(1:3);
+v = sqrt(2*prms.mu)
+
+
+
+
+% ========================================================================
+%%% Formatting Structures
+% ========================================================================
+% -------------------------------------------------
+%%% 
+% -------------------------------------------------
+
+% --------------------------
+% 
+% --------------------------
+
+% ========================================================================
+%%% Closeout
+% ========================================================================
+tocWhole = toc(ticWhole);
+fprintf('\nElapsed time: %1.4f seconds\n',tocWhole)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

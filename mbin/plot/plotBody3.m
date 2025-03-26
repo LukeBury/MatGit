@@ -7,8 +7,7 @@ function plotBody3( radius, position, color, transp)
 %         transp - transparency of object (0 = invisible, 1 = full color)
 
 [x,y,z] = sphere;
-surf(x*radius+position(1) ,y*radius+position(2), z*radius+position(3));
-colormap(color) 
+surf(x*radius+position(1) ,y*radius+position(2), z*radius+position(3), 'facecolor', color, 'edgecolor', [0, 0, 0], 'edgealpha', 0.2)
 if nargin == 4
     alpha(transp)
 end

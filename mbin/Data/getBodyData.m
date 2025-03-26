@@ -228,17 +228,23 @@ bodies.enceladus.name    = 'enceladus';
 bodies.enceladus.title   = 'Enceladus';
 bodies.enceladus.color   = [136, 194, 235]./255;
 bodies.enceladus.img     = imread([mbinPath,'/textures/enceladusSurfTex.jpg']);
-bodies.enceladus.mass    = 1.08022e20; % kg
-bodies.enceladus.u       = bodies.enceladus.mass*bodies.constants.G; % km^3/s^2
 bodies.enceladus.a       = 237948; % km
 bodies.enceladus.R       = 252; % km
 bodies.enceladus.R_n     = bodies.enceladus.R / bodies.enceladus.a;
 bodies.enceladus.meanMot = 5.307334465496030e-05; %2*pi/(1.370218 * 86400); % rad/s (from wikipedia)
 bodies.enceladus.Tp      = 2*pi/bodies.enceladus.meanMot; % sec
-bodies.enceladus.MR      = 1.900404354665370e-07; %bodies.enceladus.mass / (bodies.enceladus.mass + bodies.saturn.mass); % Mass ratio w/ primary
 bodies.enceladus.J2      = 5.459785012180e-03; % from MONTE
 bodies.enceladus.J3      = -6.672309709362e-05;% from MONTE
 bodies.enceladus.LyapTp  = 3.041563160570682;
+% bodies.enceladus.mass    = 1.08022e20; % kg
+% bodies.enceladus.u       = bodies.enceladus.mass*bodies.constants.G; % km^3/s^2
+% bodies.enceladus.MR      = 1.900404354665370e-07; %bodies.enceladus.mass / (bodies.enceladus.mass + bodies.saturn.mass); % Mass ratio w/ primary
+bodies.enceladus.MR = 1.898884589251784e-07;
+bodies.enceladus.mass = bodies.saturn.mass*bodies.enceladus.MR / (1 - bodies.enceladus.MR); % kg
+bodies.enceladus.u = bodies.enceladus.mass*bodies.constants.G; % km^3/s^2
+
+
+
 
 %%% Mimas
 bodies.mimas.name    = 'mimas';

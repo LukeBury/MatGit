@@ -11,7 +11,13 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+[ret, name] = system('hostname');
+if isequal(strip(name), 'Lukes-MacBook-Pro.local')
+    mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+elseif isequal(strip(name), 'MT-315800')
+    mbinPath = '~/Documents/MatGit/mbin';
+end
+clear ret name
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -30,14 +36,16 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-shooter_allFree          = false;
+use_scr_integration      = true;
+
+shooter_allFree          = true;
 shooter_TpFixed          = false;
 shooter_x0y0Fixed        = false;
 shooter_y0Fixed          = false;
 shooter_y0xd0Fixed       = false;
 shooter_y0zd0Fixed       = false;
 shooter_y0xd0zd0Fixed    = false;
-shooter_z0Fixed          = true; 
+shooter_z0Fixed          = false; 
 shooter_zd0Fixed         = false;
 shooter_y0Fixed_targetTp = false;
 
@@ -46,7 +54,8 @@ shooter_targetJC_y0Fixed = false;
 %     JC_des               = 3.003595836097908; % Europa, VL2 = 50 mps
 %     JC_des               = 3.003556098395709; % Europa, VL2 = 100 mps
 %     JC_des               = 3.003489868892044; % Europa, VL2 = 150 mps
-    JC_des               = 3.003132229572251; % Europa, VL2 = 300 mps
+%     JC_des               = 3.003132229572251; % Europa, VL2 = 300 mps
+      JC_des = 3.0021803994728993;
 
 
 % ========================================================================
@@ -64,16 +73,66 @@ famName = 'Saturn_Enceladus';
 [rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
 
 
+% warning('Manually overriding the mass ratio')
+% secondary.MR = 1.898884589251784e-07;
+% pause
 
 
-%%% 
-PO_guess = [0.9990598425656854;
+% PO_guess = [0.9966781211901592;
+%  0.0000000000000000;
+%  -0.0000000000000000;
+%  -0.0000166064753412;
+%  -0.0024518455787086;
+%  0.0000000000000000;
+%  6.5320101566700455+0.0004];
+
+% PO_guess = [1.0026931992495574; % This one is provided by bump vec
+%  0.0001168444852452;
+%  -0.0000000000000000;
+%  0.0000914959275053;
+%  -0.0116329536836471;
+%  -0.0000000000000000;
+%  6.5943713205968466];
+
+
+% PO_guess = [1.0022721517479456;
+%  0.0000000000000000;
+%  -0.0043947374220906;
+%  -0.0011573730498212;
+%  -0.0049639102432892;
+%  0.0020191817335985;
+%  4.2085658295070161];
+
+PO_guess = [1.0002397340487608;
+ 0.0000000112581942;
+ -0.0011586455354579;
+ -0.0000527607702334;
+ 0.0168641912253708;
+ -0.0000107614546480;
+ 6.8077541637058161];
+
+PO_guess = [1.0001463853332810;
  0.0000000000000000;
- -0.0028348610498525;
- -0.0000000000518546;
- -0.0071173508131177;
- 0.0000000001688107;
- 6.0800225227923965];
+ -0.0011634535012550;
+ -0.0000000000000030;
+ 0.0169441555850390;
+ -0.0000000000000020;
+ 6.8077901411791704];
+% PO_guess = [1.0032340585368691;
+%  0.0000000776686661;
+%  -0.0000017291018237;
+%  0.0000002161318153;
+%  -0.0108257014214765;
+%  -0.0000044291683005;
+%  25.3085141110651435];
+
+% PO_guess = [0.9968243230743826; % This is the starter for LoPO_2P4
+%  0.0000000000000000;
+%  0.0000000000000000;
+%  -0.0001764519593481;
+%  -0.0027936095722777;
+%  0.0000000000000000;
+%  7.7804447748760417];
 
 % -------------------------------------------------
 %%% Shooter-specific setup
@@ -118,31 +177,37 @@ end
 % error_tol = 1e-8; 
 error_tol = 1e-9;  % Usually start here when working from a guess
 % error_tol = 1e-10; 
-error_tol = 1e-11; 
-% error_tol = 1e-12;  %
-% error_tol = 5e-13; 
-% error_tol = 1e-13; 
+% error_tol = 1e-11; 989
+error_tol = 1e-12; 989
+% error_tol = 5e-13; 989
+% error_tol = 1e-13; 989
+% error_tol = 1e-14; 989
+% error_tol = 5e-15; 989
 
 %%% Number of nodes for multiple shooter. Generally, higher for bigger POs,
 %%% but also be aware that more nodes increase inherent error, so you may
 %%% need to lower error tolerances for the shooter
 % n_Nodes = 1; 
-% n_Nodes = 2; 
-% n_Nodes = 3;
-% n_Nodes = 4;
+n_Nodes = 2; 
+n_Nodes = 3;
+n_Nodes = 4;
 n_Nodes = 5;
 % n_Nodes = 6;
 % n_Nodes = 7; 
 % n_Nodes = 8;
 % n_Nodes = 9;
 % n_Nodes = 10;
-% n_Nodes = 11;
+% n_Nodes = 11; %
 % n_Nodes = 12;
 % n_Nodes = 13;
 % n_Nodes = 14;
 % n_Nodes = 16;
 % n_Nodes = 20;
+% n_Nodes = 21;
+% n_Nodes = 33;
+% n_Nodes = 40;
 
+n_Nodes
 %%% Maximum number of multiple-shooter iterations for any given family
 %%% member before kicking out of the loop and adjusting the tuning
 %%% parameters
@@ -166,6 +231,15 @@ prms.R2 = secondary.R_n;
 %%% Collinear equillibrium points
 rLPs_n = EquilibriumPoints(prms.u, prms.n);
 
+if use_scr_integration
+    integratorHandle = @Int_CR3BnSTM_SCR;
+    rLPs_n(:,1) = rLPs_n(:,1) - (1-prms.u);
+    PO_guess(1) = PO_guess(1) - (1-prms.u);
+else
+    integratorHandle = @Int_CR3BnSTM;
+end
+
+
 % ------------------------------------------------- 
 %%% Integration Options
 % -------------------------------------------------
@@ -180,47 +254,60 @@ options = odeset('RelTol',tol,'AbsTol',tol);
 %%% Correct the guess using desired shooting method
 % -------------------------------------------------
 if shooter_allFree
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize);
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize);
 elseif shooter_TpFixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_TpFixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(7));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_TpFixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(7));
 elseif shooter_x0y0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_x0y0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(1), PO_guess(2));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_x0y0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(1), PO_guess(2));
 elseif shooter_y0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2));
 elseif shooter_y0xd0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0xd0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(4));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0xd0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(4));
 elseif shooter_y0zd0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0zd0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(6));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0zd0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(6));
 elseif shooter_y0xd0zd0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0xd0zd0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(4), PO_guess(6));
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0xd0zd0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, PO_guess(2), PO_guess(4), PO_guess(6));
 elseif shooter_z0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_z0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize);
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_z0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize);
 elseif shooter_zd0Fixed
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_zd0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize);
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_zd0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize);
 elseif shooter_y0Fixed_targetTp
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0Fixed_targetTp(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, Tdes);
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_y0Fixed_targetTp(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, Tdes);
 elseif shooter_targetJC
-    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_JCFixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, JC_des);
+    [PO_result, counter, constraint_error] = correctPO_multShooter_stateContinuity_JCFixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, JC_des);
 elseif shooter_targetJC_y0Fixed
-    [PO_result, counter, constraint_error] = correctPO_mS_sC_JCy0Fixed(PO_guess, n_Nodes, @Int_CR3BnSTM, options, prms, error_tol, ms_iterMax, stepSize, JC_des, PO_guess(2));
+    [PO_result, counter, constraint_error] = correctPO_mS_sC_JCy0Fixed(PO_guess, n_Nodes, integratorHandle, options, prms, error_tol, ms_iterMax, stepSize, JC_des, PO_guess(2));
 end
 % -------------------------------------------------
 %%% Integrate and plot the results
 % -------------------------------------------------
-[T_guess, X_guess] = ode113(@Int_CR3BnSTM, linspace(0, PO_guess(7), 50000), [PO_guess(1:6); reshape(eye(6),36,1)], options, prms);
-[T_result, X_result] = ode113(@Int_CR3BnSTM, linspace(0, PO_result(7), 50000), [PO_result(1:6); reshape(eye(6),36,1)], options, prms);
+[T_guess, X_guess] = ode113(integratorHandle, linspace(0, PO_guess(7), 50000), [PO_guess(1:6); reshape(eye(6),36,1)], options, prms);
+[T_result, X_result] = ode113(integratorHandle, linspace(0, PO_result(7), 50000), [PO_result(1:6); reshape(eye(6),36,1)], options, prms);
 
+if use_scr_integration
+    PO_result(1)  = PO_result(1)  + (1-prms.u);
+    X_guess(:,1)  = X_guess(:,1)  + (1-prms.u);
+    X_result(:,1) = X_result(:,1) + (1-prms.u);
+else
+    d
+end
 
 figure('position',[43 423 560 420]); hold all
 p_guess  = plot3(X_guess(:,1),X_guess(:,2),X_guess(:,3),'b');
 PlotBoi3_CR3Bn(26)
 legend([p_guess], 'guess');
+if (abs(X_guess(1,3)) + abs(X_guess(1,6))) > 1e-11
+    view(0,0)
+end
 
 figure('position',[604 423 560 420]); hold all
 p_guess  = plot3(X_guess(:,1),X_guess(:,2),X_guess(:,3),'b');
 p_result = plot3(X_result(:,1),X_result(:,2),X_result(:,3),'m');
 PlotBoi3_CR3Bn(26)
 legend([p_guess p_result], 'guess', 'result');
+if (abs(X_guess(1,3)) + abs(X_guess(1,6))) > 1e-11
+    view(0,0)
+end
 
 figure('position', [1165 423 560 420]); hold all
 p_result = plot3(X_result(:,1),X_result(:,2),X_result(:,3),'m');
@@ -228,6 +315,9 @@ plot3(X_result(1,1),X_result(1,2),X_result(1,3),'ko')
 plot3(X_result(end,1),X_result(end,2),X_result(end,3),'kx')
 PlotBoi3_CR3Bn(26)
 legend([p_result],'result');
+if (abs(X_result(1,3)) + abs(X_result(1,6))) > 1e-11
+    view(0,0)
+end
 
 %%% Find stability info
 stm_tf_t0                           = reshape(X_result(end,7:42),6,6);
@@ -250,7 +340,7 @@ options_yEquals0_nonTerminal = odeset('Event',@event_yEqualsZero_nonTerminal,'Re
 [Tfix_fwd_non, Xfix_fwd_non, tEv_fwd_non, xEv_fwd_non, ~] = ode113(@Int_CR3BnSTM, [0, PO_result(7)], [PO_result(1:6); reshape(eye(6),36,1)], options_yEquals0_nonTerminal, prms);
 fprintf('y-axis crossings:\n')
 for kk = 1:size(xEv_fwd_non,1)
-    fprintf('[%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f]''\n', xEv_fwd_non(kk,1:6))
+    fprintf('[%1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f, %1.15f]\n', xEv_fwd_non(kk,1:6), PO_result(7))
 end
 
 % % X_test = [1.0206462604042468; % From Hg1 - the nearest to going inside L1/L2
@@ -287,24 +377,28 @@ end
 % % % % %  0.0000000000000000; 
 % % % % %  11.4890325492471597];
 
+
 % % 
-% X_test = [1.0093690704525875;
-%  -0.0;
-%  -0.0000000000000000;
-%  -0.000;
-%  -0.0626;
+% X_test = [1.002;
+%  0.0;
 %  0.0000000000000000;
-%  1.01];
+%  0.000;
+%  0.0072;
+%  0.0000000000000000;
+%  1.21];
 % 
 % % % % 
-% [T_test_out, X_test_out] = ode113(@Int_CR3BnSTM, linspace(0, X_test(7), 10000), [X_test(1:6); reshape(eye(6),36,1)], options, prms);
+% [T_test_out, X_test_out] = ode113(@Int_CR3BnSTM, [0, X_test(7)], [X_test(1:6); reshape(eye(6),36,1)], options, prms);
 % figure; hold all
-% plot3(X_test_out(:,1)-(1-prms.u),X_test_out(:,2),X_test_out(:,3),'k')
-% plot3(rLPs_n(1:2,1)-(1-prms.u), [0,0], [0,0], 'b^')
+% plot3(X_test_out(:,1),X_test_out(:,2),X_test_out(:,3),'k')
+% plot3(rLPs_n(2,1), [0], [0], 'b^')
 % PlotBoi3_CR3Bn(26)
+% axis equal
+% plotSecondary(secondary)
+% view(0,90)
 
 
-% difference of 1.8e-4
+
 
 
 %%% 

@@ -31,28 +31,36 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-
+print_bifurcations = true;
 % ========================================================================
 %%% Setup
 % ========================================================================
-
-
 % -------------------------------------------------
 %%% Choose data
 % -------------------------------------------------
-PO_file = 'Saturn_Enceladus.CR3BP.LoPO_2P2_1T_newMR.txt'; 
+% PO_family = 'Saturn_Enceladus.CR3BP.LoPO_2P2_1T_newMR.txt'; 
+% PO_family = 'Saturn_Enceladus.CR3BP.LoPO_2P2_1T_1P3_newMR.txt'; 
+% PO_family = 'Saturn_Enceladus.CR3BP.DPO_2P2_1T_newMR.txt'; 
+PO_family = 'Saturn_Enceladus.CR3BP.DPO_2P2_1T_1P3_newMR.txt'; 
 
+
+
+%%% Path from mbin to data
+dataPathFromMBin = '/Data/InitialConditions/PO_Families/';
+
+%%% PO data file
+PO_datafile = [mbinPath, dataPathFromMBin, PO_family];
 % -------------------------------------------------
 %%% Set up parameters
 % -------------------------------------------------
 %%% Set primary and secondary bodies
-[primary, secondary] = assignPrimaryAndSecondary_CR3BP(PO_file, bodies);
+[primary, secondary] = assignPrimaryAndSecondary_CR3BP(PO_family, bodies);
 
 %%% Normalizing constants
 [rNorm, tNorm, vNorm] = cr3bp_norms(primary, secondary, bodies.constants.G);
 
 %%% prms for integration
-secondary.MR = 1.898884589251784e-07;
+% secondary.MR = 1.898884589251784e-07;
 prms.u  = secondary.MR;
 prms.R2 = secondary.R_n;
 prms.n    = 1;
@@ -64,13 +72,16 @@ rLPs_n = EquilibriumPoints(prms.u, prms.n);
 %%% Load data
 % -------------------------------------------------
 %%% Load the data file
-PO_data = dlmread(PO_file,',',1,0);
+PO_data = dlmread(PO_datafile,',',1,0);
 
-warning('Ignoring off data past 200 km ca-altitude')
-PO_data = PO_data(99:end,:);
+warning('Ignoring impacting orbits and those higher than 200km')
+% PO_data = PO_data(99:389,:); % LoPO_2P2_1T
+% PO_data = PO_data(405:543,:); % LoPO_2P2_1T_1P3
+% PO_data = PO_data(273:345,:); % DPO_2P2_1T, non-impacting and proper CA point
+PO_data = PO_data(262:end,:); % DPO_2P2_1T_1P3, non-impacting and proper CA point
 
 %%% Grab header line
-fid = fopen(PO_file, 'rt');  %the 't' is important!
+fid = fopen(PO_datafile, 'rt');  %the 't' is important!
 header = fgetl(fid);
 fclose(fid);
 
@@ -268,12 +279,24 @@ end
 PlotBoi2('Apsis Altitudes (km)', 'Time Period (days)', 26, 'LaTex')
 
 
+
+
+
+% ========================================================================
+%%% Bifrucations
+% ========================================================================
+if print_bifurcations
+    [bifurcation_strings] = plot_BrouckeStabilityDiagram(PO_data(:, c_alpha), PO_data(:, c_beta), true);
+end
+
+
+
 % ========================================================================
 %%% Orbits
 % ========================================================================
 
 
-n_plot_POs = 13;
+n_plot_POs = 8;
 plot_PO_indices = getIndices_spacedByTpJcArclength(PO_data(:,c_Tp), PO_data(:,c_JC), n_plot_POs);
 % plot_PO_indices = 78;
 
@@ -313,7 +336,14 @@ if 1+1==1
 % % %     PO_i = 166; % 50 km, 166
 %     PO_i = 102; % 100 km, 102
 % % %     PO_i = 49; % 150 km, 49
-    PO_i = 2; % 200 km, 2
+%     PO_i = 2; % 200 km, 2
+    
+%     PO_i = 51; % 20 km
+%     PO_i = 45; % 50 km
+%     PO_i = 33; % 100 km
+%     PO_i = 1; % 200 km
+    
+    PO_i = 139;
 
     %%% Loop and plot
     figure; hold all
@@ -324,12 +354,12 @@ if 1+1==1
     axis equal
     plotSecondary(secondary)
 %     plot3(POs{PO_i}.X_aps([1,3,5],1), POs{PO_i}.X_aps([1,3,5],2), POs{PO_i}.X_aps([1,3,5],3), 'o', 'markeredgecolor',colors.black,'markerfacecolor',colors.ltgrey)
-    plotTrajShadows(POs{PO_i}.traj, 2, colors.grey, 'x', 1.004, 'y', 10e-3, 'z', -4e-3, 'bodyshadow', [1-prms.u, prms.R2])
+    plotTrajShadows(POs{PO_i}.traj, 2, colors.grey, 'x', 1.004, 'y', 9.5e-3, 'z', -3e-3, 'bodyshadow', [1-prms.u, prms.R2])
 
     axis normal
     axis equal
     xlim([0.997 1.004])
-    view(-28,16)
+    view(-28,13)
 
 
     latLons = zeros(length(POs{PO_i}.T),2);
@@ -344,9 +374,6 @@ if 1+1==1
     h = image(xlim, -ylim, bodies.enceladus.img);
     [lons_new] = convert_lon180_to_lon360(latLons(:,2));
     plot(lons_new,latLons(:,1),'.', 'color', colors.blue2)
-%     legend([p_landing_ZH], 'Tangent Impact', 'fontsize', 20, 'fontname', 'Times New Roman', 'location', 'southeast')
-%     title('SHalo ... ns1 ... ZH','Interpreter', 'LaTex', 'Fontname', 'Times New Roman', 'FontSize', 16)
-
 
 
 
@@ -359,10 +386,12 @@ end
 if 1+1==1
 %     PO_i = 206; % 20 km, 206
 % % %     PO_i = 166; % 50 km, 166
-    PO_i = 102; % 100 km, 102
+%     PO_i = 102; % 100 km, 102
 % % %     PO_i = 49; % 150 km, 49
 %     PO_i = 2; % 200 km, 2
 
+
+    
     figure; hold all
     plot3(POs{PO_i}.traj(:,1), POs{PO_i}.traj(:,2), POs{PO_i}.traj(:,3), 'linewidth', 2, 'color', colors.black)
     axis equal
@@ -381,8 +410,8 @@ if 1+1==1
     [X_SCI_x2] = X_BaCR2SCI(PO_x2, T_x2, prms);
     [X_SCI_x3] = X_BaCR2SCI(PO_x3, T_x3, prms);
     [X_SCI_x4] = X_BaCR2SCI(PO_x4, T_x4, prms);
-
-
+    
+    
     figure; hold all
 %     plot3(X_SCI(:,1), X_SCI(:,2), X_SCI(:,3), 'linewidth', 2, 'color', colors.black)
 %     plot3(X_SCI_x2(:,1), X_SCI_x2(:,2), X_SCI_x2(:,3), 'linewidth', 2, 'color', colors.black)
@@ -394,6 +423,8 @@ if 1+1==1
     plotBody3(prms.R2, [0, 0, 0], colors.ltblue, 0.5)
 
 end
+
+
 
 
 

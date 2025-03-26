@@ -5,13 +5,13 @@ function [X_BCI] = X_BCR2BCI(X_BCR, times, w )
 %       
 % ------------------------------------------------------------------------
 %%% Inputs
-%       X_BCR - [nx3] matrix of state values in Body-Centered-Rotating
+%       X_BCR - [nx6] matrix of state values in Body-Centered-Rotating
 %               frame
 %       times - [nx1] vector of times associated with positions (sec)
 %       w     - angular velocity of the system (rad/s) 
 % ------------------------------------------------------------------------
 %%% Outputs
-%       X_BCI - [nx3] matrix of state values in Body-Centered-Inertial
+%       X_BCI - [nx6] matrix of state values in Body-Centered-Inertial
 %               frame
 % ------------------------------------------------------------------------
 % Created: 07/17/19

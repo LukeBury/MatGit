@@ -11,7 +11,8 @@
 clear
 clc
 close all
-mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+% mbinPath = '~/CU_Google_Drive/Documents/MatGit/mbin';
+mbinPath = '~/Documents/MatGit/mbin';
 addpath(genpath(mbinPath))
 ticWhole = tic;
 
@@ -30,14 +31,15 @@ PO_ICs = get_PO_ICs();
 % ========================================================================
 %%% Run Switches
 % ========================================================================
-shooter_allFree         = false; % 
+shooter_allFree         = true; % 
 shooter_y0Fixed         = false;
 shooter_y0xd0zd0Fixed   = false;
 
-shooter_TpFixed         = true;  %  
+shooter_TpFixed         = false;  %  
 shooter_y0TpFixed       = false; %  
 shooter_y0xd0zd0TpFixed = false;
-    extraTpScale = 1+2e-5;
+%     extraTpScale = 1+2e-5;
+    extraTpScale = 1;
 
 plot_TpScalingFormula = false;
 
@@ -52,8 +54,8 @@ plot_TpScalingFormula = false;
 %%% Inputs / ICs
 % -------------------------------------------------
 %%% Primary_Secondary system
-% systemName = 'Jupiter_Europa';
-systemName = 'Saturn_Enceladus';
+systemName = 'Jupiter_Europa';
+% systemName = 'Saturn_Enceladus';
 
 % %%% PO (from europa SHalo)
 % PO_0 = [1.016439777885220;
@@ -90,13 +92,13 @@ systemName = 'Saturn_Enceladus';
 %  -0.0161973279788486;
 %  0.0000000000000000;
 %  4.8871289984803123];
-PO_0 = [0.9992979397836381;
+PO_0 = [0.9939994256784553;
  0.0000000000000000;
- -0.0023476139142152;
- -0.0000000000000050;
- -0.0087808958860086;
- 0.0000000000000033;
- 5.9565678747052306];
+ -0.0129619895264131;
+ 0.0000000000000000;
+ -0.0311449729044119;
+ 0.0000000000000000;
+ 13.9800504338624751];
 
 step1 = 1;
 % -------------------------------------------------
@@ -106,9 +108,17 @@ step1 = 1;
 %%% Shooter options
 % --------------------------
 % n_Nodes    = 6;
-n_Nodes    = 13;
-error_tol  = 1e-11;
-% error_tol  = 1e-9;989
+n_Nodes    = 7;
+n_Nodes    = 8;
+n_Nodes    = 9;
+n_Nodes    = 10;
+n_Nodes    = 11;
+n_Nodes    = 12;
+% n_Nodes    = 13;
+
+
+% error_tol  = 1e-11;
+error_tol  = 1e-9;989
 ms_iterMax = 1200;
 stepSize   = 1;
 % --------------------------
@@ -131,7 +141,7 @@ prms.n  = 1;
 % prms.R2 = secondary.R_n;
 
 %%% Mass ratios
-mu_1 = bodies.enceladus.MR;
+mu_1 = secondary.MR;
 % mu_2 = bodies.ganymede.MR;
 mu_2 = 1.898884589251784e-07;
 % mu_2 = bodies.moon.MR;
@@ -139,11 +149,11 @@ mu_2 = 1.898884589251784e-07;
 %%% Choose how many steps of natural parameter continuation to go from mu_1
 %%% to mu_2. Vectors of these steps are generated with both linear and
 %%% logarithmic spacing and combined to help avoid disproportional gaps 
-n_mu = 6
+% n_mu = 6
 % n_mu = 1000;
 % n_mu = 2000;
 % n_mu = 5000;
-% n_mu = 10000;
+n_mu = 100000;
 % mu_vec = linspace(mu_1, mu_2, n_mu);
 mu_vec1 = logspace(log10(mu_1), log10(mu_2), (n_mu/2+2));
 mu_vec2 = linspace(mu_1, mu_2, n_mu/2);
